@@ -1,0 +1,7 @@
+.seen {
+	background-color: lightgrey;
+}
+
+listitem.seen[selected="true"] {
+  background-color: Highlight;
+}

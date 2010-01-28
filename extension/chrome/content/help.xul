@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://gipsy/locale/main.dtd">
+
+<window
+    title="Report problem"
+    orient="vertical"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    xmlns:html="http://www.w3.org/1999/xhtml"
+    width="500" height="300" >
+
+<html:div xmlns="http://www.w3.org/1999/xhtml">
+    Send us your bug report or comment. Accepted languages are Czech, English,
+    Spanish and German.
+    <form method="POST" action="http://paragliding.iglu.cz/gipsy/form.php">
+      <table>
+       <tr>
+	 <td>Email:</td><td> 
+	 <input type="text" name="email" 
+		value=""/></td>
+       </tr>
+       <tr><td>Message:</td><td>
+       <textarea name="comment" cols="40" rows="10"></textarea><br/>
+       </td></tr>
+       <tr><td></td><td>
+       <input type="submit" value="Send" />
+       </td></tr>
+      </table>
+    </form>
+  </html:div>
+</window>

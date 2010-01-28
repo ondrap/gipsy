@@ -1,0 +1,562 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE window SYSTEM "chrome://gipsy/locale/main.dtd">
+
+<bindings xmlns="http://www.mozilla.org/xbl"
+	  xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	  xmlns:svg="http://www.w3.org/2000/svg"
+	  xmlns:xbl="http://www.mozilla.org/xbl"
+	  xmlns:xlink="http://www.w3.org/1999/xlink">
+
+  <!-- Container for maps ensuring automatic scale detection
+       on tracklog change -->
+  <binding id="flmapcontainer"
+	   extends="chrome://gipsy/content/fprofile.xbl#flcontainer" >
+    <content>
+      <svg:g xbl:inherits="style transform clip-path" >
+	<!-- for fast mouse movement -->
+	<svg:g transform="translate(0,0)" anonid="childplace" >
+	  <children/>
+	</svg:g>
+      </svg:g>
+    </content>
+    <implementation>
+      <field name="mapbounds">null</field>
+
+      <property name="tracklog">
+	<setter><![CDATA[
+	  this._tlog = val;
+	  var tlog = val;
+
+	  var width = this.getAttribute('width');
+	  var height = this.getAttribute('height');
+
+	  /* Compute the bounds so that the tracklog is perfectly
+	     centered */
+
+	  var minlon = tlog.svgProjectLon(tlog.igcGetStat(tlog.STAT_LON_MIN));
+	  var maxlon = tlog.svgProjectLon(tlog.igcGetStat(tlog.STAT_LON_MAX));
+	  var minlat = tlog.svgProjectLat(tlog.igcGetStat(tlog.STAT_LAT_MIN));
+	  var maxlat = tlog.svgProjectLat(tlog.igcGetStat(tlog.STAT_LAT_MAX));
+
+	  var midlon = (maxlon + minlon) / 2;
+	  var midlat = (maxlat + minlat) / 2;
+	
+	  var xscale = width / (maxlon - minlon);
+	  var yscale = height / (maxlat - minlat);
+
+	  if (xscale < yscale)
+	    var scale = xscale;
+	  else
+	    var scale = yscale;
+	  // Update scale to be a nice value for googlemaps
+	  var zoom = this.nice_google_zoom(scale);
+	  var dimension = 2*Math.PI / Math.pow(2, (17-zoom));
+	  dimension *= 2; // Choose larger zoom level
+	  scale = 256 / dimension;
+
+	  var bounds = this.make_bounds(scale, midlat, midlon);
+
+	  this.set_property('mapbounds', bounds);
+	  ]]>
+	</setter>
+      </property>
+
+      <method name="make_bounds">
+	<parameter name="scale" />
+	<parameter name="midlat" />
+	<parameter name="midlon" />
+	<body><![CDATA[
+	  var width = parseFloat(this.getAttribute('width'));
+	  var height = parseFloat(this.getAttribute('height'));
+	  
+	  var rad = height / scale;
+	  var minlat = midlat - rad/2;
+	  var maxlat = midlat + rad/2;
+
+	  var rad = width / scale;
+	  var minlon = midlon - rad/2;
+	  var maxlon = midlon + rad/2;
+	  
+	  // reproject backwards on sphere
+	  return {
+	    projminlon : minlon,
+	    projmaxlon : maxlon,
+	    projminlat : minlat,
+	    projmaxlat : maxlat,
+	    midlon : midlon,
+	    midlat : midlat,
+	    scale : scale
+	  };
+	]]>
+	</body>
+      </method>
+
+      <method name="zoom">
+	<parameter name="type" />
+	<body><![CDATA[
+	  var bounds = this.mapbounds;
+	  if (bounds == null)
+	      return;
+	  var midlon = bounds.midlon;
+	  var midlat = bounds.midlat;
+	  var scale = bounds.scale;
+	  
+	  if (type == 'in')
+	    scale *= 2;
+	  else
+	    scale /= 2;
+	  
+	  bounds = this.make_bounds(scale, midlat, midlon);
+
+	  this.set_property('mapbounds', bounds);
+	]]>
+	</body>
+      </method>
+
+      <method name="move">
+	<parameter name="where" />
+	<body><![CDATA[
+	  var bounds = this.mapbounds;
+	  if (bounds == null)
+	      return;
+	  var midlon = bounds.midlon;
+	  var midlat = bounds.midlat;
+	  
+	  var horiz = (bounds.projmaxlon - bounds.projminlon) / 4;
+	  var vert = (bounds.projmaxlat - bounds.projminlat) / 4;
+	  
+	  if (where == 'up')
+	    midlat += vert;
+	  else if (where == 'down')
+	    midlat -= vert;
+	  else if (where == 'left')
+	    midlon -= horiz;
+	  else if (where == 'right')
+	    midlon += horiz;
+
+	  bounds = this.make_bounds(bounds.scale, midlat, midlon);
+	  this.set_property('mapbounds', bounds);
+	]]>
+	</body>
+      </method>
+
+      <!-- Move fast by x/y pixels by modifying transform matrix -->
+      <method name="move_fast">
+	<parameter name="x" />
+	<parameter name="y" />
+	<body><![CDATA[
+	  var cont = this.anon_el('childplace');
+	  var translate = cont.transform.baseVal.getItem(0); 
+	  translate.setTranslate(x, y);
+	  ]]>
+	</body>
+      </method>
+
+      <!-- Move slow by x/y pixels by recentring the map -->
+      <method name="move_slow">
+	<parameter name="x" />
+	<parameter name="y" />
+	<body><![CDATA[
+	  var bounds = this.mapbounds;
+	  var midlon = bounds.midlon - x / bounds.scale;
+	  var midlat = bounds.midlat + y / bounds.scale;
+
+	  bounds = this.make_bounds(bounds.scale, midlat, midlon);
+	  this.set_property('mapbounds', bounds);
+	]]>
+	</body>
+      </method>
+    </implementation>
+  </binding>
+
+  <!-- Widget for 2D display of tracklog -->
+  <binding id="flflatmap"
+	   extends="chrome://gipsy/content/fprofile.xbl#flbasic">
+    <content>
+      <svg:path anonid="a_line" stroke="orange"
+		fill="none" />
+    </content>
+    <implementation>
+      <property name="tracklog"
+		onget="return this._tlog"
+		onset="this._tlog=val;this.redraw();" />
+      
+      <property name="mapbounds" 
+		onget="return this._bounds"
+		onset="this._bounds=val;this.redraw()" />
+      
+      <method name="redraw">
+	<body>
+	  <![CDATA[
+	    var tlog = this._tlog;
+	    if (!tlog)
+	        return;
+
+            var width = this.getAttribute('width');
+	    var height = this.getAttribute('height');
+	    var line = this.anon_el('a_line');
+	
+	    var bounds = this.mapbounds;
+	    var adata = tlog.svgPathTrack(width, height, bounds.projminlat, 
+	                                  bounds.projminlon, bounds.projmaxlon,
+					  true);
+	    line.setAttribute('d', adata);
+	]]>
+	</body>
+      </method>
+    </implementation>
+  </binding>
+
+  <!-- Widget that displays launch and landing icons -->
+  <binding id="flmapicons"
+	   extends="chrome://gipsy/content/fprofile.xbl#flbasic">
+    <content>
+      <svg:image xlink:href="chrome://gipsy/content/start.png"
+		 x="0" y="0" width="21" height="34" 
+		 style="visibility:hidden"
+		 anonid="start" />
+      <svg:image xlink:href="chrome://gipsy/content/cil.png"
+		 x="0" y="0" width="21" height="34" 
+		 style="visibility:hidden"
+		 anonid="cil" />
+      <svg:image xlink:href="chrome://gipsy/content/glider.png"
+		 x="0" y="0" width="21" height="34" 
+		 style="visibility:hidden"
+		 anonid="glider" />
+    </content>
+    <implementation>
+      <property name="tracklog"
+		onget="return this._tlog"
+		onset="this._tlog=val;this._point=null;this.redraw();" />
+
+      <property name="point"
+		onget="return this._point"
+		onset="this._point=val;this.redraw();" />
+      
+      <property name="mapbounds" 
+		onget="return this._bounds"
+		onset="this._bounds=val;this.redraw()" />
+      
+      
+      <method name="redraw">
+	<body>
+	  <![CDATA[
+	  var tlog = this._tlog;
+          var start = this.anon_el('start');
+	  var cil = this.anon_el('cil');
+	  var glider = this.anon_el('glider');
+	  if (!tlog) {
+	      start.style.visibility = 'hidden';
+	      cil.style.visibility = 'hidden';
+	      glider.style.visibility = 'hidden';
+	      return;
+	  }
+	  this.move_icon(start, tlog.igcPoint(0));
+	  start.style.visibility = 'visible';
+
+          this.move_icon(cil, tlog.igcPoint(tlog.igcPointCount() - 1));
+	  cil.style.visibility = 'visible';
+	  
+	  if (this._point) {
+	      this.move_icon(glider, tlog.igcPoint(this._point));
+	      glider.style.visibility = 'visible';
+	  } else {
+	      glider.style.visibility = 'hidden';
+	  }
+	  ]]>
+	</body>
+      </method>
+
+      <method name="move_icon">
+	<parameter name="icon" />
+	<parameter name="point" />
+	<body>
+	  var bounds = this._bounds;
+
+	  var proj = this.project_point(bounds, point);
+	  var icwidth = parseFloat(icon.getAttribute('width'));
+	  var icheight = parseFloat(icon.getAttribute('height'));
+	  icon.setAttribute('x', proj.x - icwidth/2);
+	  icon.setAttribute('y', proj.y - icheight);
+	</body>
+      </method>
+
+      <method name="project_point">
+	<parameter name="bounds" />
+	<parameter name="point" />
+	<body>
+	  var tlog = this._tlog;
+	  var minlon = bounds.projminlon;
+	  var minlat = bounds.projminlat;
+	  var scale = bounds.scale;
+
+	  var lon = tlog.svgProjectLon(point.lon);
+	  var lat = tlog.svgProjectLat(point.lat);
+	  return { x : scale * (lon - minlon), 
+	           y : this.getAttribute('height') - scale * (lat - minlat) };
+	</body>
+      </method>
+    </implementation>
+  </binding>
+
+  <binding id="flmapdrag"
+	   extends="chrome://gipsy/content/fprofile.xbl#flbasic">
+    <content>
+      <svg:rect x="0" y="0" 
+		fill-opacity="0" anonid="inner" />
+    </content>
+
+    <implementation>
+      <constructor>
+	var inner = this.anon_el('inner');
+	inner.setAttribute('width', this.getAttribute('width'));
+	inner.setAttribute('height', this.getAttribute('height'));
+      </constructor>
+
+      <method name="_mm">
+	<parameter name="event" />
+	<body>
+	  var me = document.draggedItem;
+	  var relx = event.clientX - me._xstart;
+	  var rely = event.clientY - me._ystart;
+	  me.FLparent.move_fast(relx, rely);
+	</body>
+      </method>
+
+      <method name="_mu">
+	<parameter name="event" />
+	<body>
+	  var me = document.draggedItem;
+	  me.FLparent.move_fast(0, 0);
+
+	  // Update bounds
+	  var relx = event.clientX - me._xstart;
+	  var rely = event.clientY - me._ystart;
+	  me.FLparent.move_slow(relx, rely);
+	  
+	  document.removeEventListener("mousemove", me._mm, true);
+	  document.removeEventListener("mouseup", me._mu, true);
+	  document.draggedItem = null;
+	</body>
+      </method>
+    </implementation>
+    <handlers>
+      <handler event="mousedown">
+	<![CDATA[
+	  if (this.FLparent.mapbounds == null)
+	    return;
+
+          document.draggedItem = this;
+	  this._xstart = event.clientX;
+	  this._ystart = event.clientY;
+	  
+          document.addEventListener("mousemove", this._mm, true);
+          document.addEventListener("mouseup", this._mu, true);
+	]]>
+      </handler>
+    </handlers>
+  </binding>
+
+  <binding id="flgmap"
+	   extends="chrome://gipsy/content/fprofile.xbl#flbasic">
+    <content>
+      <svg:g anonid="mapcont">
+      </svg:g>
+    </content>
+    <implementation>
+      <property name="tracklog"
+		onget="return this._tlog"
+		onset="this._tlog=val;this.redraw();" />
+      
+      <property name="mapbounds"
+		onset="this._bounds=val;this.redraw()" />
+      
+      <property name="maptype"
+		onget="return this._maptype" >
+	<setter>
+	  if (val == this._maptype)
+	      return;
+
+	  if (val == 'map_nomap')
+	      this._maptype = null;
+	  else
+	      this._maptype = val;
+	  this.redraw();
+	</setter>
+      </property>
+
+      <property name="mapoverlay"
+		onget="return this._mapoverlay" >
+	<setter><![CDATA[
+	  if (this._mapoverlay!= null && val == this._mapoverlay)
+	    return;
+	  this._mapoverlay = val;
+	  this.redraw();
+	  ]]>
+	</setter>
+      </property>		
+
+      <property name="mapairspace"
+		onget="return this._mapairspace" >
+	<setter><![CDATA[
+	  if (this._mapairspace!= null && val == this._mapairspace)
+	    return;
+	  this._mapairspace = val;
+	  this.redraw();
+	  ]]>
+	</setter>
+      </property>		
+
+      <method name="redraw">
+	<body><![CDATA[
+	  var mapcont = this.anon_el('mapcont');
+	  // Clear old map
+	  while (mapcont.childNodes.length)
+	    mapcont.removeChild(mapcont.childNodes[0]);
+
+	  var bounds = this._bounds;
+	  var tlog = this._tlog;
+	  var maptype = this._maptype;
+
+	  if (bounds == null || tlog == null || maptype == null) {
+	      return;
+	  }
+	  var width = this.getAttribute('width') / 1;
+	  var height = this.getAttribute('height') / 1;
+
+	  var pscale = bounds.scale;
+
+	  var zoom = this.nice_google_zoom(pscale);
+	  var dimension = 2*Math.PI / Math.pow(2, (17-zoom));
+	  var prwidth = Math.round(dimension * pscale);
+
+	  var xtile = Math.floor((bounds.projminlon + Math.PI) / dimension);
+	  var xstart = (xtile * dimension - (bounds.projminlon + Math.PI)) * pscale;
+	
+	  var mapsuffix = '';
+	  if (maptype != 'map_pgweb')
+	    mapsuffix = get_string_pref(maptype);
+	  if (this.mapoverlay)
+	    var mapovsuffix = get_string_pref(this.mapoverlay);
+	
+	  while (xstart < width) {
+	    var replat = -bounds.projmaxlat;
+	    var ytile = Math.floor((replat + Math.PI) / dimension);
+	    var ystart = (ytile * dimension - (replat + Math.PI)) * pscale;
+
+	    while (ystart < height) {
+	      var link = this.get_map_link(maptype, zoom, xtile, ytile, mapsuffix);
+	      var img = this.mapelement(Math.round(xstart), Math.round(ystart),
+	                                prwidth, prwidth, link);
+	      mapcont.appendChild(img);
+
+	      if (this.mapoverlay) {
+	        var link = this.get_map_link(this.mapoverlay, zoom, xtile, ytile, mapovsuffix);
+		var img = this.mapelement(Math.round(xstart), Math.round(ystart),
+	                                prwidth, prwidth, link);
+		mapcont.appendChild(img);
+	      }
+	      if (this.mapairspace) {
+	        var link = this.get_map_link(this.mapairspace, zoom, xtile, ytile, '');
+		var img = this.mapelement(Math.round(xstart), Math.round(ystart),
+	                                prwidth, prwidth, link);
+		mapcont.appendChild(img);
+	      }
+
+	      ystart += prwidth;
+	      ytile++;
+	    }
+	    xstart += prwidth;
+	    xtile++;
+	  }
+	]]>
+	</body>
+      </method>
+
+      <method name="mapelement">
+	<parameter name="x" />
+	<parameter name="y" />
+	<parameter name="width" />
+	<parameter name="height" />
+	<parameter name="link" />
+	<body><![CDATA[
+	  const xlinkns = 'http://www.w3.org/1999/xlink';
+	  const svgns = "http://www.w3.org/2000/svg";
+
+	  var img = document.createElementNS(svgns, 'image');
+	  img.setAttribute('x', x);
+	  img.setAttribute('y', y);
+	  img.setAttribute('width', width);
+	  img.setAttribute('height', height);
+	  img.setAttributeNS(xlinkns,'href',link);
+	  
+	  return img;
+	]]>
+	</body>
+      </method>
+
+      <method name="get_map_link">
+	<parameter name="maptype" />
+	<parameter name="zoom" />
+	<parameter name="xtile" />
+	<parameter name="ytile" />
+	<parameter name="mapsuffix" />
+	<body>
+	  <![CDATA[
+	  if (maptype == 'map_googlemap') {
+	    var svr = 'mt' + Math.floor(Math.random() * 4);
+	    var link = 'http://' + svr + '.google.com/' + mapsuffix;
+	    link += '&x=' + xtile + '&y=' + ytile + '&z=' + (17 - zoom);
+	    // Security?
+	    link += '&s=' + 'Galileo'.substr(0, (xtile*3+ytile) % 8);
+	  } else if (maptype == 'map_googleoverlay') {
+	    var svr = 'mt' + Math.floor(Math.random() * 4);
+	    var link = 'http://' + svr + '.google.com/'  + mapsuffix;
+	    link += '&x=' + xtile + '&y=' + ytile + '&z=' + (17 - zoom);
+	    // Security?
+	    link += '&s=' + 'Galileo'.substr(0, (xtile*3+ytile) % 8);
+	  } else if (maptype == 'map_terrain') {
+	    var svr = 'mt' + Math.floor(Math.random() * 4);
+	    var link = 'http://' + svr + '.google.com/'  + mapsuffix;
+	    link += '&x=' + xtile + '&y=' + ytile + '&z=' + (17 - zoom);
+	    // Security?
+	    link += '&s=' + 'Galileo'.substr(0, (xtile*3+ytile) % 8);
+	  } else if (maptype == 'map_pgweb') {
+	    var link = 'http://maps.pgweb.cz/elev/';
+	    link += (17-zoom) + '/' + xtile + '/' + ytile;
+	  } else if (maptype == 'map_airspace') {
+	    var link = 'http://maps.pgweb.cz/airspace/';
+	    link += (17-zoom) + '/' + xtile + '/' + ytile;
+	  } else if (maptype == 'map_googlesat') {
+	    var svr = 'khm' + Math.floor(Math.random() * 4);
+	    var link = 'http://' + svr + '.google.com/' + mapsuffix;
+
+            var zstring = '';
+            for (var i=zoom; i < 17; i++) {
+	      var xmod = xtile % 2;
+	      var ymod = ytile % 2;
+	      
+	      xtile = Math.floor(xtile / 2);
+	      ytile = Math.floor(ytile / 2);
+	      
+	      if (xmod == 0 && ymod == 0)
+	        zstring = 'q' + zstring;
+	      else if (xmod == 1 && ymod == 0)
+	        zstring = 'r' + zstring;
+	      else if (xmod == 1 && ymod == 1)
+	        zstring = 's' + zstring;
+	      else
+	        zstring = 't' + zstring;
+	    }
+	    zstring = 't' + zstring;
+	    link += '&t=' + zstring;
+	  }
+	  return link;
+	  ]]>
+	</body>
+      </method>
+    </implementation>
+  </binding>
+  
+</bindings>

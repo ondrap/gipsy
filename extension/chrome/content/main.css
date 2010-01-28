@@ -1,0 +1,45 @@
+
+treechildren::-moz-tree-checkbox {
+    /* css for checked cells */
+    list-style-image: url("chrome://gipsy/content/cbox-uncheck.png");
+}
+
+treechildren::-moz-tree-checkbox(checked){
+    /* css for checked cells */
+    list-style-image: url("chrome://gipsy/content/cbox-check.png");
+}
+
+.tab-closebut {
+	list-style-image: url("chrome://global/skin/icons/close.png");
+	-moz-image-region: rect(0px, 16px, 16px, 0px);
+	-moz-appearance: none;
+	border: none;
+}
+
+.tab-closebut:hover {
+  -moz-image-region: rect(0px, 32px, 16px, 16px);
+}
+
+.tab-closebut:hover:active {
+  -moz-image-region: rect(0px, 48px, 16px, 32px);
+}
+
+
+.tab-closebut > .toolbarbutton-icon {
+  -moz-margin-end: 0px !important;
+  -moz-padding-end: 2px !important;
+  -moz-padding-start: 2px !important;
+}
+
+treechildren::-moz-tree-row(scheduled) {
+  background-color: #f0f0a0;
+}
+
+treechildren::-moz-tree-row(scheduled, selected) {
+  background-color: lightgrey;
+}
+
+treechildren::-moz-tree-row(scheduled, selected, focus) {
+  background-color: Highlight;
+}
+

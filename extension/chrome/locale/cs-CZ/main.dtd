@@ -1,0 +1,137 @@
+<!ENTITY gipsy.title "GiPSy správce letů">
+
+<!ENTITY menu.sendxc "Poslat lety do XContestu" >
+
+<!ENTITY tab.flights "Lety" >
+<!ENTITY tab.devices "Propojení s GPS" >
+<!ENTITY problem "Oznámení problému" >
+
+<!ENTITY open "Otevřít" >
+<!ENTITY delete "Smazat" >
+<!ENTITY close "Zavřít" >
+<!ENTITY close.key "Z" >
+<!ENTITY preferences "Nastavení" >
+<!ENTITY preferences.key "N" >
+<!ENTITY collapse.all "Rozbalit/sbalit vše" >
+<!ENTITY show.source "Zobrazit IGC soubor" >
+<!ENTITY create.logbook "Vytvořit deník" >
+
+<!ENTITY file "Soubor" >
+<!ENTITY file.key "s" >
+
+<!ENTITY help "Nápověda" >
+<!ENTITY help.key "n" >
+<!ENTITY about "O programu" >
+
+<!ENTITY date.utc "Datum (UTC)" >
+<!ENTITY launch "Místo startu" >
+<!ENTITY launch.long "Místo startu" >
+<!ENTITY landing "Místo přistání" >
+<!ENTITY pilot "Pilot" >
+<!ENTITY glider "Kluzák" >
+<!ENTITY flight.info "Info o letu" >
+<!ENTITY statistics "Statistika" >
+<!ENTITY pilot.info "Info o pilotovi" >
+<!ENTITY date "Datum letu" >
+<!ENTITY enabled "Povoleno" >
+<!ENTITY device "Zařízení" >
+<!ENTITY altitude "Výška">
+<!ENTITY speed "Rychlost">
+<!ENTITY advanced "Rozšířené" >
+<!ENTITY basic "Základní" >
+<!ENTITY faicat "FAI Kategorie">
+<!ENTITY biplace "Tandem">
+<!ENTITY comment "Komentář" >
+<!ENTITY properties "Vlastnosti" >
+<!ENTITY upload "Odeslat" >
+<!ENTITY map.no "Bez mapy" >
+<!ENTITY map.googlemap "Mapa Google" >
+<!ENTITY map.googlemaplayer "Silnice" >
+<!ENTITY map.airspace "Prostory" >
+
+<!ENTITY duration "Doba letu" >
+
+<!ENTITY stat.sdist "Vzdálenost start-přistání" >
+<!ENTITY stat.totdist "Délka tracklogu" >
+<!ENTITY stat.maxheight "Maximální výška" >
+<!ENTITY stat.heightdiff "Rozdíl výšky (max-min)" >
+<!ENTITY stat.maxspeed "Maximální rychlost">
+<!ENTITY stat.maxvario "Nejlepší stoupání" >
+<!ENTITY stat.minvario "Nejhorší klesání" >
+<!ENTITY stat.totheight "Celková nastoupaná výška" >
+
+<!ENTITY xcontest.login "Login do XContestu">
+<!ENTITY xcontest.show "Zobrazit detail letu" >
+<!ENTITY xcontest.send "Zaslat na server XContest" >
+
+<!ENTITY synchronization "Synchronizace">
+<!ENTITY filename "Jméno souboru" >
+<!ENTITY gps "GPS" >
+
+<!ENTITY gps.help "Nevidím připojenou GPS" >
+<!ENTITY gps.name "Jméno GPS" >
+<!ENTITY gps.type "Typ GPS" >
+<!ENTITY progress "Stav přenosu" >
+
+<!ENTITY pilot.filter "Filtrovat podle pilota">
+<!ENTITY pilot.all "Všichni piloti">
+<!ENTITY gpx.save "Uložit ve formátu GPX">
+<!ENTITY kml.save "Uložit ve formátu KML">
+
+<!-- New track -->
+<!ENTITY newtrk.title "Zpracování tracklogu" >
+<!ENTITY seltrk.title "Krok 1 - výběr úseku :: označte úsek odpovídající vašemu letu" >
+<!ENTITY seltrk.help "TIP: chcete-li složit jeden let z více úseků, přidržte klávesu Shift při označování." >
+
+<!ENTITY selpoint.title "Krok 2 - zpřesnění úseku :: můžete ručně upravit automaticky detekovaný začátek a konec letu" >
+<!ENTITY selpoint.advanced "Zobrazit nástroj pro detailní výběr" >
+<!ENTITY selpoint.restore "Obnovit výchozí výběr" >
+<!ENTITY selpoint.helprange "Začátek a konec můžete upravit tažením myší za červené kroužky">
+<!ENTITY selpoint.helpdrag "Posunujte lupou tažením myší v oblasti červeného zvýraznění">
+<!ENTITY selpoint.helpsel "Myší označte/odznačte body nebo vynechané úseky" >
+<!ENTITY tracklog.invalid "Neplatný záznam letu" >
+
+<!ENTITY finfo.title "Krok 3 :: doplnění informací o letu">
+<!ENTITY finfo.fileid "3-písmenná zkratka jména IGC souboru" >
+<!ENTITY finfo.longname "Dlouhé jméno IGC souboru" >
+<!ENTITY finfo.shortname "Krátké jméno IGC souboru" >
+<!ENTITY finfo.longsite "Jméno souboru ve formátu: YYYY-MM-DD-start.igc" >
+
+<!ENTITY filinfo.title "Informace o IGC souboru" >
+<!ENTITY filinfo.savepath "Váš tracklog byl uložen pod jménem" >
+<!ENTITY filinfo.noxc "Váš tracklog NEBYL odeslán na server XContest">
+<!ENTITY filinfo.done "Zpracování letu ukončeno">
+<!ENTITY filinfo.otherproc "Zpracovat další lety z této GPS" >
+<!ENTITY filinfo.xcnow "Odeslat tracklog na server XContest">
+<!ENTITY filinfo.xclater "Odeslat později">
+<!ENTITY xcclaim.title "Let se odesílá na server XContest" >
+
+<!-- Synchro -->
+<!ENTITY synchro.title "Odesílání na server XContest">
+<!ENTITY synchro.done "Odeslání dokončeno">
+<!ENTITY synchro.select "Vyberte let" >
+
+<!-- Preferences -->
+<!ENTITY prefs.title "Nastavení GiPSy" >
+<!ENTITY prefs.main "Hlavní volby" >
+<!ENTITY prefs.gpsaccess "Nastavení přístupu k GPS" >
+<!ENTITY prefs.autodownload "Automaticky začít stahovat tracklog po připojení GPS" >
+<!ENTITY prefs.needsrestart "po změně restartujte firefox" >
+<!ENTITY prefs.datadir "Složka GiPSy pro ukládání dat" >
+<!ENTITY prefs.changedir "Změnit složku GiPSy" >
+<!ENTITY prefs.changetohome "Nastavit složku GiPSy na 'Domovská složka/gipsy'" >
+<!ENTITY prefs.savesubdirs "Ukládat nové lety do podsložek ve tvaru 'jméno pilota/rok'" >
+<!-- NEW -->
+<!ENTITY prefs.units "Jednotky">
+<!ENTITY prefs.metricsystem "Metrický systém">
+<!-- NEW -->
+
+<!-- Properties -->
+<!ENTITY prop.dontsend "Let nebude poslán do XContestu" >
+<!ENTITY prop.prepare "Let je připraven na odeslání" >
+<!ENTITY prop.uploaded "Let byl odeslán" >
+
+<!-- Password dialog -->
+<!ENTITY passwd.title "Zadejte heslo">
+<!ENTITY passwd.xcontestid "Přihlašovací jméno">
+<!ENTITY passwd.password "Heslo">

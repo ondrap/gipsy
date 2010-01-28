@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <title>Error loading component</title>
+  </head>
+  
+  <body>
+    <h1>Error loading GPS component</h1>
+
+    This error message means that an error occured while loading a 
+    platform-dependent GPS component.
+    <p/>
+    This can happen when:
+    <ul>
+     <li>Your platform is unsupported. Currently supported platform is 
+     Linux-i386 with libstdc++.so.6 compiled binary and Windows platform.
+     </li>
+     <li>
+       You share your profile with Windows version of Firefox. In such case
+       run 'firefox -profilemanager', create new profile and install 
+       the extension.
+     </li>
+     <li>
+       You are using Windows XP Home system without msvcrt80.dll library.
+       Install the following package: <a href="http://www.microsoft.com/downloads/details.aspx?familyid=32BC1BEE-A3F9-4C13-9C99-220B62A191EE&displaylang=en">Microsoft Visual C++ 2005 Redistributable Package (x86)</a>, then <b>uninstall GiPSy and install it again.</b>
+     </li>
+    </ul>
+  </body>
+</html>
+

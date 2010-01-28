@@ -1,0 +1,13 @@
+pref("extensions.gipsy.portdisabled", "");
+pref("extensions.gipsy.usbdisabled", "");
+pref("extensions.gipsy.autodownload", true);
+pref("extensions.gipsy.gpsusbtypes", "");
+pref("extensions.gipsy.gpsporttypes", "");
+pref("extensions.gipsy.extfunc", false);
+pref("extensions.gipsy.datadir", "");
+pref("extensions.gipsy.savesubdirs", true);
+pref("extensions.gipsy.metric", true);
+pref("extensions.gipsy.map_googlemap", "vt/lyrs=m@111&hl=en");
+pref("extensions.gipsy.map_googleoverlay", "vt/lyrs=h@111&hl=en");
+pref("extensions.gipsy.map_terrain", "vt/v=w2p.111&hl=en");
+pref("extensions.gipsy.map_googlesat", "kh?v=47");

@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://gipsy/locale/main.dtd">
+
+<wizard
+    id="gps-sync-window"
+    title="&synchro.title;"
+    orient="vertical"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    xmlns:svg="http://www.w3.org/2000/svg"
+    persist="width height" 
+    width="700" height="600" >
+
+  <stringbundle id="bundle" src="chrome://gipsy/locale/main.properties"/>
+
+  <script src="util.js" />
+  <script src="countries.js" />
+  <script src="flightclaim.js" />
+  <script src="synchro.js" />
+
+  <wizardpage onpageshow="fill_sync_flights()"
+	      onpageadvanced="return onsyncreq()"
+	      label="&synchro.select;" 
+	      pageid="first_page"
+	      next="browser_page">
+
+    <vbox>
+      <listbox id="sync_list">
+	<listhead>
+	  <listheader label="File name" />
+	  <listheader label="Date" />
+	  <listheader label="Launch" />
+	</listhead>
+	<listcols>
+	  <listcol flex="1" />
+	  <listcol flex="1" />
+	  <listcol flex="1" />
+	</listcols>
+      </listbox>
+    </vbox>
+  </wizardpage>
+
+  <wizardpage onpageshow="claim_start()"
+	      label="&xcclaim.title;" 
+	      pageid="browser_page" 
+	      next="final_page" 
+	      onpageadvanced="onsyncnext()" 
+	      id="browser_page" >
+    <deck flex="1" id="browser_vbox" >
+      <vbox flex="1"><!-- Progress box -->
+	<label id="claim_status" />
+	<progressmeter hidden="true" mode="undetermined" 
+		       id="claim_progress" />
+      </vbox>
+      <box flex="1">
+	<browser id="claim_browser" flex="1" type="content" />
+      </box>
+    </deck>
+  </wizardpage>
+
+  <wizardpage pageid="final_page">
+    <label value="&synchro.done;" />
+  </wizardpage>
+
+</wizard>

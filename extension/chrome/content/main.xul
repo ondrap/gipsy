@@ -1,0 +1,394 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="main.css" type="text/css"?>
+<?xml-stylesheet href="fprofile.css" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://gipsy/locale/main.dtd">
+
+<window
+    id="gps-window"
+    title="&gipsy.title;"
+    orient="vertical"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    xmlns:svg="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    persist="width height" >
+
+  <stringbundle id="bundle" src="chrome://gipsy/locale/main.properties"/>
+
+  <script src="util.js" />
+  <script src="countries.js" />
+  <script src="main.js" />
+  <script src="flighttree.js" />
+  <script src="gpstree.js" />
+
+  <popup id="tree_popup">
+    <menuitem label="&open;..." oncommand="treeView.launch_file()" 
+	      id="popup_launch" style="display:none" />
+    <menuitem label="&show.source;" oncommand="treeView.show_file()" />
+    <menuitem label="&gpx.save;" oncommand="treeView.export_file('gpx', 'tracklog')" />
+    <menuitem label="GPX thermals" style="display:none" id="gpxthermals"
+	      oncommand="treeView.export_file('gpx', 'thermals')" />
+    <menuitem label="&kml.save;" oncommand="treeView.export_file('kml', 'tracklog')" />
+    <menuitem label="&create.logbook;" oncommand="treeView.export_file('html', 'flighttrack')" />
+    <menuitem label="&delete;" oncommand="treeView.delete_cmd()" />
+    <menuseparator />
+    <menuitem label="&properties;" oncommand="treeView.properties_cmd()" />
+  </popup>
+
+  <popup id="gps_popup">
+    <menuitem label="Garmin GPS" oncommand="gpsView.set_gps_type('garmin')" />
+    <menuitem label="Aircotec - MXP 57600" oncommand="gpsView.set_gps_type('aircotec')" />
+<!--    <menuitem label="5020/5030/Compeo/Competino" oncommand="gpsView.set_gps_type('compeo')" /> -->
+    <menuitem label="MLR/Digifly" oncommand="gpsView.set_gps_type('mlr')"  id="mlr_gps" />
+  </popup>
+
+  <menubar>
+    <menu label="&file;" accesskey="&file.key;">
+      <menupopup>
+	<menuitem label="&menu.sendxc;"
+		  oncommand="window.openDialog('chrome://gipsy/content/synchro.xul', 'gipsy_synchro', 'dialog=yes,chrome,modal=no');" 
+		  id="xsend_menu" />
+	<menuitem label="Import GPX file"
+		    oncommand="import_gpx();"
+		    />
+	<menuseparator />
+	<menuitem label="&preferences;" 
+		  oncommand="window.openDialog('chrome://gipsy/content/preferences.xul', 'gipsy_prefs', 'chrome,modal=no')" 
+		  accesskey="&preferences.key;" />
+	<menuitem label="Update Google maps URLs" 
+		  oncommand="download_map_definitions()"  />
+	<menuseparator />
+	<menuitem label="&close;" oncommand="window.close()" 
+		  accesskey="&close.key;"/> 
+      </menupopup>
+    </menu>
+    <menu label="&help;" accesskey="&help.key;">
+      <menupopup>
+	<menuitem label="&problem;"
+		  oncommand="window.openDialog('chrome://gipsy/content/help.xul', 'gipsy_help', 'dialog=yes,chrome,modal=yes');" />
+	<menuitem label="&about;"
+		  oncommand="window.openDialog('chrome://gipsy/content/about.xul', 'gipsy_about', 'dialog=yes,chrome,modal=yes,width=270,height=80,top=200,left=400');" />
+      </menupopup>
+    </menu>
+  </menubar>
+
+  <tabbox flex="1" >
+    <tabs id="tl_tabs"   > 
+      <tab label="&tab.flights;" />
+      <tab label="&tab.devices;" />
+    </tabs>
+    <tabpanels flex="1" id="tl_panels">
+      <tabpanel>
+	<hbox flex="1" >
+	  <vbox id="treehbox" width="400" persist="width">
+	    <hbox>
+	      <button label="&collapse.all;"
+		      oncommand="expand_all()" />
+	      <label value="&pilot.filter;:" />
+	      <spacer flex="1" />
+	      <menulist id="pilot_filter" 
+			oncommand="pilot_filter_change()">
+		<menupopup>
+		  <menuitem label="&pilot.all;" />
+		</menupopup>
+	      </menulist>
+	    </hbox>
+
+	    <tree flex="1" id="flight_tree" onselect="tree_flight_select()">
+	      <treecols>
+		<treecol id="col_date" flex="1" label="&date.utc;"  
+			 primary="true" persist="width"/>
+		<splitter class="tree-splitter"/>
+		<treecol id="col_site" flex="1" label="&launch;" 
+			 persist="hidden width"/>
+		<splitter class="tree-splitter"/>
+		<treecol id="col_landing" flex="1" label="&landing;" 
+			 persist="hidden width"/>
+		<splitter class="tree-splitter"/>
+		<treecol id="col_pilot" flex="1" hidden="true" label="&pilot;"
+			 persist="hidden width" />
+		<splitter class="tree-splitter"/>
+		<treecol id="col_glider" flex="1" hidden="true" 
+			 label="&glider;" persist="hidden width"/>
+		<splitter class="tree-splitter"/>
+		<treecol id="col_fname" flex="1" hidden="true" 
+			 label="&filename;" persist="hidden width"/>
+	      </treecols>
+	      <treechildren contextmenu="tree_popup" />
+	    </tree>
+	    
+	    <tabbox id="stat_box_tabs" persist="selectedIndex">
+	      <tabs>
+		<tab label="&flight.info;" />
+		<tab label="&statistics;" />
+		<tab label="XContest" />
+		<tab label="&pilot.info;" />
+	      </tabs>	       
+	      <tabpanels>
+		<tabpanel >
+		  <vbox flex="1" style="overflow:auto;" >
+		    <grid>
+		      <columns>
+			<column/>
+			<column flex="1" />
+		      </columns>
+		      <rows>
+			<row>
+			  <label value="&date;:" />
+			  <label id="f_date" />
+			</row>
+			<row>
+			  <label value="" />
+			  <label id="f_utc_date" />
+			</row>
+			<row>
+			  <label value="&launch;:" />
+			  <label id="f_site" />
+			</row>
+			<row>
+			  <label value="&landing;:" />
+			  <label id="f_landing" />
+			</row>
+			<row>
+			  <label value="&stat.sdist;:" />
+			  <label id="f_dist_startland" />
+			</row>
+		      </rows>
+		    </grid>
+		    <textbox readonly="true" multiline="true" flex="1" id="f_comment" />
+		  </vbox>
+		</tabpanel>
+		<tabpanel>
+		  <grid>
+		    <columns>
+		      <column/>
+		      <column flex="1"/>
+		    </columns>
+		    <rows>
+		      <row>
+			<label value="&duration;:" />
+			<label id="f_duration" />
+		      </row>
+		      <row>
+			<label value="&stat.maxheight;:" />
+			<label id="f_height_max" />
+		      </row>
+		      <row>
+			<label value="&stat.heightdiff;:" />
+			<label id="f_height_diff" />
+		      </row>
+		      <row>
+			<label value="&stat.maxvario;:" />
+			<label id="f_vario_max" />
+		      </row>
+		      <row>
+			<label value="&stat.minvario;:" />
+			<label id="f_vario_min" />
+		      </row>
+		      <row>
+			<label value="&stat.maxspeed;:" />
+			<label id="f_speed_max" />
+		      </row>
+		      <row>
+			<label value="&stat.totdist;:" />
+			<label id="f_dist_flown" />
+		      </row>
+		      <row>
+			<label value="&stat.totheight;:" />
+			<label id="f_height_upsum" />
+		      </row>
+		    </rows>
+		  </grid>
+		</tabpanel>
+		<tabpanel>
+		  <grid>
+		    <columns>
+		      <column/>
+		      <column flex="1"/>
+		      <column/>
+		    </columns>
+		    <rows>
+		      <row>
+			<label value="&xcontest.login;:" />
+			<label id="f_xcontestid" />
+		      </row>
+		      <row>
+			<label value="&synchronization;:" />
+			<label id="f_synchro" flex="1"/>
+			<button label="&upload;" id="f_synchro_upload"
+				hidden="true" oncommand="start_upload()" />
+		      </row>
+		      <row id="xcontest_row" hidden="true">
+			<button label="&xcontest.show;" 
+				oncommand="open_xcontest_browser()" />
+			<menulist id="xcontest_list" />
+		      </row>
+		    </rows>
+		  </grid>
+		</tabpanel>
+		<tabpanel>
+		  <vbox style="overflow:auto;" flex="1">
+		    <grid>
+		      <columns>
+			<column/>
+			<column flex="1"/>
+		      </columns>
+		      <rows>
+			<row>
+			  <label value="&pilot;:" />
+			  <label id="f_pilot" />
+			</row>
+			<row>
+			  <label value="&glider;:" />
+			  <label id="f_glider" />
+			</row>
+			<row>
+			  <label value="&gps;:" />
+			  <label id="f_gpsname" />
+			</row>
+			<row>
+			  <label value="&filename;:" />
+			</row>
+		      </rows>
+		    </grid>
+		    <label id="f_fname" />
+		  </vbox>
+		</tabpanel>
+	      </tabpanels>
+	    </tabbox>
+	  </vbox>
+
+	  <splitter />
+
+	  <vbox>
+	    <radiogroup orient="horizontal"
+			oncommand="update_maptype()">
+		<hbox>
+		  <radio label="&map.no;" id="map_nomap" persist="selected" />
+		  <radio label="&map.googlemap;" id="map_googlemap" persist="selected" />
+		  <radio label="GoogleSat" id="map_googlesat" persist="selected" />
+		  <radio label="Google Terrain" id="map_terrain" persist="selected" />
+		  <radio label="Topo XC" id="map_pgweb" persist="selected" />
+		</hbox>
+	    </radiogroup>
+	    <hbox>
+	      <checkbox id="map_overlay" persist="checked"
+			label="&map.googlemaplayer;" oncommand="update_maptype()"
+			checked="true" />
+	      <checkbox id="map_airspace" persist="checked"
+			label="&map.airspace;" oncommand="update_maptype()" />
+	    </hbox>
+	    
+	  <svg:svg width="520" height="500" viewBox="0 0 520 500" >
+	    <svg:rect x="1" y="1" width="519" height="498"
+		      fill="none" stroke="darkgrey" />
+	    <svg:g transform="translate(5,5)">
+	      
+	      <svg:flcontainer id="fprofile"
+			       width="510" height="490">
+
+		<svg:rect x="-1" y="-1" width="512" height="362" fill="none"
+			  stroke="white" stroke-width="0.5" />
+	      
+		<!-- Path for clipping mapcontainer -->
+		<svg:defs>
+		  <svg:clipPath id="mapclip">
+		    <svg:rect x="0" y="0" width="510" height="360" />
+		  </svg:clipPath>
+		</svg:defs>
+
+		<svg:g clip-path="url(#mapclip)">
+		  <svg:flmapcontainer width="510" height="360" 
+				    id="mapcontainer" 
+				     >
+		    <svg:flgmap />
+		    <svg:flflatmap />
+		    <svg:flmapicons />
+		    <svg:flmapdrag />
+		  </svg:flmapcontainer>
+		</svg:g>
+
+		<!-- Kontrola mapy-->
+		<svg:image xlink:href="chrome://gipsy/content/up.png"
+			   x="12" y="5" width="16" height="16" 
+			   onmousedown="elem('mapcontainer').move('up')" 
+			   style="cursor:pointer" />
+		
+		<svg:image xlink:href="chrome://gipsy/content/left.png"
+			   x="3" y="23" width="16" height="16" 
+			   onmousedown="elem('mapcontainer').move('left')"
+			   style="cursor:pointer"/>
+		<svg:image xlink:href="chrome://gipsy/content/right.png"
+			   x="21" y="23" width="16" height="16" 
+			   onmousedown="elem('mapcontainer').move('right')" 
+			   style="cursor:pointer" />
+		<svg:image xlink:href="chrome://gipsy/content/down.png"
+			   x="12" y="41" width="16" height="16" 
+			   onmousedown="elem('mapcontainer').move('down')" 
+			   style="cursor:pointer"/>
+		
+		<svg:image xlink:href="chrome://gipsy/content/zoomin.png"
+			   x="12" y="61" width="16" height="16" 
+			   onmousedown="elem('mapcontainer').zoom('in')" 
+			   style="cursor:pointer" />
+		<svg:image xlink:href="chrome://gipsy/content/zoomout.png"
+			   x="12" y="79" width="16" height="16" 
+			   onmousedown="elem('mapcontainer').zoom('out')" 
+			   style="cursor:pointer" />
+		
+		<!-- Speed profiles -->
+		<svg:flcontainer height="70" transform="translate(0,370)"> 
+		  <svg:flaltprofile />
+		  <svg:fltimespan /> 
+		  <svg:flspeedprofile prof-opacity="0.3"
+				      marker="right" marker-style="fill:green"
+				      markerline="green"
+				      stroke-dasharray="0,3,2,1"
+				      fill="green" stroke="gray" />
+		  <svg:flprofmouse x="0" y="0" 
+				   transx="5" 
+				   mapcontainer="mapcontainer" />
+		  <svg:flpointdata pointname="point" 
+				   transform="translate(0,75)" />
+		</svg:flcontainer>
+	      </svg:flcontainer>
+	    </svg:g>
+	  </svg:svg>
+
+	  </vbox>
+	</hbox>
+      </tabpanel>
+
+
+      <tabpanel id="device_panel">
+	<vbox flex="1">
+	  <hbox flex="0">
+	    <button label="&gps.help;" 
+		    oncommand="window.open('chrome://gipsy/content/gps_linux.html')" />
+	  </hbox>
+	  <tree flex="1" hidecolumnpicker="true" id="gps_tree" 
+		editable="true" >
+	    <treecols>
+	      <treecol label="&enabled;" type="checkbox" editable="true" 
+		       id="gps_enabled" />
+	      <treecol label="&device;" flex="1" id="gps_dev" />
+	      <treecol label="&gps.type;" flex="0" id="gps_type"/>
+	      <treecol label="&gps.name;" flex="1" id="gps_name" />
+	      <treecol label="&progress;" type="progressmeter" flex="1" 
+		       id="gps_progress" />
+	    </treecols>
+
+	    <treechildren contextmenu="gps_popup" />
+	  </tree>
+	</vbox>
+      </tabpanel>
+    </tabpanels>
+  </tabbox>
+
+  <statusbar id="statusbar" >
+    <statusbarpanel id="synchro_panel" />
+  </statusbar>
+
+</window>
+

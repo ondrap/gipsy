@@ -1,0 +1,187 @@
+#include "nsISupports.idl"
+#include "nsILocalFile.idl"
+
+[scriptable, uuid(fc1ad2a8-a879-459e-a753-89eb9b46e521)]
+interface IGPSPoint : nsISupports {
+    readonly attribute double lat;
+    readonly attribute double lon;
+    readonly attribute double alt;
+
+    readonly attribute PRTime time;
+
+    double speed(in IGPSPoint other);
+    double vario(in IGPSPoint other);
+    double distance(in IGPSPoint other);
+    double distance_raw(in double lat, in double lon);
+
+    void initPoint(in double lat, in double lon, in double alt, in PRTime time);
+};
+
+/* Tracklog representation */
+[scriptable, uuid(30c28fe1-bac8-439b-9758-c35771d944c4)]
+interface IGPSIGC : nsISupports {
+    // Save tracklog to .igc file */
+    void igcSave(in nsILocalFile file);
+    // Return IGC tracklog as string
+    string igcGet();
+    // Initialize by reading data from local file 
+    void igcLoad(in nsILocalFile file);
+    // Import GPX file
+    void igcLoadGPX(in nsILocalFile file);
+
+    // Number of points in tracklog
+    long igcPointCount();
+    // Return point with given index
+    IGPSPoint igcPoint(in long idx);
+
+    // Number of sections of tracklog
+    // The section is identified either by GPS (power-off/on), or by
+    // a break longer then 1 minute
+    long igcBreakCount();
+    // Index of a first point of a section identified by idx
+    long igcBreak(in long idx);
+    // Length of a section identified by idx
+    long igcBreakLen(in long idx);
+    // True if we can modify the track
+    readonly attribute boolean canModify;
+
+    // Create sub-tracklog consisting of 'Break' areas'
+    IGPSIGC igcBreakSelect(in PRUint32 count, [array, size_is(count)] in PRInt32 bpoints);
+    // Create sub-tracklog consisting of selected points
+    IGPSIGC igcSelectPoints(in PRUint32 count, [array, size_is(count)] in PRInt32 points);
+    
+
+    // Validate section for time correctness (at most 2 breaks > 1 min,
+    // no break > 15 min)
+    boolean igcSectionValid(in PRUint32 count, [array, size_is(count)] in PRInt32 points);
+
+    // Remove points that are obviously incorrect (the GPS sometimes err), 
+    // however let the log be valid
+    void igcRemoveBadPoints();
+
+    // Return index of first/last point of the expected flight
+    // (try to detect pre-start and after-landing intervals)
+    long igcStripBegin();
+    long igcStripEnd();
+
+    // Try to find start/end of tracklog nearest point idx
+    long igcAdjustPoint(in long idx, in boolean start);
+
+    // Find nearest trackpoint to the specified time
+    long igcFindNearest(in PRTime time);
+
+    // Set IGC parameters (glider, site, pilot etc.)
+    void igcSetParam(in string param, in wstring value);
+    string igcGetParamUTF8(in string param);
+    wstring igcGetParam(in string param);
+    readonly attribute long gpsunitid;
+
+    // Tracklog statistics
+    const short STAT_DIST_STARTLAND = 1;
+    const short STAT_DIST_FLOWN     = 2;
+    const short STAT_HEIGHT_MAX     = 3;
+    const short STAT_HEIGHT_MIN     = 4;
+    const short STAT_HEIGHT_UPSUM   = 5;
+    const short STAT_SPEED_MAX      = 6;
+    const short STAT_VARIO_MAX      = 7;
+    const short STAT_VARIO_MIN      = 8;
+    const short STAT_LAT_MIN        = 9;
+    const short STAT_LAT_MAX        = 10;
+    const short STAT_LON_MIN        = 11;
+    const short STAT_LON_MAX        = 12;
+
+    double igcGetStat(in short param);
+
+    // Identifiers
+    const short ALTITUDE = 1;
+    const short SPEED    = 2;
+
+    // Types
+    const short POLYGON  = 1;
+    const short POLYLINE = 2;
+    // SVG helper functions
+    
+    /* Height & speed profiles - properties with X axis=time
+     * If 'doint' is true, everithing is rounded to the nearest int number */
+    string svgPathData(in short property, in short objtype,
+		       in long width, in long height, in double maxval,
+		       in boolean doint);
+    /* Height & speed profiles - properties with X axis=points,
+     * 1 point = 2 pixels
+     */
+    string svgPointData(in short property, in short objtype,
+			in long startpoint, in long width, in long height, 
+			in double maxval);
+    
+    // Projection functions on flat surface
+    // TODO: Make special object 'projection'
+    double svgProjectLat(in double lat);
+    double svgProjectLon(in double lon);
+    double svgProjectX(in double x);
+    double svgProjectY(in double y);
+
+    /* Track 2D data. Keeps aspect ratio, so only maxlongitude wanted */
+    string svgPathTrack(in long width, in long height,
+			in double minlat, in double minlon, 
+			in double maxlon, in boolean doint);
+
+    /* Create a KML track */
+    string kmlTrack();
+};
+
+[scriptable, uuid(af92c16f-28f6-4681-9c69-7b9a875bee14)]
+interface IGPSDevInfo : nsISupports {
+    readonly attribute string devname;    
+    readonly attribute string gpsname;
+    readonly attribute string last_error;
+    
+    readonly attribute boolean scan_enabled;
+    readonly attribute long progress;
+    // Position in gpslist, input argument for getGpsInfo
+    readonly attribute long pos;
+
+    const short W_DISCONNECT   = 0;
+    const short W_CONNECTED    = 1;
+    const short W_DOWNLOADING  = 2;
+    const short W_DOWNCOMPLETE = 3;
+    readonly attribute short wstatus;
+
+    // Copy from gps.h 
+    const short G_GARMIN   = 0;
+    const short G_AIRCOTEC = 1;
+    const short G_COMPEO = 2;
+    const short G_MLR = 3;
+    readonly attribute long gpstype;
+};
+
+[scriptable, uuid(8bfaa56a-24c7-488c-a906-06f2cfc185a3)]
+interface IGPSScanner : nsISupports {
+    // Internal DLL version
+    const short DLL_VERSION = 2;
+    
+    /* Start/stop scanner, it works with counters, multiple windows
+     * may call it and with the last window closed the scanner is stopped
+     */
+    void startScanner();
+    void stopScanner();
+
+    /* Return array of position of existing ports */
+    void getGpsArray(out unsigned long count, [array, size_is(count), retval] 
+		     out long retv);
+
+    /* Return information about particular GPS */
+    IGPSDevInfo getGpsInfo(in unsigned long pos);
+    
+    /* Toggle GPS enabled status */
+    void gpsToggle(in unsigned long pos, in boolean newstate);
+
+    /* Start Download */
+    void gpsDownload(in unsigned long pos);
+
+    /* Start tracklog again */
+    void gpsReprocess(in unsigned long pos);
+
+    /* Change GPS type */
+    void gpsChangeType(in unsigned long pos, in long gtype);
+};
+

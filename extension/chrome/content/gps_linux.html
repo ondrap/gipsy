@@ -1,0 +1,50 @@
+<html>
+  <head>
+    <title>Connecting GPS on Linux</title>
+  </head>
+  <body>
+    <h1>General</h1>
+    Check that your GPS is ON and PLUGGED IN. Check that the proper port
+    is marked 'enabled' in the devices list.
+    Check that the device is configured to use the 'Garmin protocol'.
+
+    <h1>Serial GPS</h1>
+    Serial ports are named in Linux /dev/ttyS0, /dev/ttyS1 etc. for built-in 
+    serial ports, /dev/ttyUSB0, /dev/ttyUSB1 etc. for USB-Serial convertors. 
+    In order to access the GPS you must have proper permissions. 
+    Check the permissions:
+    <pre>
+### Bad permissions situation
+$ cat /dev/ttyS0
+cat: /dev/ttyS0: Permission denied
+### Correct permissions
+$ cat /dev/ttyS0
+[nothing_appears]->Press Ctrl-C to end the 'cat' program
+    </pre>
+
+    If you do not have correct permission set, use your configuration tool
+    to add yourself correct permission. This should work on most distributions.
+<pre>
+#### Change to 'root' user
+$ su -
+Password:
+#### Check the permission settings for /dev/ttyS0
+# ls -l /dev/ttyS0
+crw-rw---- 1 root dialout 4, 64 2007-03-23 07:56 /dev/ttyS0
+#### This means that the group 'dialout' can access the device
+#### Add yourself to the group 'dialout'
+# usermod -a -G dialout your_user_name
+</pre>
+  Log out and log in again. Now you should be able to access the GPS.
+
+  <h1>Garmin USB GPS</h1>
+  There seem to be some problems with the garmin_gps driver. GiPSy supports libusb access, however
+  users on Linux systems generally do not have rights to access USB devices. In order to add access, 
+  create a file /etc/udev/rules.d/60-garmin.rules with the following content:
+  <pre>
+  SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device",SYSFS{idVendor}=="091e", MODE="0666"
+  </pre>
+  Then plug in the GPS - now you should have enough rights to access it.
+  
+  </body>
+</html>

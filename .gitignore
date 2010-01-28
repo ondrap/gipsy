@@ -1,0 +1,11 @@
+*.o
+*.so
+*.xpt
+*~
+*.db
+xpc/IGPSScanner.h
+gipsy.xpi
+xpc/gpslib/igcparser.inc
+xpc/Makefile.bak
+extension/components/Gipsy.dll
+

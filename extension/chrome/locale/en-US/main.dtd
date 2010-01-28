@@ -1,0 +1,135 @@
+<!ENTITY gipsy.title "GiPSy Flight Manager">
+
+<!ENTITY menu.sendxc "Send flights to XContest" >
+
+<!ENTITY tab.flights "Flights" >
+<!ENTITY tab.devices "Connection with GPS" >
+<!ENTITY problem "Problem report" >
+
+<!ENTITY delete "Delete" >
+<!ENTITY open "Open" >
+<!ENTITY close "Close" >
+<!ENTITY close.key "C" >
+<!ENTITY preferences "Preferences" >
+<!ENTITY preferences.key "p" >
+<!ENTITY collapse.all "Collapse/Expand all" >
+<!ENTITY show.source "Show IGC source" >
+<!ENTITY create.logbook "Create flight log" >
+
+<!ENTITY file "File" >
+<!ENTITY file.key "f" >
+
+<!ENTITY help "Help" >
+<!ENTITY help.key "h" >
+<!ENTITY about "About" >
+
+<!ENTITY date.utc "Date (UTC)" >
+<!ENTITY launch "Launch" >
+<!ENTITY launch.long "Launch" >
+<!ENTITY landing "Landing" >
+<!ENTITY pilot "Pilot" >
+<!ENTITY glider "Glider" >
+<!ENTITY flight.info "Flight info" >
+<!ENTITY statistics "Statistics" >
+<!ENTITY pilot.info "Pilot info" >
+<!ENTITY date "Date" >
+<!ENTITY enabled "Enabled" >
+<!ENTITY device "Device" >
+<!ENTITY altitude "Altitude">
+<!ENTITY speed "Speed">
+<!ENTITY advanced "Advanced" >
+<!ENTITY basic "Basic" >
+<!ENTITY faicat "FAI Category">
+<!ENTITY biplace "Biplace">
+<!ENTITY comment "Comment" >
+<!ENTITY properties "Properties" >
+<!ENTITY upload "Upload" >
+<!ENTITY map.no "No map" >
+<!ENTITY map.googlemap "GoogleMap" >
+<!ENTITY map.googlemaplayer "GoogleMap Layer" >
+<!ENTITY map.airspace "Airspace" >
+
+<!ENTITY duration "Duration" >
+
+<!ENTITY stat.sdist "Start-landing distance" >
+<!ENTITY stat.totdist "Total distance flown" >
+<!ENTITY stat.maxheight "Maximum height" >
+<!ENTITY stat.heightdiff "Height difference (max-min)" >
+<!ENTITY stat.maxspeed "Maximum speed">
+<!ENTITY stat.maxvario "Greatest thermal" >
+<!ENTITY stat.minvario "Deepest sink" >
+<!ENTITY stat.totheight "Total height gain" >
+
+<!ENTITY xcontest.login "XContest login name">
+<!ENTITY xcontest.show "Show contest page" >
+<!ENTITY xcontest.send "Send to XContest" >
+
+<!ENTITY synchronization "Synchronization">
+<!ENTITY filename "File name" >
+<!ENTITY gps "GPS" >
+
+<!ENTITY gps.help "I do not see my GPS" >
+<!ENTITY gps.type "GPS type" >
+<!ENTITY gps.name "GPS name" >
+<!ENTITY progress "Transfer progress" >
+
+<!ENTITY pilot.filter "Filter by pilot">
+<!ENTITY pilot.all "All pilots">
+<!ENTITY gpx.save "Export to GPX">
+<!ENTITY kml.save "Export to KML">
+
+<!-- New track -->
+<!ENTITY newtrk.title "Tracklog processing" >
+<!ENTITY seltrk.title "Step 1 - selecting of segment :: select segment according to your flight" >
+<!ENTITY seltrk.help "TIP: To make one flight from multiple segments, use the Shift key when selecting" >
+
+<!ENTITY selpoint.title "Step 2 - correction :: if needed, you can manually correct aumatically detected begin/end of flight" >
+<!ENTITY selpoint.advanced "Show tool for detailed selection" >
+<!ENTITY selpoint.restore "Restore initial selection" >
+<!ENTITY selpoint.helprange "You can correct begin/end by mouse-dragging on red circles">
+<!ENTITY selpoint.helpdrag "Move the zoomed area by mouse-dragging in the red-highlighted area">
+<!ENTITY selpoint.helpsel "Select points or deselect omitted parts by mouse-clicking" >
+<!ENTITY tracklog.invalid "Invalid tracklog" >
+
+<!ENTITY finfo.title "Step 3 :: add flight information">
+<!ENTITY finfo.fileid "3-letter ID for IGC file name" >
+<!ENTITY finfo.longname "Long IGC file name format" >
+<!ENTITY finfo.shortname "Short IGC file name format" >
+<!ENTITY finfo.longsite "File name format: YYYY-MM-DD-launch.igc" >
+
+<!ENTITY filinfo.title "IGC file information" >
+<!ENTITY filinfo.savepath "Your tracklog was saved as" >
+<!ENTITY filinfo.noxc "Your tracklog was NOT sent to the XContest system">
+<!ENTITY filinfo.done "Flight processing done">
+<!ENTITY filinfo.otherproc "Process other flights from this GPS" >
+<!ENTITY filinfo.xcnow "Send tracklog to XContest now">
+<!ENTITY filinfo.xclater "Send later">
+<!ENTITY xcclaim.title "Sending flight to XContest server" >
+
+<!-- Synchro -->
+<!ENTITY synchro.title "Upload to XContest">
+<!ENTITY synchro.done "Upload completed">
+<!ENTITY synchro.select "Select flight" >
+
+<!-- Preferences -->
+<!ENTITY prefs.title "GiPSy Preferences" >
+<!ENTITY prefs.main "Main preferences" >
+<!ENTITY prefs.gpsaccess "GPS Access options" >
+<!ENTITY prefs.autodownload "Automatically download tracklog from GPS" >
+<!ENTITY prefs.needsrestart "takes effect after restart of firefox" >
+<!ENTITY prefs.datadir "Gipsy data directory" >
+<!ENTITY prefs.changedir "Change data directory" >
+<!ENTITY prefs.changetohome "Set directory to Home/gipsy" >
+<!ENTITY prefs.savesubdirs "Save new flights into 'pilot name/year' subdirectory" >
+<!ENTITY prefs.units "Units">
+<!ENTITY prefs.metricsystem "Metric system">
+
+<!-- Properties -->
+<!ENTITY prop.dontsend "Don't send to xcontest" >
+<!ENTITY prop.prepare "Will be sent to xcontest" >
+<!ENTITY prop.uploaded "The flight was sent to xcontest" >
+
+<!-- Password dialog -->
+<!ENTITY passwd.title "Enter password">
+<!ENTITY passwd.xcontestid "Login name">
+<!ENTITY passwd.password "Password">

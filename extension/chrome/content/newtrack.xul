@@ -1,0 +1,313 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="fprofile.css" type="text/css"?>
+<?xml-stylesheet href="newtrack.css" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://gipsy/locale/main.dtd">
+
+<wizard
+    id="newtrk_window"
+    title="&newtrk.title;"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    width="700" height="600"
+    xmlns:svg="http://www.w3.org/2000/svg"
+    persist="width height" >
+  
+  <stringbundle id="bundle" src="chrome://gipsy/locale/main.properties"/>
+
+  <script src="util.js" />
+  <script src="countries.js" />
+  <script src="gliders.js" />
+  <script src="newtrack.js" />
+  <script src="flightclaim.js" />
+
+  <wizardpage label="&seltrk.title;" 
+	      onpageadvanced="return onmainadvance()" 
+	      onpageshow="main_shown()"
+	      pageid="main_page" 
+	      id="main_page"
+	      next="prepost_page" >
+    <vbox>
+      <hbox>
+	<label id="w_gpsname" style="font-weight: bold" />
+      </hbox>
+      <listbox id="main_list" seltype="multiple"
+	       onselect="onsubtrackselect()">
+	<listcols>
+	  <listcol flex="1"/>
+	  <listcol flex="1"/>
+	</listcols>
+      </listbox>
+      <label value="&seltrk.help;"/>
+      <svg:svg width="600" height="120" viewBox="0 0 600 120">
+	<svg:flcontainer id="selprofile" height="100">
+	    <svg:flaltprofile fill="darkgray"/>
+	    <svg:flspeedprofile fill="green" prof-opacity="0.4" 
+				marker="right" stroke="gray"
+				marker-style="fill:green" />
+	    <svg:fltimespan />
+	</svg:flcontainer>
+	<svg:text x="0" y="100" font-size="10" 
+		  dominant-baseline="hanging">&altitude;</svg:text>
+	<svg:text x="550" y="100" fill="green"
+		  text-anchor="end" font-size="10"
+		  dominant-baseline="hanging">&speed;</svg:text>
+      </svg:svg>
+      
+    </vbox>
+  </wizardpage>
+  
+  <wizardpage label="&selpoint.title;"
+	      onpageadvanced="return onpointsadvance()"
+	      id="prepost_page"
+	      pageid="prepost_page" 
+	      next="flight_info_page" >
+    <vbox>
+      <hbox>
+	<label id="w2_gpsname" style="font-weight: bold" />
+      </hbox>
+      <hbox>
+	<button label="&selpoint.advanced;" 
+		oncommand="select_to_advanced()" 
+		id="sel_adv_button" flex="0" />
+	<spacer flex="1" />
+	<button label="&selpoint.restore;" 
+		oncommand="restore_auto()" />
+      </hbox>
+	
+
+      <svg:svg width="600" height="330" viewBox="0 0 600 330">
+	<svg:flcontainer id="flprofile">
+	  <svg:g transform="translate(0,35)" >
+	    <svg:flaltprofile height="100" fill="darkgray" />
+	    <svg:flspeedprofile height="100" fill="green" stroke="gray"
+				prof-opacity="0.4" marker="right"
+				marker-style="fill:green" />
+	    <svg:fltimespan height="100" />
+	  </svg:g>
+
+	  <svg:g id="basic_select" transform="translate(0,35)" >
+	    <svg:text x="10" y="-20" font-size="small" >&selpoint.helprange;</svg:text>
+	    <svg:flselection height="100" /> 
+	    <svg:fldragsel pointname="startpoint" smallerthen="endpoint" 
+			   y="105" process="tracklog.igcAdjustPoint(point, true)" />
+	    <svg:fldragsel pointname="endpoint" greaterthen="startpoint" 
+			   y="105" process="tracklog.igcAdjustPoint(point, false)" />
+	    <svg:fldragsel pointname="startpoint" smallerthen="endpoint" 
+			   y="5" process="tracklog.igcAdjustPoint(point, true)" />
+	    <svg:fldragsel pointname="endpoint" greaterthen="startpoint" 
+			   y="5" process="tracklog.igcAdjustPoint(point, false)"/>
+
+	    <svg:flrangecontrol y="-5" height="205"/>
+	    <svg:flpointdata pointname="startpoint"
+			     transform="translate(0,115)" />
+	    <svg:flpointdata pointname="endpoint"
+			     transform="translate(0,165)" />
+	  </svg:g>
+
+	  <svg:g id="advanced_select" style="visibility: hidden" >
+
+	    <svg:text x="10" y="15" font-size="small">&selpoint.helpdrag;</svg:text>
+	    <svg:flreselection height="50" transform="translate(0, 25)" />
+
+	    <svg:flzoomsel id="zoomsel" height="50" 
+			   transform="translate(0,75)" />
+
+	    <svg:flzline y1="125" y2="160" sx="0" ex="600"
+			 zoomselid="zoomsel" />
+			 
+
+	    <svg:g transform="translate(0,160)">
+	      <svg:text x="10" y="-10" font-size="small">&selpoint.helpsel;</svg:text>
+	      <svg:flpaltprofile height="100" fill="darkgray" />
+	      <svg:flpspeedprofile height="100" fill="green" 
+				   prof-opacity="0.4" marker="right"
+				   marker-style="fill:green" />
+	    
+	      <svg:flzselector height="100" />
+	    </svg:g>
+
+	    <svg:flzpointdata pointname="mousepoint"
+			      transform="translate(0,265)" />
+
+	    <svg:flzvalidate x="200" y="325" style="fill:red" />
+	  </svg:g>
+	</svg:flcontainer>
+      </svg:svg>
+    </vbox>
+
+  </wizardpage>
+  
+  <wizardpage label="&finfo.title;" id="flight_info_page" 
+	      pageid="flight_info_page" next="save_page" 
+	      onpageadvanced="return onpageinfoadvance()" 
+	      onpagerewound="document.getElementById('newtrk_window').canAdvance=true"
+	      onpageshow="onfillshow()" >
+    <tabbox id="fill_tabbox">
+      <tabs>
+	<tab label="&basic;" />
+	<tab label="&advanced;" />
+      </tabs>
+      <tabpanels>
+	<tabpanel>
+	  <grid flex="1">
+	    <columns>
+	      <column/>
+	      <column flex="1"/>
+	    </columns>
+	    
+	    <rows>
+	      <row>
+		<label value="&pilot;:" />
+		<menulist editable="true" id="pilot_input" 
+			  oncommand="handle_pilot_select(event) "/>
+	      </row>
+	      <row>
+		<label value="&faicat;" />
+		<menulist id="faiclass_input">
+		  <menupopup>
+		    <menuitem label="FAI-3 (PG)" value="3" />
+		    <menuitem label="FAI-1 (HG)" value="1" />
+		    <menuitem label="FAI-5 (Rigid wing)" value="5" />
+		    <menuitem label="FAI-2 (Rigid wing)" value="2" />
+		  </menupopup>
+		</menulist>
+	      </row>
+	      <row>
+		<label value="&glider;:" />
+		<menulist editable="true" id="glider_input" />
+	      </row>
+	      <row>
+		<box/>
+		<checkbox id="biplace_input" label="&biplace;" 
+			  checked="false" />
+	      </row>
+	      
+	      <row>
+		<label value="&launch.long;:" />
+		<hbox>
+		  <menulist id="country_input" >
+		    <menupopup id="country_list" />
+		  </menulist>
+		  <menulist editable="true" id="site_input" flex="1" 
+			    oncommand="handle_site_menu(event)" />
+		</hbox>
+	      </row>
+	      <row>
+		<label value="&comment;:" />	
+		<textbox multiline="true" id="comment_input" />
+	      </row>
+	      <row>
+		<box/>
+		<checkbox id="xcontest_input" label="&xcontest.send;" 
+			  checked="true" 
+			  oncommand="var nval = ! event.target.checked; document.getElementById('xcontestid_label').disabled = nval; document.getElementById('xcontestid_input').disabled = nval;update_mandatory_pinfo();" />
+	      </row>
+	      <row>
+		<label id="xcontestid_label" value="&xcontest.login;:" />
+		<textbox id="xcontestid_input" />
+	      </row>
+	    </rows>
+	  </grid>
+	</tabpanel>
+      
+	<tabpanel>
+	  <grid flex="1">
+	    <columns>
+	      <column/>
+	      <column flex="1"/>
+	    </columns>
+	    
+	    <rows>
+	      <row>
+		<label value="&finfo.fileid;:" />
+		<textbox id="igccode_input" maxlength="3" />
+	      </row>
+	      <row>
+		<box />
+		<radiogroup id="file_format">
+		  <radio label="&finfo.longname;"
+			 id="long"/>
+		  <radio label="&finfo.shortname;"
+			 id="short"/>
+		  <radio label="&finfo.longsite;"
+			 id="long_site"/>
+		</radiogroup>
+	      </row>
+	    </rows>
+	  </grid>
+	</tabpanel>
+      </tabpanels>
+    </tabbox>
+  </wizardpage> 
+
+  <wizardpage label="&filinfo.title;" 
+	      onpageshow="document.getElementById('newtrk_window').canRewind=false" 
+	      id="xcontest_page" pageid="xcontest_page"
+	      next="xcontest_claim"
+	      onpageadvanced="return onxcontestpageadvance()" >
+    <vbox>
+      <label value="&filinfo.savepath;:" />
+      <label id="x_fname" style="font-weight: bold" />
+
+      <spacer height="100px" />
+      <groupbox>
+	<radiogroup>
+	  <radio label="&filinfo.xcnow;" selected="true" 
+		 id="send_now"
+		 oncommand="elem('cont_proc').disabled=true" />
+	  <radio label="&filinfo.xclater;" id="send_later" 
+		 oncommand="elem('cont_proc').disabled=false" />
+	</radiogroup>
+	<button label="&filinfo.otherproc;" 
+		oncommand="elem('newtrk_window').goTo('main_page')" 
+		disabled="true"
+		id="cont_proc" />
+
+      </groupbox>
+    </vbox>
+  </wizardpage>
+  
+  <wizardpage label="&xcclaim.title;" pageid="xcontest_claim"
+	      next="xcontest_done" id="xcontest_claim" 
+	      onpageshow="claim_start()" >
+    <deck flex="1" id="browser_vbox">
+	<vbox flex="1"><!-- Progress box -->
+	  <label id="claim_status" />
+	  <progressmeter hidden="true" mode="undetermined" 
+			 id="claim_progress" />
+	</vbox>
+	<box flex="1">
+	  <browser id="claim_browser" flex="1" type="content" />
+	</box>
+    </deck>
+  </wizardpage>
+
+
+  <wizardpage label="&filinfo.title;" id="save_page"
+	      pageid="save_page"
+	      onpageshow="document.getElementById('newtrk_window').canRewind=false">
+    <vbox>
+      <label value="&filinfo.savepath;: " />
+      <label id="w_fname" style="font-weight: bold" />
+      <label value="&filinfo.noxc;" />
+      <spacer height="100px" />
+      <button label="&filinfo.otherproc;" id="cont_proc2"
+	      oncommand="document.getElementById('newtrk_window').goTo('main_page')" />
+    </vbox>
+  </wizardpage>
+
+
+
+  <wizardpage label="&filinfo.done;" pageid="xcontest_done">
+    <vbox>
+      <label value="&filinfo.done;."/>
+      <spacer height="200px" />
+      <button label="&filinfo.otherproc;" id="cont_proc3"
+	      oncommand="document.getElementById('newtrk_window').goTo('main_page')" />
+    </vbox>
+    
+  </wizardpage>
+  
+</wizard>
+

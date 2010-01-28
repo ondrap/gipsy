@@ -1,0 +1,137 @@
+<!ENTITY gipsy.title "GiPSy Repülés nyilvántartó">
+
+<!ENTITY menu.sendxc "Táv küldés XContest-re" >
+
+<!ENTITY tab.flights "Repülések" >
+<!ENTITY tab.devices "GPS kapcsolat" >
+<!ENTITY problem "Hibariport" >
+
+<!ENTITY delete "Törlés" >
+<!ENTITY open "Megnyitás" >
+<!ENTITY close "Bezárás" >
+<!ENTITY close.key "B" >
+<!ENTITY preferences "Beállítások" >
+<!ENTITY preferences.key "e" >
+<!ENTITY collapse.all "Elrejti/mutatja mindet" >
+<!ENTITY show.source "IGC forrás" >
+<!ENTITY create.logbook "Create flight log" >
+
+<!ENTITY file "File" >
+<!ENTITY file.key "f" >
+
+<!ENTITY help "Segítség" >
+<!ENTITY help.key "s" >
+<!ENTITY about "Névjegy" >
+
+<!ENTITY date.utc "Dátum (UTC)" >
+<!ENTITY launch "Felszállás" >
+<!ENTITY launch.long "Felszállás" >
+<!ENTITY landing "Leszállás" >
+<!ENTITY pilot "Pilóta" >
+<!ENTITY glider "Szárny" >
+<!ENTITY flight.info "Repülés adatai" >
+<!ENTITY statistics "Statisztika" >
+<!ENTITY pilot.info "Pilóta adatai" >
+<!ENTITY date "Dátum" >
+<!ENTITY enabled "Engedélyezve" >
+<!ENTITY device "Eszköz" >
+<!ENTITY altitude "Magasság">
+<!ENTITY speed "Sebesség">
+<!ENTITY advanced "Bővített adatok" >
+<!ENTITY basic "Alapadatok" >
+<!ENTITY faicat "FAI kategória">
+<!ENTITY biplace "Tandem">
+<!ENTITY comment "Megjegyzés" >
+<!ENTITY properties "Tulajdonságok" >
+<!ENTITY upload "Feltöltés" >
+<!ENTITY map.no "Nincs térkép" >
+<!ENTITY map.googlemap "Google térkép" >
+<!ENTITY map.googlemaplayer "GoogleMap réteg" >
+<!ENTITY map.airspace "Légterek" >
+
+<!ENTITY duration "Időtartam" >
+
+<!ENTITY stat.sdist "Start és leszállás távolsága" >
+<!ENTITY stat.totdist "Tracklog hossza" >
+<!ENTITY stat.maxheight "Max. magasság" >
+<!ENTITY stat.heightdiff "Max. nyert magasság" >
+<!ENTITY stat.maxspeed "Max. sebesség">
+<!ENTITY stat.maxvario "Max. emelés" >
+<!ENTITY stat.minvario "Max. merülés" >
+<!ENTITY stat.totheight "Össz. nyert magasság" >
+
+<!ENTITY xcontest.login "XContest felhasználónév">
+<!ENTITY xcontest.show "A verseny honlapja" >
+<!ENTITY xcontest.send "Küldés XContest-re" >
+
+<!ENTITY synchronization "Szinkronizáció">
+<!ENTITY filename "File név" >
+<!ENTITY gps "GPS" >
+
+<!ENTITY gps.help "Nem látom a GPS-t" >
+<!ENTITY gps.type "GPS típusa" >
+<!ENTITY gps.name "GPS neve" >
+<!ENTITY progress "Adatátvitel folyamatban" >
+
+<!ENTITY pilot.filter "Szűrés pilótákra">
+<!ENTITY pilot.all "Minden pilóta">
+<!ENTITY gpx.save "Exportálás GPX-be">
+<!ENTITY kml.save "Exportálás KML-be">
+
+<!-- New track -->
+<!ENTITY newtrk.title "Tracklog feldolgozás" >
+<!ENTITY seltrk.title "1. lépés - kiválasztás : válaszd a szegmenst amely megfelel a repülésednek" >
+<!ENTITY seltrk.help "Tipp: Több szegmenst a Shift billentyű használatával alakíthatsz egy repüléssé" >
+
+<!ENTITY selpoint.title "2. lépés - ha szükséges manuálisan kiválaszthatod a repülés automatikusan kijelölt kezdetét és végét" >
+<!ENTITY selpoint.advanced "Részletes kiválasztás nézete" >
+<!ENTITY selpoint.restore "Eredeti kijelölés visszaállítása" >
+<!ENTITY selpoint.helprange "A piros körökkel tudod beállítani a repülés kezdetét és végét">
+<!ENTITY selpoint.helpdrag "A kinagyított területen a piros mező mozgatásával tudsz navigálni">
+<!ENTITY selpoint.helpsel "Pontok kiválasztásához vagy elvetéséhez használd a bal egér gombot" >
+<!ENTITY tracklog.invalid "Érvénytelen tracklog" >
+
+<!ENTITY finfo.title "3. lépés : Adatok megadása">
+<!ENTITY finfo.fileid "3-betűs azonosító az IGC filenévhez" >
+<!ENTITY finfo.longname "Hosszú IGC filenév formátum" >
+<!ENTITY finfo.shortname "Rövid IGC filenév formátum" >
+<!ENTITY finfo.longsite "ÉÉÉÉ-HH-NN-starthely.igc formátum" >
+
+<!ENTITY filinfo.title "IGC file adatai" >
+<!ENTITY filinfo.savepath "Tracklogod elmentve a következő néven :" >
+<!ENTITY filinfo.noxc "A tracklogodat NEM töltötted fel az XContest rendszerébe">
+<!ENTITY filinfo.done "A repülés feldolgozása kész">
+<!ENTITY filinfo.otherproc "Másik repülés feldogozása ebből a GPS-ből" >
+<!ENTITY filinfo.xcnow "Tracklog feltöltése az XContest-re most">
+<!ENTITY filinfo.xclater "Feltöltés később">
+<!ENTITY xcclaim.title "Küldés a szerverre" >
+
+<!-- Synchro -->
+<!ENTITY synchro.title "Feltöltés XContest-re">
+<!ENTITY synchro.done "Feltöltés befejezve">
+<!ENTITY synchro.select "Repülés kiválasztása" >
+
+<!-- Preferences -->
+<!ENTITY prefs.title "GiPSy beállítások" >
+<!ENTITY prefs.main "Fő beállítások" >
+<!ENTITY prefs.gpsaccess "GPS opciók" >
+<!ENTITY prefs.autodownload "Tracklog letöltése GPS-ből automatikusan" >
+<!ENTITY prefs.needsrestart "A Firefox újraindítása szükséges" >
+<!ENTITY prefs.datadir "Gipsy adatok könyvtára" >
+<!ENTITY prefs.changedir "Könyvtár választása" >
+<!ENTITY prefs.changetohome "A Dokumentumok/Gipsy könyvtár használata" >
+<!ENTITY prefs.savesubdirs "Repülések  mentése a 'pilóta név/év' alkönyvtárba" >
+<!-- NEW -->
+<!ENTITY prefs.units "Units">
+<!ENTITY prefs.metricsystem "Metric system">
+<!-- NEW -->
+
+<!-- Properties -->
+<!ENTITY prop.dontsend "Ne küld az XContestre" >
+<!ENTITY prop.prepare "A repülés feltöltése XConestre később" >
+<!ENTITY prop.uploaded "A repülés feltöltve XContest-re" >
+
+<!-- Password dialog -->
+<!ENTITY passwd.title "Enter password">
+<!ENTITY passwd.xcontestid "Login name">
+<!ENTITY passwd.password "Password">

@@ -1,0 +1,25 @@
+XULVERSION=1.9.0.15
+XPIDL = /usr/lib/xulrunner-$(XULVERSION)/xpidl
+XULIDLPATH = /usr/share/idl/xulrunner-$(XULVERSION)/stable/
+GECKO_SDK_PATH = /usr/lib/xulrunner-devel-$(XULVERSION)/sdk/
+GECKO_DEFINES =
+GECKO_INCLUDES := `pkg-config --cflags  /usr/lib/pkgconfig/libxul.pc` `pkg-config --cflags  /usr/lib/pkgconfig/libxul-unstable.pc`
+GECKO_LDFLAGS :=  `pkg-config --libs  /usr/lib/pkgconfig/libxul.pc`
+
+#CPPFLAGS += HAVE_CRYPTO
+#CRYPTO_LIB = /usr/lib/libcrypto++.a
+
+CXX   = g++
+ 
+# Change this to point at your Gecko SDK directory. 
+ 
+# GCC only define which allows us to not have to #include mozilla-config 
+# in every .cpp file.  If your not using GCC remove this line and add 
+# #include "mozilla-config.h" to each of your .cpp files. 
+#GECKO_CONFIG_INCLUDE = -include mozilla-config.h 
+
+CPPFLAGS += -DUSE_LIBUSB
+USB_LIB = -lusb
+#CPPFLAGS += -fPIC
+
+include rules.makefile

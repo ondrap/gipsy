@@ -1,0 +1,1552 @@
+<?xml version="1.0"?>
+<!-- $Id: fprofile.xbl 326 2007-05-11 12:20:25Z ondra $ -->
+
+<!DOCTYPE window SYSTEM "chrome://gipsy/locale/main.dtd">
+
+<bindings xmlns="http://www.mozilla.org/xbl"
+	  xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	  xmlns:svg="http://www.w3.org/2000/svg"
+	  xmlns:xbl="http://www.mozilla.org/xbl"
+	  xmlns:xlink="http://www.w3.org/1999/xlink">
+
+
+  <!-- Basic element, (un)registers itself to parent container,
+       receives notifications ('view') from model changes -->
+  <binding id="flbasic" extends="svg:generic">
+    <implementation>
+      <constructor><![CDATA[
+      this.FLparent = null;
+      var parent = this.parentNode;
+      while (parent && parent.registerFL==null && parent.nodeName != 'svg:svg')
+          parent = parent.parentNode;
+      
+      if (parent) {
+	  if (parent.nodeName != 'svg:svg') {
+	      parent.registerFL(this);
+	      this.FLparent = parent;
+	  }
+	  var width = parent.getAttribute('width');
+	  var height = parent.getAttribute('height');
+
+	  if (!this.getAttribute('width'))
+	      this.setAttribute('width', width);
+	  if (!this.getAttribute('height')) 
+	      this.setAttribute('height', height);
+      }
+      ]]>
+      </constructor>
+      <destructor>
+        if (this.FLparent)
+	    this.FLparent.unregisterFL(this);
+      </destructor>
+
+      <methods>
+	<method name="anon_el">
+	  <parameter name="anonid" />
+	  <body>
+	    return document.getAnonymousElementByAttribute(this, 'anonid', anonid);
+	  </body>
+	</method>
+
+	<method name="nice_google_zoom">
+	  <parameter name="pscale" />
+	  <body><![CDATA[
+	  // Compute optimal zoom
+	  var zoom = 16;
+	  while (zoom > 0) {
+	      // Compute tile width/height in pixels with given bounds & zoom level
+	      var maxtile = Math.pow(2, (17-zoom));
+	      var dimension = 2*Math.PI / maxtile;
+	  
+	      var prwidth = dimension * pscale;
+	      if (prwidth <= 256.001) // Floating point :-/
+	          break;
+	      zoom--;
+	  }
+	  return zoom;
+	  ]]>
+	  </body>
+	</method>
+
+      </methods>
+    </implementation>
+  </binding>
+
+  <!-- Draw time axis element -->
+  <binding id="fltimespan" 
+	   extends="chrome://gipsy/content/fprofile.xbl#flbasic">
+    <content>
+      <svg:g xbl:inherits="transform style">
+	<svg:path anonid="time_path" stroke="black" fill="none" stroke-width="0.5" />
+	<svg:g anonid="time_marker"  />
+      </svg:g>
+    </content>
+
+    <implementation>
+      <field name="INTERVAL">600000</field>
+      <field name="LABELMINUTES">60</field>
+      <field name="SHORT">4</field>
+      <field name="LONG">10</field>
+
+      <property name="tracklog"
+		onget="return this._tracklog">
+	<setter><![CDATA[
+	const svgns = "http://www.w3.org/2000/svg";
+	var tlog = val;
+	var tpath = this.anon_el('time_path');
+	var tmarker = this.anon_el('time_marker');
+	// Reset time markers
+	while (tmarker.childNodes.length)
+	    tmarker.removeChild(tmarker.childNodes[0]);
+
+	if (tlog == null) {
+	    tpath.setAttribute('d', '');
+	    return;
+        }
+	
+	var width = this.getAttribute('width');
+	var height = this.getAttribute('height');
+	
+	var btime = tlog.igcPoint(0).time;
+	var endtime = tlog.igcPoint(tlog.igcPointCount() - 1).time;
+	var scale = (1.0 * width) / (endtime - btime);
+
+	var labelminutes = this.LABELMINUTES;
+	if (endtime - btime <= 30*60*1000)
+	    labelminutes = 10;
+	else if (endtime - btime <= 60*60*1000)
+	    labelminutes = 20;
+	else if (endtime - btime <= 150*60*1000)
+	    labelminutes = 30;
+	
+	var adata = '';
+
+	// Round time, so that there are not too many lines
+	var interval = this.INTERVAL;
+	
+	var date = new Date(btime);
+	date.setUTCMinutes(0);
+	date.setUTCSeconds(0);
+	date.setUTCMilliseconds(0);
+	date.setUTCHours(date.getUTCHours() + 1);
+	var time = date.valueOf();
+	while (time-interval > btime)
+	    time -= interval;
+
+	for (; time < endtime; time += interval) {
+	    var x = (time - btime) * scale;
+	    var mydate = new Date(time);
+	    adata += 'M ' + x + ' ' + height;
+	    if (mydate.getUTCMinutes() == 0)
+		var y = height - this.LONG;
+	    else
+		var y = height - this.SHORT;
+	    adata += 'L ' + x + ' ' + y;
+
+	    if ((mydate.getUTCMinutes() % labelminutes) == 0) {
+		var text = document.createElementNS(svgns, 'text');
+		text.setAttribute('x', x + 1);
+		text.setAttribute('y', height - this.SHORT - 1);
+		text.setAttribute('font-size', '8px');
+		text.setAttribute('fill', 'black');
+		
+		var date = new Date(time);
+		var data = document.createTextNode(sprintf('%d:%02d', date.getUTCHours(), date.getUTCMinutes()));
+		text.appendChild(data);
+		tmarker.appendChild(text);
+	    }
+	}
+	tpath.setAttribute('d', adata);
+	]]>
+	</setter>
+      </property>
+    </implementation>
+  </binding>
+
+  <!-- Generic profile element -->
+  <binding id="flprofile" 
+	   extends="chrome://gipsy/content/fprofile.xbl#flbasic">
+    <content>
+      <svg:g xbl:inherits="transform style opacity">
+	<svg:path xbl:inherits="fill fill-opacity=prof-opacity" 
+		  fill="darkgray" 
+		  anonid="a_polygon"  />
+	<svg:path stroke="orange" stroke-width="0.8" fill="none" 
+		  xbl:inherits="stroke stroke-opacity=prof-opacity" 
+		  anonid="a_polyline" />
+	<svg:path stroke="gray" stroke-width="1" fill="none" anonid="a_marker"
+		  xbl:inherits="stroke=markerline stroke-dasharray"
+		  stroke-opacity="0.6" stroke-dasharray="2,4"/>
+	<svg:g anonid="a_marker_g" 
+	       xbl:inherits="style=marker-style"/><!-- Text markers -->
+      </svg:g>
+    </content>
+
+    <implementation>
+      <property name="tracklog"
+		onget="return this._tracklog"
+		onset="this._tracklog=val;this.redraw();this.markers();" />
+
+      <method name="markers">
+	<body><![CDATA[
+	  const svgns = "http://www.w3.org/2000/svg";
+	  var tlog = this._tracklog;
+
+	  var tarea = this.anon_el('a_marker_g');
+	  // Remove old text markers
+	  while (tarea.childNodes.length)
+	      tarea.removeChild(tarea.childNodes[0]);
+	  var marker = this.anon_el('a_marker');
+	  
+	  if (tlog == null) {
+	    marker.setAttribute('d', '');
+	    return;
+	  }
+
+	  var width = this.getAttribute('width');
+	  var height = this.getAttribute('height');
+	  var maxval = this.get_max_val();
+	  
+	  // Set 1000m markers
+	  var scale = height / maxval;
+	  var adata = '';
+	  for (var i=this.marker_interval; i <= maxval; 
+	       i+=this.marker_interval) {
+	    adata += 'M 0 ' + (height-i*scale);
+	    adata += 'L ' + width + ' ' + (height-i*scale);
+
+	    var text = document.createElementNS(svgns, 'text');
+	    if (this.getAttribute('marker') == 'right') {
+	        text.setAttribute('text-anchor', 'end');
+	        text.setAttribute('x', width);
+	    } else
+	        text.setAttribute('x', 0);
+	    text.setAttribute('y', height-i*scale);
+	    text.setAttribute('font-size', '8px');
+	    text.setAttribute('dominant-baseline', 'hanging');
+	    
+	    var data = document.createTextNode(this.marker_text(i));
+	    text.appendChild(data);
+	    tarea.appendChild(text);
+	  }
+	  marker.setAttribute('d', adata);
+	]]>
+	</body>
+      </method>
+
+      <method name="redraw">
+	<body><![CDATA[
+	  var tlog = this._tracklog;
+	  // Set up variables for the svg elements
+	  var polygon = this.anon_el('a_polygon');
+	  var path = this.anon_el('a_polyline');
+
+	  if (tlog == null) {
+	      polygon.setAttribute('d', '');
+	      path.setAttribute('d', '');
+	      return;
+	  }
+
+	  // Set height polygon
+	  var maxval = this.get_max_val();
+	  var pdata = this.get_adata_polygon(maxval);
+	  if (pdata)
+	      polygon.setAttribute('d', pdata);
+
+	  // Set height line
+	  pdata = this.get_adata_polyline(maxval);
+	  if (pdata)
+	      path.setAttribute('d', pdata);
+	  ]]>
+	</body>
+      </method>
+    </implementation>
+  </binding>
+
+  <!-- X-axis time, Y-axis - speed -->
+  <binding id="flspeedprofile" 
+	   extends="chrome://gipsy/content/fprofile.xbl#flprofile">
+    <implementation>
+      <property name="marker_interval">
+	<getter>
+	  if (get_bool_pref('metric'))
+	      return 13.88888; // 500km/h
+	  else
+	      return 8.9408; // 20mph
+	</getter>
+      </property>
+
+      <method name="marker_text">
+	<parameter name="value" />
+	<body>
+	  return format_kmh(value);
+	</body>
+      </method>
+
+      <method name="get_max_val">
+	<body>
+	  if (get_bool_pref('metric'))
+	      return 100 / 3.6;
+	  else
+	      return 96.5604 / 3.6;
+/*
+	  var tlog = this._tracklog;
+	  var maxspeed = tlog.igcGetStat(tlog.STAT_SPEED_MAX);
+	  maxspeed = (Math.floor(maxspeed/this.marker_interval)+1) * this.marker_interval;
+
+	  if (maxspeed > (150/3.6)) // Speeds > 150km/h are usually a GPS error
+	      maxspeed = 150/3.6;
+	  return maxspeed;
+*/
+	</body>
+      </method>
+
+      <method name="get_adata_polygon">
+	<parameter name="maxval" />
+	<body>
+	  var width = this.getAttribute('width');
+	  var height = this.getAttribute('height');
+	  var tlog = this._tracklog;
+
+	  return tlog.svgPathData(tlog.SPEED, tlog.POLYGON, width, 
+				  height, maxval, true);
+	</body>
+      </method>
+      <method name="get_adata_polyline">
+	<parameter name="maxval" />
+	<body>
+	  var width = this.getAttribute('width');
+	  var height = this.getAttribute('height');
+	  var tlog = this._tracklog;
+	  
+	  return tlog.svgPathData(tlog.SPEED, tlog.POLYLINE, width, 
+				  height, maxval, true);
+	</body>
+      </method>
+    </implementation>
+  </binding>
+
+  <!-- X-axis time, Y-axis altitude -->
+  <binding id="flaltprofile" 
+	   extends="chrome://gipsy/content/fprofile.xbl#flprofile">
+    <implementation>
+      <property name="marker_interval">
+	<getter>
+	  if (get_bool_pref('metric'))
+	      return 1000;
+	  else
+	      return 914.4; // 3000ft
+	</getter>
+      </property>
+
+      <method name="marker_text">
+	<parameter name="value" />
+	<body>
+	    return format_m(value);
+	</body>
+      </method>
+	
+      <method name="get_max_val">
+	<body>
+	    var tlog = this._tracklog;
+	    var maxheight = tlog.igcGetStat(tlog.STAT_HEIGHT_MAX);
+	    var divider = 500;
+	    if (!get_bool_pref('metric'))
+	         divider = 457.2;
+            return (Math.floor(maxheight/divider)+1) * divider;
+	</body>
+      </method>
+	
+      <method name="get_adata_polygon">
+	<parameter name="maxval" />
+	<body>
+	    var width = this.getAttribute('width');
+	    var height = this.getAttribute('height');
+	    var tlog = this._tracklog;
+	    
+	    return tlog.svgPathData(tlog.ALTITUDE, tlog.POLYGON, width, 
+	                           height, maxval, true);
+	</body>
+      </method>
+      <method name="get_adata_polyline">
+	<parameter name="maxval" />
+	<body>
+	    var width = this.getAttribute('width');
+	    var height = this.getAttribute('height');
+	    var tlog = this._tracklog;
+	    
+	    return tlog.svgPathData(tlog.ALTITUDE, tlog.POLYLINE, width, 
+	                            height, maxval, true);
+	</body>
+      </method>
+    </implementation>
+  </binding>
+
+  <!-- x-axis - points (every other pixel is point), y-axis altitude) -->
+  <binding id="flpaltprofile" 
+	   extends="chrome://gipsy/content/fprofile.xbl#flaltprofile">
+    <implementation>
+      <property name="tracklog"
+		onget="return this._tracklog">
+	<setter>
+	  this._tracklog=val;
+	  this._point=null;
+	  this.redraw();
+	  this.markers();
+	</setter>
+      </property>
+
+      <property name="zoompoint"
+		onset="this._point=val;this.redraw()" />
+
+      <methods>
+	<method name="get_adata_polygon">
+	  <parameter name="maxval" />
+	  <body>
+	    if (this._point == null)
+	        return null;
+	    var width = this.getAttribute('width');
+	    var height = this.getAttribute('height');
+	    var tlog = this._tracklog;
+	    
+	    return tlog.svgPointData(tlog.ALTITUDE, tlog.POLYGON, 
+	                             this._point, width, 
+	                             height, maxval);
+	  </body>
+	</method>
+	<method name="get_adata_polyline">
+	  <parameter name="maxval" />
+	  <body>
+	    if (this._point == null)
+	        return null;
+	    var width = this.getAttribute('width');
+	    var height = this.getAttribute('height');
+	    var tlog = this._tracklog;
+	    
+	    return tlog.svgPointData(tlog.ALTITUDE, tlog.POLYLINE, 
+	                             this._point, width, 
+	                             height, maxval);
+	  </body>
+	</method>
+      </methods>
+    </implementation>
+  </binding>
+
+  <!-- x-axis - points (every other pixel is point), y-axis speed) -->
+  <binding id="flpspeedprofile" 
+	   extends="chrome://gipsy/content/fprofile.xbl#flspeedprofile">
+    <implementation>
+      <property name="tracklog"
+		onget="return this._tracklog">
+	<setter>
+	  this._tracklog=val;
+	  this._point=null;
+	  this.redraw();
+	  this.markers();
+	</setter>
+      </property>
+
+      <property name="zoompoint"
+		onset="this._point=val;this.redraw()" />
+
+      <methods>
+	<method name="get_adata_polygon">
+	  <parameter name="maxval" />
+	  <body>
+	    if (this._point == null)
+	        return null;
+	    var width = this.getAttribute('width');
+	    var height = this.getAttribute('height');
+	    var tlog = this._tracklog;
+	    
+	    return tlog.svgPointData(tlog.SPEED, tlog.POLYGON,
+	                             this._point, width, 
+	                             height, maxval);
+	  </body>
+	</method>
+	<method name="get_adata_polyline">
+	  <parameter name="maxval" />
+	  <body>
+	    if (this._point == null)
+	        return null;
+	    var width = this.getAttribute('width');
+	    var height = this.getAttribute('height');
+	    var tlog = this._tracklog;
+	    
+	    return tlog.svgPointData(tlog.SPEED, tlog.POLYLINE, 
+	                             this._point, width, 
+	                             height, maxval);
+	  </body>
+	</method>
+      </methods>
+    </implementation>
+  </binding>
+
+  <!-- x-axis time, display interval selection marked by
+       startpoint & endpoint -->
+  <binding id="flselection" 
+	   extends="chrome://gipsy/content/fprofile.xbl#flbasic">
+    <content>
+      <svg:rect fill-opacity="0.3" fill="blue" anonid="selrect" 
+		xbl:inherits="transform style"/>
+    </content>
+
+    <implementation>
+      <constructor>
+	this._startpoint = null;
+	this._endpoint = null;
+      </constructor>
+
+      <property name="tracklog"
+		onget="return this._tracklog">
+	<setter>
+	  this._tracklog = val;
+          this._startpoint = null;
+	  this._endpoint = null;
+	  this.redraw();
+	</setter>
+      </property>
+
+      <property name="startpoint"
+		onget="return this._startpoint"
+		onset="this._startpoint=val;this.redraw();" />
+      
+      <property name="endpoint"
+		onget="return this._endpoint"
+		onset="this._endpoint=val;this.redraw();" />
+
+
+      <methods>
+	<method name="redraw">
+	  <body><![CDATA[
+	    var rect = this.anon_el('selrect');
+
+	    var start = this._startpoint;
+	    var end = this._endpoint;
+	    var tlog = this._tracklog;
+	    if (start == null || end == null || tlog == null) {
+		// Clear rectangle
+		rect.setAttribute('width', 0);
+		rect.setAttribute('height', 0);
+		return;
+	    }
+	  
+
+	    var btime = tlog.igcPoint(0).time;
+	    var starttime = tlog.igcPoint(start).time;
+	    var endtime = tlog.igcPoint(end).time;
+
+	    var width = this.getAttribute('width');
+	    var height = this.getAttribute('height');
+
+	    var scale = (1.0 * width) / (tlog.igcPoint(tlog.igcPointCount() - 1).time - btime);
+
+	    rect.setAttribute('x', (starttime-btime) * scale);
+	    rect.setAttribute('y', 0);
+	    rect.setAttribute('width', (endtime-starttime) * scale);
+	    rect.setAttribute('height', height);
+	    ]]>
+	  </body>
+	</method>
+      </methods>
+      
+    </implementation>
+  </binding>
+
+  <!-- FL container - receives notifications, distrutes them to registered
+       elements -->
+  <binding id="flcontainer" 
+	   extends="chrome://gipsy/content/fprofile.xbl#flbasic" >
+    <content>
+      <svg:g xbl:inherits="transform style clip-path" >
+	<children/>
+      </svg:g>
+    </content>
+    <implementation>
+      <constructor>
+	this.FLchildren = [];
+      </constructor>
+      <methods>
+	<method name="set_property">
+	  <parameter name="property" />
+	  <parameter name="value" />
+	  <body><![CDATA[
+	  this[property] = value;
+	  for (var i=0; i < this.FLchildren.length; i++) {
+	      var child = this.FLchildren[i];
+	      child[property] = value;
+	      if (child.set_property)
+	          child.set_property(property, value);
+	  }
+	  ]]>
+	  </body>
+	</method>
+	<method name="registerFL">
+	  <parameter name="child" />
+	  <body>
+	    this.FLchildren.push(child);
+	  </body>
+	</method>
+	<method name="unregisterFL">
+	  <parameter name="child" />
+	  <body><![CDATA[
+	  for (var i=0; i < this.FLchildren.length; i++) {
+	      if (this.FLchildren[i] == child) {
+		  this.FLchildren.splice(i,1);
+	      }
+	  }
+	  ]]>
+	  </body>
+	</method>  
+      </methods>
+    </implementation>
+  </binding>
+
+  <!-- Point for dragging a point (in time axis)
+       @pointname - name of property containing point
+       @smallerthen, @greaterthen - constraints 
+       @process - postprocessing when point is selected
+  -->
+  <binding id="fldragsel"
+	   extends="chrome://gipsy/content/fprofile.xbl#flbasic">
+    <content>
+      <svg:circle stroke="darkred" stroke-width="2" 
+		  anonid="c" xbl:inherits="style transform cy=y"
+		  fill="red" fill-opacity="0.3" />
+    </content>
+    <implementation>
+      <field name="r">5</field>
+      <field name="pointname">'point'</field>
+      <constructor>
+	this.pointname = this.getAttribute('pointname');
+	this._smallerthen = this.getAttribute('smallerthen');
+	this._greaterthen = this.getAttribute('greaterthen');
+      </constructor>
+      
+      <property name="tracklog"
+		onget="return this._tracklog"
+		onset="this._tracklog = val;this._point=null;this.redraw()" />
+
+      <methods>
+	<!-- We can listen to generic property broadcast -->
+	<method name="set_property">
+	  <parameter name="property" />
+	  <parameter name="value" />
+	  <body>
+	    if (property == this.pointname) {
+	        this._point = value;
+		this.redraw();
+	    }
+	  </body>
+	</method>
+
+	<!-- Return X coordinate corresponding to 'point' -->
+	<method name="get_x">
+	  <parameter name="point" />
+	  <body>
+	    var tlog = this._tracklog;
+	    var width = this.getAttribute('width');
+	    
+	    var btime = tlog.igcPoint(0).time;
+	    var scale = (1.0 * width) / (tlog.igcPoint(tlog.igcPointCount() - 1).time - btime);
+
+	    var pointtime = tlog.igcPoint(point).time;
+	    
+	    return Math.round((pointtime-btime) * scale);
+	  </body>
+	</method>
+
+	<method name="redraw">
+	  <body><![CDATA[
+	    var c = this.anon_el('c');
+
+	    if (this._point == null || this._tracklog == null) {
+		// Clear circles
+		c.setAttribute('r',0);
+		return;
+	    }
+	    var height = this.getAttribute('height');
+	    c.setAttribute('cx', this.get_x(this._point));
+	    c.setAttribute('r', this.r);
+	    ]]>
+	  </body>
+	</method>
+
+	<method name="_mm">
+	  <parameter name="event"/>
+	  <body>
+	    <![CDATA[
+		     var me = document.draggedItem;
+
+		     var tlog = me._tracklog;
+		     var relx = event.clientX - me._startpixel;
+		     var time = relx * me._tscale + tlog.igcPoint(0).time;
+		     var point = tlog.igcFindNearest(time);
+
+		     // Finally check the bounding condition
+		     if (me._smallerthen && point >= me[me._smallerthen])
+		         return;
+		     if (me._greaterthen && point <= me[me._greaterthen])
+		         return;
+		     me.FLparent.set_property(me.pointname, point);
+	    ]]>
+	  </body>
+	</method>
+	<method name="_mu">
+	  <parameter name="event"/>
+	  <body>
+	    <![CDATA[
+		     var me = document.draggedItem;
+		     var proc = me.getAttribute('process');
+		     if (proc) {
+		          var point = me._point;
+			  var tracklog = me._tracklog;
+			  point = eval(proc);
+			  me.FLparent.set_property(me.pointname, point);
+		     }
+
+		     document.removeEventListener("mousemove", document.draggedItem._mm,true);
+		     document.removeEventListener("mouseup", document.draggedItem._mu,true);
+		     document.draggedItem = null;
+	    ]]>
+	  </body>
+	</method>
+      </methods>
+    </implementation>
+    <handlers>
+      <handler event="mousedown">
+	<![CDATA[
+          document.draggedItem = this;
+	  
+	  // Cache scale, startpoint & pointcount
+	  var width = this.getAttribute('width');
+	  var tlog = this._tracklog;
+	  // Assume even points, will check it later
+	  this._tscale = (tlog.igcPoint(tlog.igcPointCount()-1).time - tlog.igcPoint(0).time) / (1.0 * width);
+	  this._startpixel = event.clientX - this.get_x(this._point);
+          
+          document.addEventListener("mousemove", this._mm, true);
+          document.addEventListener("mouseup", this._mu, true);
+        ]]>
+      </handler>
+    </handlers>             
+  </binding>
+
+
+  <!-- Widget for listening for point change, displays information about
+       altitude, speed, vario -->
+  <binding id="flpointdata"
+	   extends="chrome://gipsy/content/fprofile.xbl#flbasic">
+    
+    <content>
+      <svg:g xbl:inherits="transform style" class="pointinfo" >
+	<svg:g anonid="inner" transform="translate(0,0)" 
+	       style="display:none" >
+	  <svg:rect x="0" y="0" width="80" height="45"
+		    fill="white" stroke="black" stroke-width="1" 
+		    anonid="drect" />
+	  
+	  <svg:text y="10" x="5" xbl:inherits="style" anonid="time"></svg:text>
+
+	  <svg:text y="20" x="5" xbl:inherits="style">Alt:</svg:text>
+	  <svg:text y="20" x="35" xbl:inherits="style" anonid="alt"/>
+	  
+	  <svg:text y="30" x="5" xbl:inherits="style">Vario:</svg:text>
+	  <svg:text y="30" x="35" xbl:inherits="style" anonid="vario" />
+	  
+	  <svg:text y="40" x="5" xbl:inherits="style">Speed:</svg:text>
+	  <svg:text y="40" x="35" xbl:inherits="style" anonid="speed" />
+
+	</svg:g>
+      </svg:g>
+    </content>
+
+    <implementation>
+      <field name="pointname">'point'</field>
+      <field name="rwidth">80</field>
+      <constructor>
+	this.pointname = this.getAttribute('pointname');
+	var drect = this.anon_el('drect');
+	this.rwidth = parseFloat(drect.getAttribute('width'));
+
+	this.inner = this.anon_el('inner');
+	this.width = parseFloat(this.getAttribute('width'));
+      </constructor>
+      <property name="tracklog"
+		onget="return this._tracklog"
+		onset="this._tracklog = val;this._point=null;this.redraw()" />
+      <methods>
+	<method name="set_property">
+	  <parameter name="property" />
+	  <parameter name="value" />
+	  <body>
+	    if (property == this.pointname) {
+	        this._point = value;
+		this.redraw();
+	    }
+	  </body>
+	</method>
+
+	<method name="hide">
+	  <body>
+	    this.inner.setAttribute('style', 'display: none');
+	  </body>
+	</method>
+	<method name="show">
+	  <body>
+	    this.inner.setAttribute('style', 'display: inline');
+	  </body>
+	</method>
+
+	<!-- Return X coordinate where should begin displaying 
+	     of the textbox coordinates -->
+	<method name="get_x">
+	  <parameter name="point" />
+	  <body><![CDATA[
+	    var tlog = this._tracklog;
+	    var width = this.getAttribute('width');
+	    
+	    var btime = tlog.igcPoint(0).time;
+	    var scale = parseFloat(width) / (tlog.igcPoint(tlog.igcPointCount() - 1).time - btime);
+
+	    var pointtime = tlog.igcPoint(point).time;
+	    
+	    var x = (pointtime-btime) * scale - this.rwidth/2;
+	    if (x < 0)
+	        x = 0;
+	    if (x + this.rwidth > this.width)
+	         x = this.width - this.rwidth;
+	    return x;
+	    ]]>
+	  </body>
+	</method>
+	
+	<method name="fmttime">
+	  <parameter name="time" />
+	  <body>
+	      return sprintf('%02d:%02d:%02d UTC', time.getUTCHours(), 
+	                      time.getUTCMinutes(), time.getUTCSeconds());
+	  </body>
+	</method>
+	
+	<method name="set_text">
+	  <parameter name="anonid" />
+	  <parameter name="value" />
+	  <body>
+	    var item = this.anon_el(anonid);
+	    while (item.childNodes.length)
+	        item.removeChild(item.childNodes[0]);
+	    var text= document.createTextNode(value);
+	    item.appendChild(text);
+	  </body>
+	</method>
+
+	<method name="redraw">
+	  <body>
+	    var tlog = this._tracklog;
+	    var point = this._point;
+	    
+	    if (tlog == null || point == null) {
+	        this.hide();
+	        return;
+	    }
+	    this.show();
+
+	    var ppoint = tlog.igcPoint(point);
+	    var alt = format_m(ppoint.alt);
+	    if (point == 0) {
+	        var vario = '';
+		var speed = '';
+	    } else {
+	        var bpoint = tlog.igcPoint(point-1);
+		var vario = format_ms(ppoint.vario(bpoint));
+		var speed = format_kmh(ppoint.speed(bpoint));
+	    }
+	    this.set_text('alt', alt);
+	    this.set_text('vario', vario);
+	    this.set_text('speed', speed);
+	    this.set_text('time', this.fmttime(new Date(ppoint.time)));
+	    // Set translation
+	    var x = this.get_x(point);
+
+	    var translate = this.inner.transform.baseVal.getItem(0); 
+	    translate.setTranslate(this.get_x(point), 0);
+	  </body>
+	</method>
+
+      </methods>
+    </implementation>
+  </binding>
+
+
+  <!-- Widget that displays duration of selection -->
+  <binding id="flrangecontrol"
+	   extends="chrome://gipsy/content/fprofile.xbl#flbasic">
+    <content>
+      <svg:g xbl:inherits="style transform">
+	<svg:text y="0" x="200" xbl:inherits="style y x=x2" anonid="duration"/>
+      </svg:g>
+    </content>
+    <implementation>
+      <property name="startpoint"
+		onget="return this._startpoint"
+		onset="this._startpoint=val; this.redraw()" />
+      <property name="endpoint" 
+		onget="return this._endpoint"
+		onset="this._endpoint=val; this.redraw()" />
+
+      <property name="tracklog" 
+		onget="return this._tracklog">
+	<setter>
+	  this._tracklog = val;
+	  this._startpoint = null;
+	  this._endpoint = null;
+	  this.redraw();
+	</setter>
+      </property>
+      <methods>
+	<method name="clear_fields">
+	  <body><![CDATA[
+	  var item = this.anon_el('duration');
+	  while (item.childNodes.length)
+	      item.removeChild(item.childNodes[0]);
+	  ]]>
+	  </body>
+	</method>
+
+	<method name="redraw">
+	  <body><![CDATA[
+	    var tlog = this._tracklog;
+	    var startpoint = this._startpoint;
+	    var endpoint = this._endpoint;
+
+	    this.clear_fields();
+	    if (tlog == null || startpoint == null || endpoint == null) {
+		return;
+	    }
+	    var starttime = new Date(tlog.igcPoint(startpoint).time);
+	    var endtime = new Date(tlog.igcPoint(endpoint).time);
+	    var duration = new Date(endtime - starttime);
+
+	    function fmttime(time) {
+		return sprintf('%02d:%02d:%02d', time.getUTCHours(), 
+			       time.getUTCMinutes(), time.getUTCSeconds());
+	    }
+
+	    var durtext = document.createTextNode('Duration: ' + fmttime(duration));
+	    
+	    var t = this.anon_el('duration');
+	    t.appendChild(durtext);
+
+	    ]]>
+	  </body>
+	</method>
+      </methods>
+      
+    </implementation>
+  </binding>
+
+  <!-- Widget for selecting an area to be zoomed, contains at most
+       width/2 points -->
+  <binding id="flzoomsel" 
+	   extends="chrome://gipsy/content/fprofile.xbl#flbasic">
+    <content>
+      <svg:rect fill-opacity="0.3" fill="red" anonid="selrect" 
+		xbl:inherits="transform style"/>
+    </content>
+
+    <implementation>
+      <constructor>
+	this._point = null;
+	var r = this.anon_el('selrect');
+	this._svgowner = r.ownerSVGElement;
+      </constructor>
+
+      <field name="stx">0</field>
+      <field name="wtx">0</field>
+
+      <property name="tracklog"
+		onget="return this._tracklog">
+	<setter>
+	  this._tracklog = val;
+          this._point = null;
+	  this.redraw();
+	</setter>
+      </property>
+
+      <property name="zoompoint"
+		onget="return this._point"
+		onset="this._point=val;this.redraw();" />
+      
+      <methods>
+	<method name="get_x">
+	  <parameter name="point" />
+	  <body>
+	    var tlog = this._tracklog;
+	    var width = this.getAttribute('width');
+	    
+	    var btime = tlog.igcPoint(0).time;
+	    var scale = (1.0 * width) / (tlog.igcPoint(tlog.igcPointCount() - 1).time - btime);
+
+	    var pointtime = tlog.igcPoint(point).time;
+	    
+	    return Math.round((pointtime-btime) * scale);
+	  </body>
+	</method>
+
+	<method name="redraw">
+	  <body><![CDATA[
+           var rect = this.anon_el('selrect');
+
+           var start = this._point;
+           var tlog = this._tracklog;
+           if (start == null || tlog == null) {
+               // Clear rectangle
+               rect.setAttribute('width', 0);
+               rect.setAttribute('height', 0);
+               return;
+           }
+           var width = this.getAttribute('width');
+           var height = this.getAttribute('height');
+
+           var end = start + width/2;
+           if (end > tlog.igcPointCount())
+               end = tlog.igcPointCount();
+
+
+           var btime = tlog.igcPoint(0).time;
+           var starttime = tlog.igcPoint(start).time;
+           var endtime = tlog.igcPoint(end-1).time;
+
+
+           var scale = (1.0 * width) / (tlog.igcPoint(tlog.igcPointCount() - 1).time - btime);
+
+	   this.stx = (starttime-btime) * scale;
+	   this.wtx = (endtime-starttime) * scale;
+           rect.setAttribute('x', this.stx);
+           rect.setAttribute('y', 0);
+           rect.setAttribute('width', this.wtx);
+           rect.setAttribute('height', height);
+	    ]]>
+	  </body>
+	</method>
+
+	<method name="_mm">
+	  <parameter name="event"/>
+	  <body>
+	    <![CDATA[
+		     var me = document.draggedItem;
+
+		     var tlog = me._tracklog;
+		     var newx = event.clientX + me._startrel;
+
+		     var time = newx * me._tscale + tlog.igcPoint(0).time;
+		     var point = tlog.igcFindNearest(time);
+		     var width = me.getAttribute('width');
+
+                     if (point + width/2 > tlog.igcPointCount())
+		         point = tlog.igcPointCount() - width/2;
+		     if (point < 0) 
+		         point = 0;
+	
+	             me._svgowner.suspendRedraw(50);
+		     me.FLparent.set_property('zoompoint', point);
+		     me._svgowner.unsuspendRedrawAll();
+	    ]]>
+	  </body>
+	</method>
+	<method name="_mu">
+	  <parameter name="event"/>
+	  <body>
+	    <![CDATA[
+		     var me = document.draggedItem;
+		     document.removeEventListener("mousemove", document.draggedItem._mm,true);
+		     document.removeEventListener("mouseup", document.draggedItem._mu,true);
+		     document.draggedItem = null;
+	    ]]>
+	  </body>
+	</method>
+      </methods>
+    </implementation>
+    <handlers>
+      <handler event="mousedown">
+	<![CDATA[
+          document.draggedItem = this;
+	  
+	  // Cache scale, startpoint & pointcount
+	  var width = this.getAttribute('width');
+	  var tlog = this._tracklog;
+	  // Assume even points, will check it later
+	  this._tscale = (tlog.igcPoint(tlog.igcPointCount()-1).time - tlog.igcPoint(0).time) / (1.0 * width);
+
+          this._startrel = this.get_x(this._point) - event.clientX;
+          
+          document.addEventListener("mousemove", this._mm, true);
+          document.addEventListener("mouseup", this._mu, true);
+        ]]>
+      </handler>
+    </handlers>             
+  </binding>
+
+
+  <binding id="flzpoint" 
+	   extends="chrome://gipsy/content/fprofile.xbl#flbasic">
+    <content>
+      <svg:rect fill="blue"
+		anonid="selrect" width="2"
+		xbl:inherits="x y height fill fill-opacity"/>
+    </content>
+    <implementation>
+      <!-- Offset from the 'selstart' point -->
+      <field name="seloffset">0</field>
+
+      <!-- List of idx->true/false -->
+      <property name="sellist"
+		onset="this._sellist=val; this.redraw()" />
+
+      <!-- selstart+seloffset = position for this point -->
+      <property name="zoompoint"
+		onset="this._selpoint=val + this.seloffset; this.redraw()" />
+
+      <property name="tracklog">
+	<setter><![CDATA[
+	  this._tracklog = val;
+	  if (!val) {
+	      this._sellist = null;
+	      this._selstart = null;
+	  }
+	  this.redraw();
+	  ]]>
+	</setter>
+      </property>
+
+      <property name="do_invert">
+	<setter>
+	  if (val != this._selpoint)
+	      return;
+	  this._undo = this._sellist[this._selpoint];
+	  this._sellist[this._selpoint] = !this._sellist[this._selpoint];
+	  this.redraw();
+	</setter>
+      </property>
+
+      <property name="do_select">
+	<setter>
+	  if (val != this._selpoint)
+	      return;
+	  this._undo = this._sellist[this._selpoint];
+	  this._sellist[this._selpoint] = true;
+	  this.redraw();
+	</setter>
+      </property>
+
+      <property name="do_deselect">
+	<setter>
+	  if (val != this._selpoint)
+	      return;
+	  this._undo = this._sellist[this._selpoint];
+	  this._sellist[this._selpoint] = false;
+	  this.redraw();
+	</setter>
+      </property>
+
+      <property name="do_undo">
+	<setter>
+	  if (val != this._selpoint)
+	      return;
+	  this._sellist[this._selpoint] = this._undo;
+	  this.redraw();
+	</setter>
+      </property>
+      
+      <methods>
+	<method name="redraw">
+	  <body><![CDATA[
+	  var rect = this.anon_el('selrect');
+
+	  var tlog = this._tracklog;
+	  var sellist = this._sellist;
+	  var selpoint = this._selpoint;
+	  if (tlog == null || sellist == null || selpoint == null) {
+	      return;
+	  }
+
+	  if (selpoint > tlog.igcPointCount() || !sellist[selpoint])
+	      rect.setAttribute('style', 'fill-opacity: 0');
+	  else
+	      rect.setAttribute('style', 'fill-opacity: 0.3');
+	  ]]>
+	  </body>
+	</method>
+	
+	<method name="_mm">
+	  <parameter name="event"/>
+	  <body><![CDATA[
+	    var me = document.draggedItem;
+	    var newpoint = Math.round((event.clientX - me._startx) / 2) + me._selpoint;
+	    var lastpoint = me._lastpoint;
+	    var point = me._selpoint;
+	    var pcount = Math.round(me.getAttribute('width') / 2);
+
+	    // Check that the newpoint is not outside bounds
+	    if (newpoint < point - me.seloffset)
+	        newpoint = point - me.seloffset;
+	    if (newpoint >= point - me.seloffset + pcount)
+	        newpoint = point - me.seloffset + pcount - 1;
+	    if (newpoint >= me._tracklog.igcPointCount())
+	        newpoint = me._tracklog.igcPointCount() - 1;
+
+	    // publish our coordinates
+	    me.FLparent.set_property('mousepoint', newpoint);
+
+	    if (newpoint == me._lastpoint)
+	        return;
+
+	    // Go from lastpos to newpos and call undo/action according to direction
+	    if (newpoint > lastpoint)
+	        incf = function(x) { return x+1 }
+	    else
+	        incf = function(x) { return x-1 }
+	    
+	    for (var pos = incf(lastpoint); pos != newpoint; pos=incf(pos)) {
+	        var pdiff = pos - point;
+		var ldiff = pos - lastpoint;
+		if (pdiff * ldiff > 0)
+		    me.FLparent.set_property(me._action, pos);
+		else if (pdiff * ldiff < 0)
+		    me.FLparent.set_property('do_undo', pos);
+	    }
+
+	    // Special cases - newpoint, lastpoint
+	    if ((newpoint > point && newpoint > lastpoint )
+	             || (newpoint < point && newpoint < lastpoint)) {
+		// getting longer
+		me.FLparent.set_property(me._action, newpoint); 
+
+		// special case on side flip
+		if ((lastpoint < point && newpoint > point)
+		    || lastpoint > point && newpoint < point)
+		        me.FLparent.set_property('do_undo', lastpoint);
+	    } else {// getting shorter, undo
+	        me.FLparent.set_property('do_undo', lastpoint);
+	    }
+	    
+	    me._lastpoint = newpoint;
+	    ]]>
+	  </body>
+	</method>
+
+	<method name="_mu">
+	  <parameter name="event"/>
+	  <body>
+	    <![CDATA[
+	      var me = document.draggedItem;
+	      document.removeEventListener("mousemove", document.draggedItem._mm, true);
+	      document.removeEventListener("mouseup", document.draggedItem._mu, true);
+	      document.draggedItem = null;
+	      // Update lazy items
+	      me.FLparent.set_property('do_update', 0);
+	    ]]>
+	  </body>
+	</method>
+      </methods>     
+    </implementation>
+    <handlers>
+      <handler event="mousedown">
+	<![CDATA[
+	  if (this._selpoint > this._tracklog.igcPointCount())
+	      return;
+
+	  var sellist = this._sellist;
+	  sellist[this._selpoint] = !sellist[this._selpoint];
+
+	  this.redraw();
+	  // publish our coordinates
+	  this.FLparent.set_property('mousepoint', this._selpoint);
+
+          if (sellist[this._selpoint])
+	      this._action = 'do_select';
+	  else
+	      this._action = 'do_deselect';
+
+	  this._startx = event.clientX;
+	  this._lastpoint = this._selpoint;
+          document.draggedItem = this;
+          document.addEventListener("mousemove", this._mm, true);
+          document.addEventListener("mouseup", this._mu, true);
+	]]>
+      </handler>
+    </handlers>
+  </binding>
+
+  <!-- Compount object that creates collection flzpoint that covers
+       required interval -->
+  <binding id="flzselector" 
+	   extends="chrome://gipsy/content/fprofile.xbl#flbasic">
+    <content>
+      <svg:g anonid="elems" />
+    </content>
+    <implementation>
+      <constructor><![CDATA[
+      	const svgns = "http://www.w3.org/2000/svg";
+
+	var group = this.anon_el('elems');
+	var pcount = this.getAttribute('width') / 2;
+	var height = this.getAttribute('height');
+	var y = this.getAttribute('y');
+	for (var i=0; i < pcount; i++) {
+	   var elem = document.createElementNS(svgns, 'flzpoint');
+	   elem.setAttribute('x', i*2);
+	   elem.setAttribute('y', y);
+	   elem.setAttribute('height', height);
+	   group.appendChild(elem);
+	   elem.seloffset = i;
+	}
+	]]>
+      </constructor>
+    </implementation>
+  </binding>
+
+  <!-- Information about the point when x-axis is 2pixels=1 point -->
+  <binding id="flzpointdata"
+	   extends="chrome://gipsy/content/fprofile.xbl#flpointdata">
+    <implementation>
+      <property name="zoompoint"
+		onset="this._zoompoint=val; this.hide();" />
+
+      <methods>
+	<method name="get_x">
+	  <parameter name="point" />
+	  <body><![CDATA[
+	    var x = (point - this._zoompoint) * 2 - this.rwidth/2;
+	    if (x < 0)
+	        x = 0;
+	    if (x + this.rwidth > this.width)
+	         x = this.width - this.rwidth;
+	    return x;
+	    ]]>
+	  </body>
+	</method>
+      </methods>
+    </implementation>
+  </binding>
+
+  <!-- Lines for showing a 'zoom' selection -->
+  <binding id="flzline"
+	   extends="chrome://gipsy/content/fprofile.xbl#flbasic">
+    <content>
+      <svg:line xbl:inherits="y1 y2 x2=sx stroke stroke-width" 
+		anonid="sline" stroke="red" stroke-width="0.2" />
+      <svg:line xbl:inherits="y1 y2 x2=ex stroke stroke-width" 
+		anonid="eline" stroke="red" stroke-width="0.2" />
+    </content>
+
+    <implementation>
+      <property name="zoompoint"
+		onget="return this._point"
+		onset="this._point=val;this.redraw();" />
+
+      <property name="tracklog" onset="this.redraw()" />
+      
+      <methods>
+	<method name="redraw">
+	  <body>
+	    var sline = this.anon_el('sline');
+	    var eline = this.anon_el('eline');
+
+	    var start = this._point;
+	    var tlog = this._tracklog;
+	    var zoomsel = document.getElementById(this.getAttribute('zoomselid'));
+	    zoomsel.zoompoint = this._point;
+	    sline.setAttribute('x1', zoomsel.stx);
+	    eline.setAttribute('x1', zoomsel.stx + zoomsel.wtx - 1);
+	  </body>
+	</method>
+      </methods>
+    </implementation>
+  </binding>
+
+  <!-- Show text valid/invalid depending on time validation -->
+  <binding id="flzvalidate"
+	   extends="chrome://gipsy/content/fprofile.xbl#flbasic">
+    <content>
+      <svg:text xbl:inherits="x y style font-size" anonid="invalid">&tracklog.invalid;</svg:text>
+    </content>
+    <implementation>
+      <property name="tracklog" 
+		onset="this._tlog=val;this._sellist=null;this.redraw()" />
+      <property name="sellist" 
+		onset="this._sellist=val;this.redraw()" />
+      <property name="do_update" 
+		onset="this.redraw()" />
+
+      <method name="redraw">
+	<body><![CDATA[
+	  var tlog = this._tlog;
+	  var sellist = this._sellist;
+
+	  var invtext = this.anon_el('invalid');
+
+	  if (tlog == null || sellist == null) {
+	      invtext.style.visibility = 'hidden';
+	      return;
+	  }
+	  // Build list of points
+	  var section = [];
+	  for (var i=0; i < sellist.length; i++)
+	      if (sellist[i])
+	          section.push(i);
+	  if (tlog.igcSectionValid(section.length, section))
+	      invtext.style.visibility = 'hidden';
+	  else
+	      invtext.style.visibility = 'visible';
+	      ]]>
+	</body>
+      </method>
+    </implementation>
+  </binding>
+
+  <!-- Draw a selection according to sellist -->
+  <binding id="flreselection"
+	   extends="chrome://gipsy/content/fprofile.xbl#flbasic">
+    <content>
+      <svg:path xbl:inherits="fill fill-opacity transform" 
+		fill="blue" fill-opacity="0.3"
+		anonid="a_polygon"  />
+    </content>
+    <implementation>
+      <property name="tracklog" 
+		onset="this._tlog = val; this._sellist=null; this.redraw();" />
+      <property name="sellist" 
+		onset="this._sellist = val; this.redraw();" />
+
+      <property name="do_update" onset="this.redraw()" />
+
+      <method name="redraw">
+	<body>
+	<![CDATA[
+	var tlog = this._tlog;
+	var sellist = this._sellist;
+	var path = this.anon_el('a_polygon');
+	if (tlog == null || sellist == null) {
+	    path.setAttribute('d', '');
+	    return;
+	}
+	var height = this.getAttribute('height');
+	var width = this.getAttribute('width');
+
+	var btime = tlog.igcPoint(0).time;
+	var endtime = tlog.igcPoint(tlog.igcPointCount() - 1).time;
+	var scale = (1.0 * width) / (endtime - btime);
+
+	var data = 'M 0 ' + height;
+	var selected = false;
+	for (var i=0; i < sellist.length; i++) {
+	    if (sellist[i] == selected)
+	        continue;
+
+            var x = (tlog.igcPoint(i).time - btime) * scale;
+	    if (sellist[i]) {
+	        data += 'L' + x + ' ' + height;
+	        data += 'L' + x + ' ' + 0;
+	    } else {
+	        data += 'L' + x + ' ' + 0;
+	        data += 'L' + x + ' ' + height;
+            }
+	    selected = sellist[i];
+	}
+	if (selected)
+	   data += 'L' + width + ' 0';
+	data += 'L' + width + ' ' + height + 'Z';
+
+	path.setAttribute('d', data);
+	]]>
+	</body>
+      </method>
+    </implementation>
+  </binding>
+
+  <!-- Widget that detects mouse movement and draws a line on profile -->
+  <binding id="flprofmouse"
+	   extends="chrome://gipsy/content/fprofile.xbl#flbasic">
+    <content>
+      <svg:rect fill="yellow" xbl:inherits="x y width height" 
+		fill-opacity="0" />
+      <svg:line stroke="black" stroke-width="0.5" 
+		y1="0" xbl:inherits="y2=height" anonid="line" 
+		style="visibility:hidden" stroke-dasharray="4,4"/>
+    </content>
+    <implementation>
+      <methods>
+	<property name="tracklog">
+	  <setter>
+	    this._tlog = val;
+	    this._point = null;
+	    if (this._tlog) {
+	      var tlog = val;
+	      this.starttime = tlog.igcPoint(0).time;
+	      var endtime = tlog.igcPoint(tlog.igcPointCount()-1).time;
+	      this.scale = (endtime - this.starttime) / this.getAttribute('width');
+	    }
+	    this.redraw();
+	  </setter>
+	</property>
+      
+	<property name="point"
+		  onset="this._point=val;this.redraw();" />
+
+	<method name="redraw">
+	  <body><![CDATA[
+	  var line = this.anon_el('line');
+
+	  var point = this._point;
+	  var tlog = this._tlog;
+
+	  if (tlog == null || point == null) {
+	      line.style.visibility = 'hidden';
+	      return;
+	  }
+	  line.style.visibility = 'visible';
+	  
+	  var ptime = tlog.igcPoint(point).time;
+	  var x = (ptime - this.starttime) / this.scale;
+	  line.setAttribute('x1', x);
+	  line.setAttribute('x2', x);
+	]]>
+	  </body>
+	</method>
+      </methods>
+    </implementation>
+    <handlers>
+      <handler event="mousemove">
+	<![CDATA[
+		 var tlog = this._tlog;
+		 if (tlog == null)
+		     return;
+
+		 var line = this.anon_el('line');
+		 var svg = line.ownerSVGElement;
+		 var matrix = svg.getCTM();
+
+		 var svgPoint = svg.createSVGPoint();
+		 svgPoint.x = event.clientX;
+		 svgPoint.y = event.clientY;
+
+		 svgPoint = svgPoint.matrixTransform(matrix.inverse());
+		 var x = Math.round(svgPoint.x) - this.getAttribute('transx');
+		 
+		 var adtime = starttime + x * scale;
+                 var point = tlog.igcFindNearest(adtime);
+            
+                 this.FLparent.set_property('point', point);
+		 var mcname = this.getAttribute('mapcontainer');
+		 if (mcname) {
+		     var mc = document.getElementById(mcname);
+		     mc.set_property('point', point);
+		 }
+	]]>
+      </handler>
+    </handlers>
+  </binding>
+</bindings>
+

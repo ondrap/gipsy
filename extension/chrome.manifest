@@ -1,0 +1,11 @@
+content	gipsy	chrome/content/
+
+locale gipsy en chrome/locale/en-US/
+locale gipsy cs chrome/locale/cs-CZ/
+locale gipsy hu chrome/locale/hu-HU/
+locale gipsy de chrome/locale/de-DE/
+locale gipsy fr chrome/locale/fr-FR/
+locale gipsy pl chrome/locale/pl-PL/
+locale gipsy it chrome/locale/it-IT/
+
+overlay chrome://browser/content/browser.xul chrome://gipsy/content/overlays-ff.xul

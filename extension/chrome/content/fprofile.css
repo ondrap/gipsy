@@ -1,0 +1,100 @@
+flcontainer {
+	-moz-binding: url('chrome://gipsy/content/fprofile.xbl#flcontainer');
+}
+
+flaltprofile {
+	-moz-binding: url('chrome://gipsy/content/fprofile.xbl#flaltprofile');
+}
+
+flspeedprofile {
+	-moz-binding: url('chrome://gipsy/content/fprofile.xbl#flspeedprofile');
+}
+
+fltimespan {
+	-moz-binding: url('chrome://gipsy/content/fprofile.xbl#fltimespan');
+}
+
+flselection {
+	-moz-binding: url('chrome://gipsy/content/fprofile.xbl#flselection');
+}
+
+fldragsel {
+	-moz-binding: url('chrome://gipsy/content/fprofile.xbl#fldragsel');
+	cursor: pointer;
+}
+
+flrangecontrol {
+	-moz-binding: url('chrome://gipsy/content/fprofile.xbl#flrangecontrol');
+	font-size: 10px;
+}
+
+flflatmap {
+	-moz-binding: url('chrome://gipsy/content/fgmap.xbl#flflatmap');
+}
+
+flpointdata {
+	-moz-binding: url('chrome://gipsy/content/fprofile.xbl#flpointdata');
+}
+
+flzoomsel {
+	-moz-binding: url('chrome://gipsy/content/fprofile.xbl#flzoomsel');
+	cursor: pointer;
+}
+
+flpaltprofile {
+	-moz-binding: url('chrome://gipsy/content/fprofile.xbl#flpaltprofile');
+}
+
+flpspeedprofile {
+	-moz-binding: url('chrome://gipsy/content/fprofile.xbl#flpspeedprofile');
+}
+
+flzpoint {
+	-moz-binding: url('chrome://gipsy/content/fprofile.xbl#flzpoint');
+	cursor: pointer;
+}
+
+flzselector {
+	-moz-binding: url('chrome://gipsy/content/fprofile.xbl#flzselector');
+}
+
+flzpointdata {
+	-moz-binding: url('chrome://gipsy/content/fprofile.xbl#flzpointdata');
+}
+
+flzline {
+	-moz-binding: url('chrome://gipsy/content/fprofile.xbl#flzline');
+}
+
+flreselection {
+	-moz-binding: url('chrome://gipsy/content/fprofile.xbl#flreselection');
+}
+
+flmapcontainer {
+	-moz-binding: url('chrome://gipsy/content/fgmap.xbl#flmapcontainer');
+}
+
+flzvalidate {
+	-moz-binding: url('chrome://gipsy/content/fprofile.xbl#flzvalidate');
+}
+
+
+flmapicons {
+	-moz-binding: url('chrome://gipsy/content/fgmap.xbl#flmapicons');
+}
+
+flprofmouse {
+	-moz-binding: url('chrome://gipsy/content/fprofile.xbl#flprofmouse');
+}
+
+flgmap {
+	-moz-binding: url('chrome://gipsy/content/fgmap.xbl#flgmap');
+}
+
+flmapdrag {
+	-moz-binding: url('chrome://gipsy/content/fgmap.xbl#flmapdrag');
+}
+
+.pointinfo text {
+	font-size: 8px;
+}

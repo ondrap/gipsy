@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://gipsy/locale/main.dtd">
+
+<dialog
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  id="passwd_dialog"
+  title="&passwd.title;"
+  ondialogaccept="window.arguments[0].passwd=document.getElementById('password').value;return true;"
+  onload="document.getElementById('userid').value=window.arguments[0].userid;document.getElementById('password').focus();">
+  
+  <grid>
+    <columns><column/><column/></columns>
+    <rows>
+      <row align="center">
+	<label value="&passwd.xcontestid;:"/>
+	<textbox id="userid" readonly="readonly"/>
+      </row>
+      <row align="center">
+	<label value="&passwd.password;:"/>
+	<textbox type="password" id="password"/>
+      </row>
+    </rows>
+  </grid>
+</dialog>

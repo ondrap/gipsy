@@ -1,0 +1,55 @@
+<?xml version="1.0"?>	
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://gipsy/locale/main.dtd">
+
+<prefwindow id="appPreferences"
+            xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	    title="&prefs.title;" >
+
+  <script src="util.js" />
+  <script src="preferences.js" />
+  <stringbundle id="bundle" src="chrome://gipsy/locale/main.properties"/>
+
+  <prefpane id="main_panel" label="&prefs.main;" onpaneload="onload()">
+    <preferences>
+      <preference id="autodownload" name="extensions.gipsy.autodownload" 
+		  type="bool"/>
+      <preference id="savesubdirs" name="extensions.gipsy.savesubdirs" 
+		  type="bool"/>
+      <preference id="datadir" name="extensions.gipsy.datadir" 
+		  type="string"/>
+      <preference id="metric" name="extensions.gipsy.metric" 
+		  type="bool"/>
+    </preferences>    
+
+    <groupbox>
+      <caption label="&prefs.gpsaccess;" />
+      <checkbox preference="autodownload"
+		label="&prefs.autodownload;"
+		oncommand="needrestart=true"
+		id="autodownload_ck"
+		onsynctopreference="return save_autodownload();"/>
+    </groupbox>
+    <groupbox>
+      <caption label="&prefs.datadir;" />
+      <hbox>
+	<label id="directory"  flex="1"/>
+	<button label="&prefs.changedir;" oncommand="ask_data_dialog()"
+		preference="datadir" 
+		onsynctopreference="return save_datadir();" />
+      </hbox>
+      <button label="&prefs.changetohome;" oncommand="set_to_home()"
+	      preference="datadir" 
+	      onsynctopreference="return save_datadir();" />
+      <checkbox preference="savesubdirs" label="&prefs.savesubdirs;"/>
+    </groupbox>
+    <groupbox>
+      <caption label="&prefs.units;" />
+      <checkbox preference="metric"
+		label="&prefs.metricsystem;"
+		id="metric_ok" />
+    </groupbox>
+  </prefpane>
+
+</prefwindow>

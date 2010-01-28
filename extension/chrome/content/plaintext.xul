@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://gipsy/locale/main.dtd">
+
+<dialog
+    id="plaintext_window"
+    orient="vertical"
+    buttons="accept"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    persist="width height" 
+    width="700" height="600" >
+
+  <script src="util.js" />
+  <script src="plaintext.js" />
+
+  <textbox readonly="true" multiline="true" flex="1" id="igc_text" /> 
+
+</dialog>

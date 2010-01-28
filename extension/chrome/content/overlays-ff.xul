@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?xml-stylesheet href="chrome://xpcomviewer/skin/overlays.css" type="text/css"?>
+<!DOCTYPE window SYSTEM "chrome://gipsy/locale/main.dtd">
+
+<overlay id="eXpcomViewerBrowserOverlay"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <!-- Menu tools -->
+  <menupopup id="menu_ToolsPopup">
+    <menuitem id="gipsy-launch" label="&gipsy.title;"
+	      position="2"
+	      oncommand="window.openDialog('chrome://gipsy/content/main.xul', 'gipsy_main', 'dialog=no, chrome, modal=no');"/>
+  </menupopup>
+
+</overlay>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://gipsy/locale/main.dtd">
+
+<dialog
+    id="about-window"
+    title="&about;"
+    height="180"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    buttons="accept" 
+    defaultButton="accept" 
+    orient="vertical" >
+
+  <description style="font-weight: bold; font-size : 125%; padding: 10px 0 5px 0">GiPSy Flight Manager</description>
+  <description>by Ondřej Palkovský, with XContest crew support :-)</description>
+  <description style="font-style: italic;">version 1.5.9</description>
+</dialog>

@@ -1,0 +1,6 @@
+/etc/udev/rules.d/60-garmin.rules
+SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device",SYSFS{idVendor}=="091e", MODE="0666"
+
+Novy debian:
+/etc/udev/rules.d/60-garmin.rules
+SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="091e", MODE="0666"
