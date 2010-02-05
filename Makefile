@@ -16,12 +16,7 @@ ia32:
 	
 
 gipsy.xpi: extension/chrome/content/cities.db
-	cp extension/install_full.rdf extension/install.rdf
 	(cd extension;find . \! -regex ".*\\.svn.*" \! -regex ".*~\$$" | zip -@ ../gipsy.xpi)
-
-gipsy_lite.xpi:
-	cp extension/install_lite.rdf extension/install.rdf
-	(cd extension;find . \! -regex ".*\\.svn.*" \! -regex ".*~\$$" \! -name cities.db | zip -@ ../gipsy_lite.xpi)
 
 extension/chrome/content/cities.db:
 	(cd cities; rm cities.db; cat *.txt | ./builddb.py )
