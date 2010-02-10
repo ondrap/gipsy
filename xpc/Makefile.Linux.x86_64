@@ -3,7 +3,7 @@ XPIDL = /usr/lib64/xulrunner-$(XULVERSION)/xpidl
 XULIDLPATH = /usr/share/idl/xulrunner-$(XULVERSION)/stable/
 GECKO_SDK_PATH = /usr/lib/xulrunner-devel-$(XULVERSION)/sdk/
 GECKO_DEFINES = -DCRYPTPP
-GECKO_INCLUDES := `pkg-config --cflags  /usr/lib64/pkgconfig/libxul.pc`  -I/usr/include/xulrunner-1.9.1.7/unstable
+GECKO_INCLUDES := `pkg-config --cflags  /usr/lib64/pkgconfig/libxul.pc`  -I/usr/include/xulrunner-$(XULVERSION)/unstable
 GECKO_LDFLAGS :=  `pkg-config --libs  /usr/lib64/pkgconfig/libxul.pc`
 CRYPTO_LIB = /usr/lib/libcryptopp.a
 
