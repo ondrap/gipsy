@@ -1526,7 +1526,7 @@
 
 		 var line = this.anon_el('line');
 		 var svg = line.ownerSVGElement;
-		 var matrix = svg.getCTM();
+		 var matrix = svg.getScreenCTM();
 
 		 var svgPoint = svg.createSVGPoint();
 		 svgPoint.x = event.clientX;
