@@ -15,8 +15,8 @@ mv xpc/gipsyversion.h.new xpc/gipsyversion.h
 cat extension/install.rdf | sed -e "s/\(em:version=\"\).*\"/\\1$VERSION\"/" > extension/install.rdf.new
 mv extension/install.rdf.new extension/install.rdf
 
-cat html/update.rdf | sed -e "s/\(em:version>\).*</\\1$VERSION</"  > html/update.rdf.new
-mv html/update.rdf.new html/update.rdf
+#cat html/update.rdf | sed -e "s/\(em:version>\).*</\\1$VERSION</"  > html/update.rdf.new
+#mv html/update.rdf.new html/update.rdf
 
 # Modify about dialog
 cat extension/chrome/content/about.xul | sed -e "s/version .*</version $VERSION</" > a.new
