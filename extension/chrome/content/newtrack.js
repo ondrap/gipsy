@@ -329,7 +329,7 @@ function onpointsadvance()
 /* Check if all fields that are mandotory contain at least one character */
 function check_mandatory()
 {
-    var arr = ['pilot', 'glider',  'site', 'country' ];
+    var arr = ['pilot', 'glider',  'site'];
 
     if (elem('xcontest_input').checked)
 	arr.push('xcontestid');
