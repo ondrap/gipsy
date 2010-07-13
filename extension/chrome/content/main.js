@@ -90,7 +90,19 @@ function OnLoad() {
 	elem('gpxthermals').style.display = '-moz-box';
     if (gstore.OS == 'WINNT')
 	elem('popup_launch').style.display = '-moz-box';
-	
+    ctx_setup_usercmd();
+}
+
+function ctx_setup_usercmd() {
+    for (var num=1; num < 4; num++) {
+        if (get_string_pref('usercmd_' + num + '_title') && get_string_pref('usercmd_' + num + '_cmd')) {
+            elem('ctx_usercmd' + num).style.display = '-moz-box';
+            elem('ctx_usercmd' + num).label = get_string_pref('usercmd_' + num + '_title');
+        } else {
+            elem('ctx_usercmd' + num).style.display = 'none';
+        }
+    }
+    
 }
 
 // Uff..rescan of the input directory takes a long time, 
@@ -120,7 +132,6 @@ function OnUnload() {
 }
 window.onload = OnLoad;
 window.onunload = OnUnload;
-
 
 // Start download on GPS
 function start_download(pos)

@@ -21,6 +21,24 @@
 		  type="string"/>
       <preference id="metric" name="extensions.gipsy.metric" 
 		  type="bool"/>
+      <preference id="usercmd_1_title" name="extensions.gipsy.usercmd_1_title" 
+                  type="string" />
+      <preference id="usercmd_2_title" name="extensions.gipsy.usercmd_2_title" 
+                  type="string" />
+      <preference id="usercmd_3_title" name="extensions.gipsy.usercmd_3_title" 
+                  type="string" />
+      <preference id="usercmd_1_cmd" name="extensions.gipsy.usercmd_1_cmd" 
+                  type="string" />
+      <preference id="usercmd_2_cmd" name="extensions.gipsy.usercmd_2_cmd" 
+                  type="string" />
+      <preference id="usercmd_3_cmd" name="extensions.gipsy.usercmd_3_cmd" 
+                  type="string" />
+      <preference id="usercmd_1_params" name="extensions.gipsy.usercmd_1_params" 
+                  type="string" />
+      <preference id="usercmd_2_params" name="extensions.gipsy.usercmd_2_params" 
+                  type="string" />
+      <preference id="usercmd_3_params" name="extensions.gipsy.usercmd_3_params" 
+                  type="string" />
     </preferences>    
 
     <groupbox>
@@ -49,6 +67,38 @@
       <checkbox preference="metric"
 		label="&prefs.metricsystem;"
 		id="metric_ok" />
+    </groupbox>
+    <groupbox>
+        <caption label="User commands" />
+        <grid>
+            <columns>
+                <column />
+                <column />
+                <column />
+            </columns>
+            <rows>
+                <row>
+                    <vbox>Title</vbox>
+                    <vbox>Command path</vbox>
+                    <vbox>Additional parameters</vbox>
+                </row>
+                <row>
+                    <textbox id="usercmd_1_title" preference="usercmd_1_title" />
+                    <textbox id="usercmd_1_cmd" preference="usercmd_1_cmd" />
+                    <textbox id="usercmd_1_params" preference="usercmd_1_params" />
+                </row>
+                <row>
+                    <textbox id="usercmd_2_title" preference="usercmd_2_title" />
+                    <textbox id="usercmd_2_cmd" preference="usercmd_2_cmd" />
+                    <textbox id="usercmd_2_params" preference="usercmd_2_params" />
+                </row>
+                <row>
+                    <textbox id="usercmd_3_title" preference="usercmd_3_title" />
+                    <textbox id="usercmd_3_cmd" preference="usercmd_3_cmd" />
+                    <textbox id="usercmd_3_params" preference="usercmd_3_params" />
+                </row>
+            </rows>
+        </grid>
     </groupbox>
   </prefpane>
 

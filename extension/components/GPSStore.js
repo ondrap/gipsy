@@ -587,7 +587,7 @@ GPSStore.prototype = {
 
     // Get flights in given month
     getFlightsInMonth : function(month, pilot) {
-	var query = 'SELECT file, date, pilot, glider, country, site, landing, synchro FROM flights WHERE strftime("%Y-%m", date, "unixepoch", "localtime")=?1 XXX ORDER BY date DESC, ltrim(lower(pilot),\'aüöäÜÖÄbcčČdďĎeéěÉĚfghiíÍjklmnňňoóÓpqrřŘsšŠtťŤuúůÚvwxyýÝzžŽ\')';
+	var query = 'SELECT file, date, pilot, glider, country, site, landing, synchro FROM flights WHERE strftime("%Y-%m", date, "unixepoch", "localtime")=?1 XXX ORDER BY strftime("%Y-%m-%d", date, "unixepoch", "localtime") DESC, ltrim(lower(pilot),\'aüöäÜÖÄbcčČdďĎeéěÉĚfghiíÍjklmnňňoóÓpqrřŘsšŠtťŤuúůÚvwxyýÝzžŽ\')';
 
 	var filter = '';var bfunc = function() {};
 	if (pilot != null) {

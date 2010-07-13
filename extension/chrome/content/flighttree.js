@@ -20,7 +20,6 @@ var treeView = {
     get rowCount() { return this.rows.length; },    
 
     getCellText : function(row,column) {
-	
 	return this.rows[row][column.id];
     },
     hasNextSibling: function(row, afterIndex) 
@@ -210,6 +209,7 @@ var treeView = {
 	    if (Country_list.hasOwnProperty(country))
 		country = Country_list[country];
 	    this.rows.push({
+                    synchro : false,
 		    level : 0,
 		    col_date_nm : country,
 		    count : cntrs[i][1],
@@ -234,7 +234,8 @@ var treeView = {
 	    if (lastyear != null && months[i][1] != lastyear) {
 		this.rows.push({
 		        level : 0,
-			separator : true
+			separator : true,
+			synchro : false
 			});
 	    } 
 	    this.rows.push({
@@ -242,6 +243,7 @@ var treeView = {
 		    value : months[i][0],
 		    col_date_nm : months[i][0],
 		    count : months[i][2],
+		    synchro : false,
 		    separator: false,
 		    get col_date() { 
 			return this.col_date_nm + ' (' + this.count + ')';
@@ -274,6 +276,37 @@ var treeView = {
 	    return;
 	var file = gstore.getIGCFile(flightmodel.fname);
 	file.launch();
+    },
+
+    // Start user command
+    user_command : function(num) {
+        var file = gstore.getIGCFile(flightmodel.fname);
+        var process = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+        var procname = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+        procname.initWithPath(get_string_pref('usercmd_' + num + '_cmd'));
+        process.init(procname);
+
+        var dirsvc = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
+        var tmpfile = dirsvc.get('TmpD', Components.interfaces.nsILocalFile);
+        tmpfile.appendRelativePath('gipsy.output');
+        
+        args = [ file.path, tmpfile.path ];
+        
+        var params = get_string_pref('usercmd_' + num + '_params');
+        params = params.split(' ');
+        for (var i=0; i < params.length; i++)
+            args.push(params[i]);
+        
+        process.run(true, args, args.length);
+
+        if (process.exitValue) {
+            alert('Process failed.');
+        } else {
+            // var istream = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream);
+            // istream.init(tmpfile, -1, -1, Components.interfaces.nsIFileInputStream.CLOSE_ON_EOF);
+            // var bistream = Components.classes[""].createInstance(Components.interfaces.nsIBinaryInputStream);
+            window.openDialog('file:///' + tmpfile.path, 'user_output', 'dialog=yes, chrome, modal=yes');
+        }
     },
 
     // Export selected file to GPX

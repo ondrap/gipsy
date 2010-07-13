@@ -34,6 +34,10 @@
     <menuitem label="&delete;" oncommand="treeView.delete_cmd()" />
     <menuseparator />
     <menuitem label="&properties;" oncommand="treeView.properties_cmd()" />
+    <menuseparator />
+    <menuitem label="User command 1" oncommand="treeView.user_command(1)" id="ctx_usercmd1" />
+    <menuitem label="User command 2" oncommand="treeView.user_command(2)" id="ctx_usercmd2" />
+    <menuitem label="User command 3" oncommand="treeView.user_command(3)" id="ctx_usercmd3" />
   </popup>
 
   <popup id="gps_popup">
