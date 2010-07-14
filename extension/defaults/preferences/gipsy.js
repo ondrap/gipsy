@@ -20,3 +20,4 @@ pref("extensions.gipsy.usercmd_3_cmd", "");
 pref("extensions.gipsy.usercmd_1_params", "");
 pref("extensions.gipsy.usercmd_1_params", "");
 pref("extensions.gipsy.usercmd_1_params", "");
+pref("extensions.gipsy.autoselecttoday", false);

@@ -57,9 +57,14 @@ function loadTrackList() {
 	item.appendChild(cell2);
 	
 	dlist.appendChild(item);
+	
+	if (get_bool_pref('autoselecttoday')) {
+            if (startdate.toLocaleFormat('%Y.%m.%d') == new Date().toLocaleFormat('%Y.%m.%d'))
+                dlist.addItemToSelection(item);
+        }
    }
     // TODO: Now select the first usable track
-    
+
     // At least 5 minutes, height difference more then 50 meters,
     // passes time validation
 }
