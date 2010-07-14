@@ -43,6 +43,7 @@
 #include "garmin.h"
 #include "aircotec.h"
 #include "mlr.h"
+#include "flymaster.h"
 
 using namespace std;
 
@@ -449,6 +450,8 @@ Gps * make_gps(const string &device, int gpstype)
 	gps = new AircotecGps(new UnixSerialDev(device));
     } else if (gpstype == GPS_MLR) {
 	gps = new MLRGps(new UnixSerialDev(device));
+    } else if (gpstype == GPS_FLYMASTER) {
+        gps = new FlymasterGps(new UnixSerialDev(device));
     } else
 	return NULL;
     

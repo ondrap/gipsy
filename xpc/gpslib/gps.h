@@ -15,10 +15,11 @@
 
 #define GARMIN_VENDOR 0x091e
 
-#define GPS_GARMIN   0
-#define GPS_AIRCOTEC 1
-#define GPS_COMPEO 2
-#define GPS_MLR 3
+#define GPS_GARMIN    0
+#define GPS_AIRCOTEC  1
+#define GPS_COMPEO    2
+#define GPS_MLR       3
+#define GPS_FLYMASTER 4
 
 /* General exception thrown on communication errors, etc. */
 class Exception {
@@ -66,7 +67,9 @@ class Gps {
     std::string gpsname;   /* Name of the GPS */
     uint32_t gpsunitid;   /* Ideally UnitID of the GPS, otherwise
 			   * control sum of the control packets */
-    std::vector<std::string> saved_tracks;
+			   
+    int selected_track;  /* Selected track for GPSes that support track selection */
+    std::vector< std::pair<time_t,time_t> >saved_tracks;
 };
 
 class PortInfo {

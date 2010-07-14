@@ -14,11 +14,14 @@ int main(int argc, char **argv)
 	cout << "Device: " << ports[i].device << ", devname: " << ports[i].devname << endl;
 	
 	try {
-	    Gps *gps = make_gps(ports[i].device, GPS_GARMIN);
+	    Gps *gps = make_gps(ports[i].device, GPS_FLYMASTER);
 	    if (gps) {
-		GarminGps *ggps = (GarminGps *) gps;
 		cout << "GPS type: " << gps->gpsname << ", unitid: " << gps->gpsunitid << endl;
-		cout << "Garmin ID: " << ggps->gpsid << ", version: " << ggps->gpsversion << endl;
+                for (size_t i=0; i < gps->saved_tracks.size(); i++) {
+                    cout << "Track " << i << ": ";
+                    cout << ctime(&gps->saved_tracks[i].first) << " ";
+                    cout << ctime(&gps->saved_tracks[i].second) << endl;
+                }
 	    } else {
 		cout << "GPS open failed" << endl;
 	    }

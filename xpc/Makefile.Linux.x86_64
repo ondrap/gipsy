@@ -1,6 +1,6 @@
-XULVERSION=1.9.1.7
+XULVERSION=1.9.2.5pre
 XPIDL = /usr/lib64/xulrunner-$(XULVERSION)/xpidl
-XULIDLPATH = /usr/share/idl/xulrunner-$(XULVERSION)/stable/
+XULIDLPATH = /usr/share/idl/xulrunner-$(XULVERSION)/
 GECKO_SDK_PATH = /usr/lib/xulrunner-devel-$(XULVERSION)/sdk/
 GECKO_DEFINES = -DCRYPTPP
 GECKO_INCLUDES := `pkg-config --cflags  /usr/lib64/pkgconfig/libxul.pc`  -I/usr/include/xulrunner-$(XULVERSION)/unstable

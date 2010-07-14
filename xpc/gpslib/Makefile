@@ -1,6 +1,6 @@
 CXXFLAGS = -Wall -DDEBUG -DUSE_LIBUSB
 #CXXFLAGS = -Wall -DVALIDATOR
-OBJS = gps.o phys.o data.o garmin.o igc.o
+OBJS = gps.o phys.o data.o garmin.o igc.o flymaster.o
 
 WINLIBS = -lsetupapi
 
@@ -17,8 +17,8 @@ vali: vali.o igc.o
 
 igc.o: igcparser.cpp
 
-gpstest: gpstest.o phys.o aircotec.o data.o gps.o garmin.o igc.o mlr.o
-	$(CXX) $(CXXFLAGS) -static -o $@ gpstest.o phys.o aircotec.o data.o gps.o garmin.o igc.o mlr.o -lcrypto++ -lusb
+gpstest: gpstest.o phys.o aircotec.o data.o gps.o garmin.o igc.o mlr.o flymaster.o
+	$(CXX) $(CXXFLAGS) -static -o $@ gpstest.o phys.o aircotec.o data.o gps.o garmin.o igc.o mlr.o flymaster.o -lcrypto++ -lusb
 
 genkey: genkey.o
 	$(CXX) $(CXXFLAGS) -o $@ genkey.o -lcrypto++
