@@ -83,9 +83,9 @@
       <tab label="&tab.devices;" />
     </tabs>
     <tabpanels flex="1" id="tl_panels">
-      <tabpanel>
+      <tabpanel style="overflow:auto">
 	<hbox flex="1" >
-	  <vbox id="treehbox" width="400" persist="width">
+	  <vbox id="treehbox" width="400" persist="width" flex="1">
 	    <hbox>
 	      <button label="&collapse.all;"
 		      oncommand="expand_all()" />
