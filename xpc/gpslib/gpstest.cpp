@@ -25,6 +25,7 @@ int main(int argc, char **argv)
                 }
 */                
                 PointArr result;
+//                gps->selected_track = 1;
                 result = gps->download_tracklog(NULL, NULL);
 	    } else {
 		cout << "GPS open failed" << endl;

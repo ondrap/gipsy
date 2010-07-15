@@ -75,12 +75,10 @@ static string itoa(int num)
     return data.str();
 }
 
-
-
+#include <stdio.h>
 PointArr FlymasterGps::download_tracklog(dt_callback cb, void *arg)
 {
     PointArr result;
-    Data data;
     
     char tmptime[31];
     strftime(tmptime, 30, "%y%m%d%H%M%S", localtime(&saved_tracks[selected_track].first));
@@ -90,36 +88,39 @@ PointArr FlymasterGps::download_tracklog(dt_callback cb, void *arg)
     send_smpl_command("PFMDNL", args);
     
     while (1) {
+        Data data;
+
         // Read packet ID
-        cerr << 1 << endl;
         int packetid = dev->read() + (dev->read() << 8);
-        cerr << 2 << endl;
         if (packetid == 0xa3a3)
             break;
         int length = dev->read();
-        
-        for (int i=0; i < length; i++)
+
+        for (size_t i=0; i < length; i++)
             data += dev->read();
-        
+
         unsigned char cksum = dev->read();
         // Compute checksum
         unsigned char c_cksum = length;
-        for (int i=0; i < length; i++)
+        for (size_t i=0; i < data.size; i++)
             c_cksum ^= data[i];
         
         if (c_cksum != cksum) {
-            dev->write("\263");
+            dev->write(0xb3);
             throw Exception("Checksum error");
         }
         
         if (packetid == 0xa0a0) {
             FM_Flight_Info finfo;
             if (sizeof(finfo) + 2 != data.size) {
-                dev->write("\263");
+                dev->write(0xb3);
                 throw Exception("Data structure size doesn't match");
             }
             memcpy(&finfo, data.buffer, sizeof(finfo));
+            cerr << "Obtained Flight info" << endl;
         } else if (packetid == 0xa1a1) {
+            cerr << "Unsupported yet" << endl;
+        } else if (packetid == 0xa2a2) {
             cerr << "Unsupported yet" << endl;
         }
         dev->write(0xb1);
