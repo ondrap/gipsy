@@ -30,9 +30,21 @@ typedef struct {
 } gcc_pack FM_Flight_Info;
 
 typedef struct {
+    char fix;
+    int32_t latitude;
+    int32_t longitude;
+    int16_t gpsaltitude;
+    int16_t baro;
+    uint32_t time;
 } gcc_pack FM_Key_Position;
 
 typedef struct {
+    char fix;
+    int8_t latoff;
+    int8_t lonoff;
+    int8_t gpsaltoff;
+    int8_t baroff;
+    uint8_t timeoff;
 } gcc_pack FM_Point_Delta;
 
 }

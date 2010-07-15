@@ -59,7 +59,7 @@ typedef bool (*dt_callback)(void *, int, int);
 /* Generic class representing a GPS */
 class Gps {
   public:
-    Gps() { selected_track=0;};
+    Gps() : selected_track(0) { };
     virtual ~Gps() {};
 
     virtual PointArr download_tracklog(dt_callback cb, void *) = 0;

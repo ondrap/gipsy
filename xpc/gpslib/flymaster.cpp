@@ -1,14 +1,15 @@
-// #include <string>
 #include <vector>
 #include <sstream>
 #include <iostream>
 #include <iomanip>
 #include <time.h>
 #include <string.h>
+#include <math.h>
 
 #include "flymaster.h"
 #include "igc.h"
 #include "data.h"
+#include "endian.h"
 
 #define XON   0x11
 #define XOFF 0x13
@@ -75,6 +76,20 @@ static string itoa(int num)
     return data.str();
 }
 
+static Trackpoint make_point(const FM_Key_Position fpos)
+{
+    Trackpoint newpoint;
+    
+    newpoint.lat = fpos.latitude / 60000.0;
+    newpoint.lon = - fpos.longitude / 60000.0;
+    newpoint.gpsalt = fpos.gpsaltitude;
+    newpoint.baroalt = (1 - pow(fabs((fpos.baro / 10.0)/1013.25), 0.190284)) * 44307.69;
+    newpoint.time = fpos.time + 946684800;
+    newpoint.new_trk = false;
+    
+    return newpoint;
+}
+
 #include <stdio.h>
 PointArr FlymasterGps::download_tracklog(dt_callback cb, void *arg)
 {
@@ -83,10 +98,15 @@ PointArr FlymasterGps::download_tracklog(dt_callback cb, void *arg)
     char tmptime[31];
     strftime(tmptime, 30, "%y%m%d%H%M%S", localtime(&saved_tracks[selected_track].first));
     
+    int pktcount = 0;
+    int pcounter = 0;
+    int expcount = saved_tracks[selected_track].second - saved_tracks[selected_track].first;
+    
     vector<string> args;
     args.push_back(tmptime);
     send_smpl_command("PFMDNL", args);
     
+    FM_Key_Position basepos;
     while (1) {
         Data data;
 
@@ -94,7 +114,7 @@ PointArr FlymasterGps::download_tracklog(dt_callback cb, void *arg)
         int packetid = dev->read() + (dev->read() << 8);
         if (packetid == 0xa3a3)
             break;
-        int length = dev->read();
+        size_t length = dev->read();
 
         for (size_t i=0; i < length; i++)
             data += dev->read();
@@ -117,11 +137,33 @@ PointArr FlymasterGps::download_tracklog(dt_callback cb, void *arg)
                 throw Exception("Data structure size doesn't match");
             }
             memcpy(&finfo, data.buffer, sizeof(finfo));
-            cerr << "Obtained Flight info" << endl;
         } else if (packetid == 0xa1a1) {
-            cerr << "Unsupported yet" << endl;
+            if (sizeof(basepos) != data.size) {
+                dev->write(0xb3);
+                throw Exception("Data structure size doesn't match");
+            }
+            memcpy(&basepos, data.buffer, sizeof(basepos));
+            basepos.latitude = le32_to_host(basepos.latitude);
+            basepos.longitude = le32_to_host(basepos.longitude);
+            basepos.gpsaltitude = le16_to_host(basepos.gpsaltitude);
+            basepos.baro = le16_to_host(basepos.baro);
+            basepos.time = le32_to_host(basepos.time);
+            result.push_back(make_point(basepos));
         } else if (packetid == 0xa2a2) {
-            cerr << "Unsupported yet" << endl;
+            FM_Point_Delta delta;
+            for (int i=0; i + sizeof(delta) <= data.size; i += sizeof(delta)) {
+                memcpy(&delta, data.buffer + i, sizeof(delta));
+                basepos.fix = delta.fix;
+                basepos.latitude += delta.latoff;
+                basepos.longitude += delta.lonoff;
+                basepos.gpsaltitude += delta.gpsaltoff;
+                basepos.baro += delta.baroff;
+                basepos.time += delta.timeoff;
+                pktcount += delta.timeoff;
+                if (!pcounter++ % 60)
+                    cb(arg, pktcount, expcount);
+                result.push_back(make_point(basepos));
+            }
         }
         dev->write(0xb1);
     }

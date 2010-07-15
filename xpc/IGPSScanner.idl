@@ -151,6 +151,7 @@ interface IGPSDevInfo : nsISupports {
     const short G_AIRCOTEC = 1;
     const short G_COMPEO = 2;
     const short G_MLR = 3;
+    const short G_FLYMASTER = 4;
     readonly attribute long gpstype;
 };
 

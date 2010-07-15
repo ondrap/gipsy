@@ -61,6 +61,7 @@ function OnLoad() {
     } catch (e) { }
     if (dll_version == 1) {
 	elem('mlr_gps').parentNode.removeChild(elem('mlr_gps'));
+	elem('flymaster_gps').parentNode.removeChild(elem('flymaster_gps'));
     }
 
     // Check db version

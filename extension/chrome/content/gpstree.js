@@ -31,7 +31,7 @@ function unload_gpstree() {
     observerService.removeObserver(gps_observer, "gps_removed");
 }
 
-const GPS_TYPES = [ "Garmin", "Aircotec", "50x0/Compe*", "MLR/Digifly" ];
+const GPS_TYPES = [ "Garmin", "Aircotec", "50x0/Compe*", "MLR/Digifly", "Flymaster" ];
 
 var gpsView = {
     setTree: function(treebox){ this.treebox = treebox; },
@@ -164,6 +164,8 @@ var gpsView = {
 		var gtype = gps.G_COMPEO;
 	    else if (gpsname == 'mlr')
 		var gtype = gps.G_MLR;
+            else if (gpsname == 'flymaster')
+                var gtype = gps.G_FLYMASTER;
 	    scanner.gpsChangeType(gps.pos, gtype);
 	}
     }
