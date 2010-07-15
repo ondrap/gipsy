@@ -69,13 +69,6 @@ void FlymasterGps::init_gps()
     } while (trackno + 1 < totaltracks);
 }
 
-static string itoa(int num)
-{
-    stringstream data;
-    data << num;
-    return data.str();
-}
-
 static Trackpoint make_point(const FM_Key_Position fpos)
 {
     Trackpoint newpoint;
@@ -184,7 +177,7 @@ static void update_cksum(unsigned char &cksum, const string &data)
         cksum ^= data[i];
 }
 
-string FlymasterGps::gen_command(const string &command, const vector<string> &parameters)
+string NMEAGps::gen_command(const string &command, const vector<string> &parameters)
 {
     stringstream data;
     unsigned char cksum = 0;
@@ -207,31 +200,31 @@ string FlymasterGps::gen_command(const string &command, const vector<string> &pa
     return data.str();
 }
 
-vector<string> FlymasterGps::send_command(const string &command, const vector<string> &parameters)
+vector<string> NMEAGps::send_command(const string &command, const vector<string> &parameters)
 {
     send_smpl_command(command, parameters);
     return receive_data(command);
 }
 
-vector<string> FlymasterGps::send_command(const string &command)
+vector<string> NMEAGps::send_command(const string &command)
 {
     vector<string> parameters;
     
     return send_command(command, parameters);
 }
 
-void FlymasterGps::send_smpl_command(const string &command, const vector<string> &parameters)
+void NMEAGps::send_smpl_command(const string &command, const vector<string> &parameters)
 {
     dev->write(gen_command(command, parameters));
 }
 
-void FlymasterGps::send_smpl_command(const string &command)
+void NMEAGps::send_smpl_command(const string &command)
 {
     vector<string> parameters;
     send_smpl_command(command, parameters);
 }
 
-vector<string> FlymasterGps::receive_data(const string &command)
+vector<string> NMEAGps::receive_data(const string &command)
 {
     int received = 0;
     
