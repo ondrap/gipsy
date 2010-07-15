@@ -6,6 +6,12 @@
 
 using namespace std;
 
+bool cb(void *arg, int c1, int c2)
+{
+    cerr << c1 << " " << c2 << endl;
+    return false;
+}
+
 int main(int argc, char **argv)
 {
     cout << "Getting ports" << endl;
@@ -27,7 +33,7 @@ int main(int argc, char **argv)
     */                
                     PointArr result;
     //                gps->selected_track = 1;
-                    result = gps->download_tracklog(NULL, NULL);
+                    result = gps->download_tracklog(cb, NULL);
                     Igc igc(result, gps->gpsname, gps->gpsunitid);
                     igc.gen_g_record();
                     cout << igc.as_str();
