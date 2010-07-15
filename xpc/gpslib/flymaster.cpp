@@ -1,12 +1,14 @@
-#include <string>
+// #include <string>
 #include <vector>
 #include <sstream>
 #include <iostream>
 #include <iomanip>
 #include <time.h>
+#include <string.h>
 
 #include "flymaster.h"
 #include "igc.h"
+#include "data.h"
 
 #define XON   0x11
 #define XOFF 0x13
@@ -29,13 +31,14 @@ void FlymasterGps::init_gps()
     result = send_command("PFMSNP");
     gpsname = result[0];
     
-    // Compute unit id as a XOR of the result (Flymaster F1 doesn't seem to return serial code)
+    // Compute unit id as a XOR of the result (to reduce conflicts with different HW, same serial etc.
     gpsunitid = 0;
     for (size_t i=0; i < result.size(); i++) {
         for (size_t j=0; j < result[i].size(); j++) {
             gpsunitid ^= result[i][j] << ((j % 4) * 8);
         }
     }
+
     // Download track list
     vector<string> args;
     args.push_back("LST");
@@ -52,9 +55,8 @@ void FlymasterGps::init_gps()
         string duration = trackres[4];
 
         struct tm gtime;
-        strptime((date + " " + start + " GMT").c_str(), "%d.%m.%y %H:%M:%S %Z", &gtime);
-        gtime.tm_isdst = 0;
-        time_t startdate = make_gmtime(&gtime);
+        strptime((date + " " + start).c_str(), "%d.%m.%y %H:%M:%S", &gtime);
+        time_t startdate = mktime(&gtime);
 
         
         strptime(duration.c_str(), "%H:%M:%S", &gtime);
@@ -73,11 +75,55 @@ static string itoa(int num)
     return data.str();
 }
 
+
+
 PointArr FlymasterGps::download_tracklog(dt_callback cb, void *arg)
 {
     PointArr result;
+    Data data;
     
+    char tmptime[31];
+    strftime(tmptime, 30, "%y%m%d%H%M%S", localtime(&saved_tracks[selected_track].first));
     
+    vector<string> args;
+    args.push_back(tmptime);
+    send_smpl_command("PFMDNL", args);
+    
+    while (1) {
+        // Read packet ID
+        cerr << 1 << endl;
+        int packetid = dev->read() + (dev->read() << 8);
+        cerr << 2 << endl;
+        if (packetid == 0xa3a3)
+            break;
+        int length = dev->read();
+        
+        for (int i=0; i < length; i++)
+            data += dev->read();
+        
+        unsigned char cksum = dev->read();
+        // Compute checksum
+        unsigned char c_cksum = length;
+        for (int i=0; i < length; i++)
+            c_cksum ^= data[i];
+        
+        if (c_cksum != cksum) {
+            dev->write("\263");
+            throw Exception("Checksum error");
+        }
+        
+        if (packetid == 0xa0a0) {
+            FM_Flight_Info finfo;
+            if (sizeof(finfo) + 2 != data.size) {
+                dev->write("\263");
+                throw Exception("Data structure size doesn't match");
+            }
+            memcpy(&finfo, data.buffer, sizeof(finfo));
+        } else if (packetid == 0xa1a1) {
+            cerr << "Unsupported yet" << endl;
+        }
+        dev->write(0xb1);
+    }
 
     return result;
 }

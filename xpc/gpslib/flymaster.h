@@ -1,8 +1,44 @@
 #ifndef _FLYMASTER_H_
 #define _FLYMASTER_H_
 
+#ifdef WIN32
+# include <win_stdint.h>
+#else
+# include <stdint.h>
+#endif
+
 #include "gps.h"
 #include "phys.h"
+
+#ifdef WIN32
+# define gcc_pack
+#pragma pack(push, 1)
+#else
+# define gcc_pack __attribute__((packed))
+#endif
+
+extern "C" {
+    
+typedef struct {
+    uint16_t sw_version;
+    uint16_t hw_version;
+    uint32_t serial;
+    char compnum[8];
+    char pilotname[15];
+    char gliderbrand[15];
+    char glidermodel[15];
+} gcc_pack FM_Flight_Info;
+
+typedef struct {
+} gcc_pack FM_Key_Position;
+
+typedef struct {
+} gcc_pack FM_Point_Delta;
+
+}
+#ifdef WIN32
+# pragma pack(pop)
+#endif
 
 class FlymasterGps : public Gps {
   public:

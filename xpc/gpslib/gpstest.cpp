@@ -17,11 +17,15 @@ int main(int argc, char **argv)
 	    Gps *gps = make_gps(ports[i].device, GPS_FLYMASTER);
 	    if (gps) {
 		cout << "GPS type: " << gps->gpsname << ", unitid: " << gps->gpsunitid << endl;
+/*                
                 for (size_t i=0; i < gps->saved_tracks.size(); i++) {
                     cout << "Track " << i << ": ";
                     cout << ctime(&gps->saved_tracks[i].first) << " ";
                     cout << ctime(&gps->saved_tracks[i].second) << endl;
                 }
+*/                
+                PointArr result;
+                result = gps->download_tracklog(NULL, NULL);
 	    } else {
 		cout << "GPS open failed" << endl;
 	    }
