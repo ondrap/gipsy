@@ -4,11 +4,12 @@
 #include <iostream>
 #include <iomanip>
 #include <time.h>
-
+#include <stdio.h>
+// 
 #include "compeo.h"
 #include "igc.h"
 
-#define XON   0x11
+#define XON  0x11
 #define XOFF 0x13
 /* Do not accept more characters then maxline */
 #define MAX_LINE   90
@@ -20,11 +21,11 @@ using namespace std;
 #define DOWN_TIMEOUT 1
 #define BAUDRATE 57600
 /* Maximum IGC file - 10MB */
-#define MAX_IGC_FILE 10*1024*1024
+#define MAX_IGC_FILE (10 * 1024 * 1024)
 
 void CompeoGps::init_gps()
 {
-    cerr << 1 << endl;
+    dev->write(XON);
     dev->set_speed(BAUDRATE);
     
     vector<string> result;
@@ -33,49 +34,50 @@ void CompeoGps::init_gps()
     gpsname = result[0];
     gpsunitid = atoi(result[2].c_str());
     
-    cerr << gpsname << endl;
-    cerr << gpsunitid << endl;
-    
     /* Get tracks */
-    result = send_command("PBRTL");
-    int total_tracks = atoi(result[0].c_str());
-    /*
-    if (total_tracks) {
-        saved_tracks.push_back(result[2] + " " + result[3] + ", " + result[4]);
+    int totaltracks;
+    int trackno;
+    send_smpl_command("PBRTL");
+    do {
+        vector<string> trackres = receive_data("PBRTL");
+        totaltracks = atoi(trackres[0].c_str());
+        trackno = atoi(trackres[1].c_str());
+        string date = trackres[2];
+        string start = trackres[3];
+        string duration = trackres[4];
+
+        struct tm gtime;
+        strptime((date + " " + start).c_str(), "%d.%m.%y %H:%M:%S", &gtime);
+        gtime.tm_isdst = 1;
+        time_t startdate = make_gmtime(&gtime);
         
-        for (int i=0; i < total_tracks; i++) {
-            result = receive_data("PBRTL");
-            saved_tracks.push_back(result[2] + " " + result[3] + ", " + result[4]);
-        }
-    }
-    */
+        strptime(duration.c_str(), "%H:%M:%S", &gtime);
+        time_t enddate = startdate + gtime.tm_hour * 3600 + gtime.tm_min * 60 + gtime.tm_sec;
+        
+        pair<time_t,time_t> item(startdate, enddate);
+
+        saved_tracks.push_back(item);
+    } while (trackno + 1 < totaltracks);
 }
 
-static string itoa(int num)
-{
-    stringstream data;
-    data << num;
-    return data.str();
-}
-/*
-virtual string CompeoGps::download_igc(int track, dt_callback cb, void *)
+string CompeoGps::download_igc(int track, dt_callback cb, void *)
 {
     vector<string> params;
-    params.push_back(itoa(track));
+    char tmpnum[5];
+    sprintf(tmpnum, "%02d", track);
+    params.push_back(tmpnum);
     dev->write(gen_command("PBRTR", params));
     
     stringstream igc;
-    while (igc.size() < MAX_IGC_FILE) {
+    for (size_t size=0; size < MAX_IGC_FILE; size++) {
         try {
-            igc << (char)dev->read();
+            char ch = (char) dev->read();
+            if (ch == XON || ch == XOFF)
+                continue;
+            igc << ch;
         } catch (TimeoutException e) {
             break;
         }
     }
     return igc.str();
-}
-*/
-
-PointArr CompeoGps::download_tracklog(dt_callback cb, void *arg)
-{
 }

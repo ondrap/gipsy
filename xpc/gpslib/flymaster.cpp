@@ -16,7 +16,7 @@
 #define XOFF 0x13
 /* Do not accept more characters then maxline */
 #define MAX_LINE   90
-#define MAX_TOTAL  (10 * MAX_LINE)
+#define MAX_TOTAL  (15 * MAX_LINE)
 
 using namespace std;
 

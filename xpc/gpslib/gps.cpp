@@ -44,7 +44,7 @@
 #include "aircotec.h"
 #include "mlr.h"
 #include "flymaster.h"
-//#include "compeo.h"
+#include "compeo.h"
 
 using namespace std;
 
@@ -60,6 +60,15 @@ Exception::Exception(const string &str)
     error = str; 
 }
 
+string Gps::download_igc(int track, dt_callback cb, void *)
+{
+    throw Exception("Not implemented.");
+}
+
+PointArr Gps::download_tracklog(dt_callback cb, void *)
+{
+    throw Exception("Not implemented.");
+}
 
 #ifdef WIN32
 #include <Windows.h>
@@ -425,6 +434,8 @@ Gps * make_gps(const string &device, int gpstype)
 	gps = new MLRGps(new WinSerialDev(device));
     } else if (gpstype == GPS_FLYMASTER) {
         gps = new FlymasterGps(new WinSerialDev(device));
+    } else if (gpstype == GPS_COMPEO) {
+        gps = new CompeoGps(new WinSerialDev(device));
     } else
 	return NULL;
     
@@ -455,8 +466,8 @@ Gps * make_gps(const string &device, int gpstype)
 	gps = new MLRGps(new UnixSerialDev(device));
     } else if (gpstype == GPS_FLYMASTER) {
         gps = new FlymasterGps(new UnixSerialDev(device));
-//    } else if (gpstype == GPS_COMPEO) {
-//        gps = new CompeoGps(new UnixSerialDev(device));
+    } else if (gpstype == GPS_COMPEO) {
+        gps = new CompeoGps(new UnixSerialDev(device));
     } else
 	return NULL;
     

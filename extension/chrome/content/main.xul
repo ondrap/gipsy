@@ -43,7 +43,7 @@
   <popup id="gps_popup">
     <menuitem label="Garmin GPS" oncommand="gpsView.set_gps_type('garmin')" />
     <menuitem label="Aircotec - MXP 57600" oncommand="gpsView.set_gps_type('aircotec')" />
-<!--    <menuitem label="5020/5030/Compeo/Competino" oncommand="gpsView.set_gps_type('compeo')" /> -->
+    <menuitem label="5020/5030/Compeo/Competino" oncommand="gpsView.set_gps_type('compeo')" />
     <menuitem label="MLR/Digifly" oncommand="gpsView.set_gps_type('mlr')"  id="mlr_gps" />
     <menuitem label="Flymaster" oncommand="gpsView.set_gps_type('flymaster')" id="flymaster_gps" />
   </popup>

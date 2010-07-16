@@ -24,19 +24,14 @@ int main(int argc, char **argv)
                 Gps *gps = make_gps(ports[i].device, GPS_COMPEO);
                 if (gps) {
                     cout << "GPS type: " << gps->gpsname << ", unitid: " << gps->gpsunitid << endl;
-    /*                
                     for (size_t i=0; i < gps->saved_tracks.size(); i++) {
                         cout << "Track " << i << ": ";
                         cout << ctime(&gps->saved_tracks[i].first) << " ";
                         cout << ctime(&gps->saved_tracks[i].second) << endl;
                     }
-    */                
+                    
                     PointArr result;
-    //                gps->selected_track = 1;
-                    result = gps->download_tracklog(cb, NULL);
-                    Igc igc(result, gps->gpsname, gps->gpsunitid);
-                    igc.gen_g_record();
-                    cout << igc.as_str();
+                    cerr << gps->download_igc(0, cb, NULL);
                 } else {
                     cout << "GPS open failed" << endl;
                 }

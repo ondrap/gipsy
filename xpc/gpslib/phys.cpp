@@ -620,6 +620,8 @@ void UnixUSBLink::recv_usb_bulk_packet(Data &data)
 #include <termios.h>
 #include <sys/select.h>
 
+#include <iostream>
+
 UnixSerialDev::UnixSerialDev(const string &device)
 {
     fd = open(device.c_str(), O_RDWR | O_NONBLOCK);

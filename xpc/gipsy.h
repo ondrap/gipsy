@@ -64,7 +64,7 @@ public:
     void watcher_thread();
 
     void download_tracklog();
-
+    void obtained_tracklog(Igc *igc, bool generated);
     PRLock *_lock;
 };
 

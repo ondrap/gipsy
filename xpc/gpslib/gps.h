@@ -62,7 +62,8 @@ class Gps {
     Gps() { };
     virtual ~Gps() {};
 
-    virtual PointArr download_tracklog(dt_callback cb, void *) = 0;
+    virtual PointArr download_tracklog(dt_callback cb, void *);
+    virtual std::string download_igc(int track, dt_callback cb, void *);
     
     std::string gpsname;   /* Name of the GPS */
     uint32_t gpsunitid;   /* Ideally UnitID of the GPS, otherwise

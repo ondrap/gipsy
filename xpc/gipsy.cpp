@@ -706,56 +706,75 @@ void GpsItem::_watcher_thread(void *arg)
     cls->watcher_thread();
 }
 
+void GpsItem::obtained_tracklog(Igc *igc, bool generated)
+{
+    Tracklog *tlog = new Tracklog(igc);
+    
+    if (generated) {
+        // If the tracklog does not have any valid tracks, ignore it
+        // TODO: notify somehow user about this situation
+        int breakcount;
+        tlog->IgcBreakCount(&breakcount);
+        if (!breakcount) {
+            delete tlog;
+            return;
+        }
+    }
+
+    // Save to the gps table
+    NS_ADDREF(tlog);
+
+    lock(); // This does not seem to be thread safe
+    saved_tlog = dont_AddRef((IGPSIGC *) tlog);
+    unlock();
+
+    // Notify UI of new downloaded tracklog
+    Gipsy::notify(tlog, "gps_tracklog");
+}
+
 void GpsItem::download_tracklog()
 {
     wstatus = W_DOWNLOADING;
     progress = 0;
     Gipsy::notify(this, "gps_changed");
     
-    PointArr parr = gps->download_tracklog(_progress_updater, (void *)this);
+    if (gpstype == G_COMPEO) {
+        for (size_t i=0; i < selected_tracks.size(); i++) {
+            Igc *igc = new Igc(gps->download_igc(selected_tracks[i], _progress_updater, (void *)this));
+            obtained_tracklog(igc, false);
+        }
+        wstatus = W_DOWNCOMPLETE;
+        Gipsy::notify(this, "gps_changed");
+    } else {
+        gps->selected_tracks = selected_tracks;
+        PointArr parr = gps->download_tracklog(_progress_updater, (void *)this);
 
-    if (gpstype == GPS_MLR)
-	wstatus = W_CONNECTED;
-    else
-	wstatus = W_DOWNCOMPLETE;
-    Gipsy::notify(this, "gps_changed");
-    
-    // If tracklog is not empty...
-    if (parr.size()) {
-	// Add tracklog to downloaded_tracklog vector
-	// AddRef will be done in the notification handler
-	Igc *igc = new Igc(parr, gps->gpsname, gps->gpsunitid);
-	// Add custom signed fields
-	igc->x_params.push_back(pair<string,string>("Xversion", GIPSY_VERSION));
-	time_t now = time(NULL);
-	char tmptime[31];
-	strftime(tmptime, 30, "%Y-%m-%d %H:%M:%S GMT", my_gmtime(&now));
-	igc->x_params.push_back(pair<string,string>("XDownloadtime", tmptime));
-	
-	igc->gen_g_record(); // Generate g-record on the downloaded tracklog
-	Tracklog *tlog = new Tracklog(igc);
+        if (gpstype == GPS_MLR)
+            wstatus = W_CONNECTED;
+        else
+            wstatus = W_DOWNCOMPLETE;
+        Gipsy::notify(this, "gps_changed");
 
-	// If the tracklog does not have any valid tracks, ignore it
-        // TODO: notify somehow user about this situation
-	int breakcount;
-	tlog->IgcBreakCount(&breakcount);
-	if (!breakcount) {
-	    delete tlog;
-	    return;
-	}
+        // If tracklog is not empty...
+        if (!parr.size())
+            return;
 
-	// Save to the gps table
-	NS_ADDREF(tlog);
-	
-	lock(); // This does not seem to be thread safe
-	saved_tlog = dont_AddRef((IGPSIGC *) tlog);
-	unlock();
-
-	// Notify UI of new downloaded tracklog
-	Gipsy::notify(tlog, "gps_tracklog");
+        // Add tracklog to downloaded_tracklog vector
+        // AddRef will be done in the notification handler
+        Igc *igc = new Igc(parr, gps->gpsname, gps->gpsunitid);
+        // Add custom signed fields
+        igc->x_params.push_back(pair<string,string>("Xversion", GIPSY_VERSION));
+        time_t now = time(NULL);
+        char tmptime[31];
+        strftime(tmptime, 30, "%Y-%m-%d %H:%M:%S GMT", my_gmtime(&now));
+        igc->x_params.push_back(pair<string,string>("XDownloadtime", tmptime));
+        
+        igc->gen_g_record(); // Generate g-record on the downloaded tracklog
+        
+        obtained_tracklog(igc, true);
     }
 }
-#include <iostream>
+
 /* Thread that communicates with a GPS */
 void GpsItem::watcher_thread()
 {
@@ -784,7 +803,7 @@ void GpsItem::watcher_thread()
 	    Gipsy::notify(this, "gps_changed");
 	}
 
-        if (gpstype == G_FLYMASTER && wstatus == W_DISCONNECT) {
+        if ((gpstype == G_FLYMASTER || gpstype == G_COMPEO) && wstatus == W_DISCONNECT) {
             saved_tracks = gps->saved_tracks;
             if (auto_download) {
                 Gipsy::notify(this, "gps_trackdownsel");
@@ -796,10 +815,8 @@ void GpsItem::watcher_thread()
 	    Gipsy::notify(this, "gps_changed");
 	}
         if ((auto_download || download_now) && wstatus == W_CONNECTED) {
-            if (gpstype == G_FLYMASTER) {
-                if (selected_tracks.size()) {
-                    gps->selected_tracks = selected_tracks;
-                } else {
+            if (gpstype == G_FLYMASTER || gpstype == G_COMPEO) {
+                if (!selected_tracks.size()) {
                     if (download_now) {
                         download_now = false;
                         Gipsy::notify(this, "gps_trackdownsel");
