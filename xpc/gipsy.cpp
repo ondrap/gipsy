@@ -737,8 +737,6 @@ void GpsItem::download_tracklog()
 
 	// If the tracklog does not have any valid tracks, ignore it
         // TODO: notify somehow user about this situation
-        last_error = "No valid tracklogs.";
-        Gipsy::notify(this, "gps_changed");
 	int breakcount;
 	tlog->IgcBreakCount(&breakcount);
 	if (!breakcount) {
@@ -826,6 +824,7 @@ void GpsItem::watcher_thread()
                 break;
             }
             download_now = false;
+            selected_tracks.empty();
         }
         delete gps; gps = NULL;
     }

@@ -52,7 +52,6 @@ typedef struct {
 # pragma pack(pop)
 #endif
 
-#include <iostream>
 class NMEAGps : public Gps {
     public:
         NMEAGps(SerialDev *pdev) { 
@@ -72,12 +71,7 @@ class NMEAGps : public Gps {
 class FlymasterGps : public NMEAGps {
     public:
         FlymasterGps(SerialDev *pdev) : NMEAGps(pdev) {
-            try {
-                init_gps();
-            } catch (Exception e) {
-                delete pdev;
-                throw e;
-            }
+            init_gps();
         };
         virtual ~FlymasterGps() {};
         /* Download tracklog from GPS */

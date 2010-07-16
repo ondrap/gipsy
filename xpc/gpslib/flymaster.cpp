@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <vector>
 #include <sstream>
 #include <iostream>
@@ -177,10 +178,19 @@ void FlymasterGps::download_strack(size_t selected_track, PointArr &result, dt_c
     }
 }
 
+bool cmpint(const int &first, const int &second)
+{
+    return first > second;
+}
+
 PointArr FlymasterGps::download_tracklog(dt_callback cb, void *arg)
 {
     PointArr result;
  
+    // Sort tracks from the higher index to lower (older date first)
+    // So that the resulting PointArr is time sorted
+    sort(selected_tracks.begin(), selected_tracks.end(), cmpint);
+
     for (size_t i=0; i < selected_tracks.size(); i++) {
         download_strack(selected_tracks[i], result, cb, arg);
     }
