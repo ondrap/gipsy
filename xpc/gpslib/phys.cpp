@@ -734,6 +734,12 @@ void UnixSerialDev::set_speed(int baudrate)
     if (tcsetattr(fd, 0, &tio)) {
 	throw Exception("Failed tcsetattr.");
     }
+    // Some devices need some time to adapt
+    struct timeval tm;
+    tm.tv_sec = 0;
+    tm.tv_usec = 200000;
+    select(0, NULL, NULL, NULL, &tm);
+
 }
 
 /* Write data to serial link, timeout-aware */

@@ -60,7 +60,7 @@ void CompeoGps::init_gps()
     } while (trackno + 1 < totaltracks);
 }
 
-string CompeoGps::download_igc(int track, dt_callback cb, void *)
+string CompeoGps::download_igc(int track, dt_callback cb, void *arg)
 {
     vector<string> params;
     char tmpnum[5];
@@ -75,6 +75,13 @@ string CompeoGps::download_igc(int track, dt_callback cb, void *)
             if (ch == XON || ch == XOFF)
                 continue;
             igc << ch;
+            
+            if (cb) {
+                // TODO: Think something better
+                bool rv = cb(arg, (size/1000) % 20, 20);
+                if (!rv)
+                    throw Exception("Download cancelled");
+            }
         } catch (TimeoutException e) {
             break;
         }

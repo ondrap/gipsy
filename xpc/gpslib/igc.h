@@ -61,6 +61,12 @@ class Igc {
     bool invalid_grecord;
 };
 
+class OriginalIgc : public Igc {
+    public:
+        OriginalIgc(const std::string &content) : Igc(content) {};
+        virtual bool can_modify() { return false; };
+};
+
 struct tm *my_gmtime(const time_t *timep);
 time_t make_gmtime(struct tm *tm);
 

@@ -740,8 +740,11 @@ void GpsItem::download_tracklog()
     
     if (gpstype == G_COMPEO) {
         for (size_t i=0; i < selected_tracks.size(); i++) {
-            Igc *igc = new Igc(gps->download_igc(selected_tracks[i], _progress_updater, (void *)this));
-            obtained_tracklog(igc, false);
+            string igccontent = gps->download_igc(selected_tracks[i], _progress_updater, (void *)this);
+            if (igccontent.size()) {
+                Igc *igc = new OriginalIgc(igccontent);
+                obtained_tracklog(igc, false);
+            }
         }
         wstatus = W_DOWNCOMPLETE;
         Gipsy::notify(this, "gps_changed");
