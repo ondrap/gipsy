@@ -755,15 +755,13 @@ void GpsItem::watcher_thread()
 	    Gipsy::notify(this, "gps_changed");
 	}
         if ((auto_download || download_now) && wstatus == W_CONNECTED) {
-            /*
             if (gpstype == G_FLYMASTER && !gps->selected_tracks.size()) {
                 if (download_now) {
                     download_now = false;
                     Gipsy::notify(this, "gps_trackdownsel");
-                    continue;
                 }
+                continue;
             }
-            */
             try {
                 download_tracklog();
                 last_error = "";
