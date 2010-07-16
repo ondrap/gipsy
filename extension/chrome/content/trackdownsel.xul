@@ -2,20 +2,19 @@
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 
 <window
-    title="Report problem"
+    title="Tracklog download selection"
     orient="vertical"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     xmlns:html="http://www.w3.org/1999/xhtml"
     width="700" height="500" >
     
+    <script src="util.js" />
     <script src="trackdownsel.js" />
     
     <vbox flex="1">
         <label id="w_gpsname" style="font-weight: bold" />
-        <listbox id="main_list" seltype="multiple" flex="1"
-                onselect="onsubtrackselect()">
+        <listbox id="main_list" seltype="multiple" flex="1">
             <listcols>
-                <listcol flex="1"/>
                 <listcol flex="1"/>
             </listcols>
         </listbox>

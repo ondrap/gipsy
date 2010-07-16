@@ -53,6 +53,8 @@ public:
 
   private:    
     Gps *gps;
+    std::vector<int> selected_tracks;  /* Selected track for GPSes that support track selection */
+    std::vector< std::pair<time_t,time_t> >saved_tracks;
 
     // Progress updater
     static bool _progress_updater(void *arg, int cnt, int tot);

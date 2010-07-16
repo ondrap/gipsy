@@ -153,6 +153,12 @@ interface IGPSDevInfo : nsISupports {
     const short G_MLR = 3;
     const short G_FLYMASTER = 4;
     readonly attribute long gpstype;
+    
+    // Functions for selecting tracklogs to download
+    readonly attribute long trackcount;
+    PRTime trackStartTime(in unsigned long pos);
+    PRTime trackStopTime(in unsigned long pos);
+    void trackAdd(in unsigned long pos);
 };
 
 [scriptable, uuid(8bfaa56a-24c7-488c-a906-06f2cfc185a3)]

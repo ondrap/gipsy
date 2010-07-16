@@ -181,8 +181,8 @@ PointArr FlymasterGps::download_tracklog(dt_callback cb, void *arg)
 {
     PointArr result;
  
-    for (size_t selected_track=0; selected_track < selected_tracks.size(); selected_track++) {
-        download_strack(selected_track, result, cb, arg);
+    for (size_t i=0; i < selected_tracks.size(); i++) {
+        download_strack(selected_tracks[i], result, cb, arg);
     }
     
     return result;

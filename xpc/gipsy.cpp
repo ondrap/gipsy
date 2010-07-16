@@ -33,6 +33,7 @@
 
 #include <string.h>
 #include <time.h>
+#include <iostream>
 
 using namespace std;
 
@@ -621,6 +622,45 @@ NS_IMETHODIMP GpsItem::GetWstatus(PRInt16 *aWstatus)
     return NS_OK;
 }
 
+NS_IMETHODIMP GpsItem::GetTrackcount(PRInt32 *aTrackcount)
+{
+    *aTrackcount = saved_tracks.size();
+    
+    return NS_OK;
+}
+
+/* long trackStartTime (in long pos); */
+NS_IMETHODIMP GpsItem::TrackStartTime(PRUint32 pos, PRTime *_retval NS_OUTPARAM)
+{
+    if (pos >= saved_tracks.size())
+        return NS_ERROR_UNEXPECTED;
+    
+    *_retval = saved_tracks[pos].first * 1000;
+    return NS_OK;
+}
+
+/* long trackStopTime (in long pos); */
+NS_IMETHODIMP GpsItem::TrackStopTime(PRUint32 pos, PRTime *_retval NS_OUTPARAM)
+{
+    if (pos >= saved_tracks.size())
+        return NS_ERROR_UNEXPECTED;
+    
+    *_retval = saved_tracks[pos].second * 1000;
+    return NS_OK;
+}
+
+#include <stdio.h>
+/* void trackAdd (in long pos); */
+NS_IMETHODIMP GpsItem::TrackAdd(PRUint32 pos)
+{
+    if (pos >= saved_tracks.size())
+        return NS_ERROR_UNEXPECTED;
+    
+    selected_tracks.push_back(pos);
+    
+    return NS_OK;
+}
+
 /* readonly attribute long gpstype; */
 NS_IMETHODIMP GpsItem::GetGpstype(PRInt32 *aGpstype)
 {
@@ -746,21 +786,29 @@ void GpsItem::watcher_thread()
 	    Gipsy::notify(this, "gps_changed");
 	}
 
-	if (wstatus == W_DISCONNECT && gpstype == G_FLYMASTER) {
-            Gipsy::notify(this, "gps_trackdownsel");
+        if (gpstype == G_FLYMASTER && wstatus == W_DISCONNECT) {
+            saved_tracks = gps->saved_tracks;
+            if (auto_download) {
+                Gipsy::notify(this, "gps_trackdownsel");
+            }
         }
-
+        
 	if (wstatus == W_DISCONNECT || gpstype == G_AIRCOTEC) {
 	    wstatus = W_CONNECTED;
 	    Gipsy::notify(this, "gps_changed");
 	}
         if ((auto_download || download_now) && wstatus == W_CONNECTED) {
-            if (gpstype == G_FLYMASTER && !gps->selected_tracks.size()) {
-                if (download_now) {
-                    download_now = false;
-                    Gipsy::notify(this, "gps_trackdownsel");
+            if (gpstype == G_FLYMASTER) {
+                if (selected_tracks.size()) {
+                    gps->selected_tracks = selected_tracks;
+                } else {
+                    if (download_now) {
+                        download_now = false;
+                        Gipsy::notify(this, "gps_trackdownsel");
+                    }
+                    delete gps;gps = NULL;
+                    continue;
                 }
-                continue;
             }
             try {
                 download_tracklog();
