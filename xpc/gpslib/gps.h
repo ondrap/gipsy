@@ -59,7 +59,7 @@ typedef bool (*dt_callback)(void *, int, int);
 /* Generic class representing a GPS */
 class Gps {
   public:
-    Gps() : selected_track(0) { };
+    Gps() { };
     virtual ~Gps() {};
 
     virtual PointArr download_tracklog(dt_callback cb, void *) = 0;
@@ -68,7 +68,7 @@ class Gps {
     uint32_t gpsunitid;   /* Ideally UnitID of the GPS, otherwise
 			   * control sum of the control packets */
 			   
-    int selected_track;  /* Selected track for GPSes that support track selection */
+    std::vector<int> selected_tracks;  /* Selected track for GPSes that support track selection */
     std::vector< std::pair<time_t,time_t> >saved_tracks;
 };
 

@@ -9,7 +9,7 @@ var gps_observer = {
 	} else if (topic == "gps_removed") {
 	    gpsView.remove_gps(subject.pos);
 	    gpsStatusbar.remove_gps(subject.pos);
-	}
+	} 
     }
 }
 

@@ -69,7 +69,7 @@ void FlymasterGps::init_gps()
     } while (trackno + 1 < totaltracks);
 }
 
-static Trackpoint make_point(const FM_Key_Position fpos)
+static Trackpoint make_point(const FM_Key_Position fpos, bool newtrk)
 {
     Trackpoint newpoint;
     
@@ -78,18 +78,43 @@ static Trackpoint make_point(const FM_Key_Position fpos)
     newpoint.gpsalt = fpos.gpsaltitude;
     newpoint.baroalt = (1 - pow(fabs((fpos.baro / 10.0)/1013.25), 0.190284)) * 44307.69;
     newpoint.time = fpos.time + 946684800;
-    newpoint.new_trk = false;
+    newpoint.new_trk = newtrk;
     
     return newpoint;
 }
 
-#include <stdio.h>
-PointArr FlymasterGps::download_tracklog(dt_callback cb, void *arg)
+bool FlymasterGps::read_packet(int &packetid, Data &data)
 {
-    PointArr result;
+    // Read packet ID
+    packetid = dev->read() + (dev->read() << 8);
+    if (packetid == 0xa3a3)
+        return false;
+
+    size_t length = dev->read();
+
+    for (size_t i=0; i < length; i++)
+        data += dev->read();
+
+    unsigned char cksum = dev->read();
+    // Compute checksum
+    unsigned char c_cksum = length;
+    for (size_t i=0; i < data.size; i++)
+        c_cksum ^= data[i];
     
+    if (c_cksum != cksum) {
+        dev->write(0xb3);
+        throw Exception("Checksum error");
+    }
+    return true;
+}
+
+void FlymasterGps::download_strack(size_t selected_track, PointArr &result, dt_callback cb, void *arg)
+{
     char tmptime[31];
+    int packetid;
     strftime(tmptime, 30, "%y%m%d%H%M%S", my_gmtime(&saved_tracks[selected_track].first));
+    
+    bool newtrk = true;
     
     int pktcount = 0;
     int pcounter = 0;
@@ -103,25 +128,8 @@ PointArr FlymasterGps::download_tracklog(dt_callback cb, void *arg)
     while (1) {
         Data data;
 
-        // Read packet ID
-        int packetid = dev->read() + (dev->read() << 8);
-        if (packetid == 0xa3a3)
+        if (!read_packet(packetid, data))
             break;
-        size_t length = dev->read();
-
-        for (size_t i=0; i < length; i++)
-            data += dev->read();
-
-        unsigned char cksum = dev->read();
-        // Compute checksum
-        unsigned char c_cksum = length;
-        for (size_t i=0; i < data.size; i++)
-            c_cksum ^= data[i];
-        
-        if (c_cksum != cksum) {
-            dev->write(0xb3);
-            throw Exception("Checksum error");
-        }
         
         if (packetid == 0xa0a0) {
             FM_Flight_Info finfo;
@@ -141,7 +149,8 @@ PointArr FlymasterGps::download_tracklog(dt_callback cb, void *arg)
             basepos.gpsaltitude = le16_to_host(basepos.gpsaltitude);
             basepos.baro = le16_to_host(basepos.baro);
             basepos.time = le32_to_host(basepos.time);
-            result.push_back(make_point(basepos));
+            result.push_back(make_point(basepos, newtrk));
+            newtrk = false;
         } else if (packetid == 0xa2a2) {
             FM_Point_Delta delta;
             for (int i=0; i + sizeof(delta) <= data.size; i += sizeof(delta)) {
@@ -161,12 +170,21 @@ PointArr FlymasterGps::download_tracklog(dt_callback cb, void *arg)
                         throw Exception("Download cancelled");
                     }
                 }
-                result.push_back(make_point(basepos));
+                result.push_back(make_point(basepos, false));
             }
         }
         dev->write(0xb1);
     }
+}
 
+PointArr FlymasterGps::download_tracklog(dt_callback cb, void *arg)
+{
+    PointArr result;
+ 
+    for (size_t selected_track=0; selected_track < selected_tracks.size(); selected_track++) {
+        download_strack(selected_track, result, cb, arg);
+    }
+    
     return result;
 }
 

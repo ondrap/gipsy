@@ -84,7 +84,9 @@ class FlymasterGps : public NMEAGps {
         virtual PointArr download_tracklog(dt_callback cb, void *arg);
 
     private:
-        void init_gps();
+    void init_gps();
+    void download_strack(size_t selected_track, PointArr &result, dt_callback cb, void *arg);
+    bool read_packet(int &packetid, Data &data);
 };
 
 #endif

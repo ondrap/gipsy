@@ -2,7 +2,7 @@
 // Tracklog download event
 function open_tlog(tracklog)
 {
-    window.openDialog('chrome://gipsy/content/newtrack.xul', '_blank', 'dialog=no,chrome,modal=no,',tracklog);
+    window.openDialog('chrome://gipsy/content/newtrack.xul', '_blank', 'dialog=no,chrome,modal=no,', tracklog);
 }
 
 // Callback on successful tracklog download
@@ -13,6 +13,11 @@ var tlog_observer = {
 	    var tl = subject.QueryInterface(Components.interfaces.IGPSIGC);
 	    open_tlog(tl);
 	}
+        if (topic == "gps_trackdownsel") {
+            // Selection of tracklog to download
+            gps = subject.QueryInterface(Components.interfaces.IGPSDevInfo);
+            window.openDialog('chrome://gipsy/content/trackdownsel.xul', '_blank', 'dialog=no,chrome,modal=no,', gps);
+        }
 	
 	if (topic == "gps_dbnewigc") {
 	    tlog = subject.QueryInterface(Components.interfaces.IGPSIGC);
@@ -20,6 +25,7 @@ var tlog_observer = {
 	    // correct flight into the tree
 	    treeView.init();
 	}
+	
 	if (topic == "gps_dbupdateigc") {
 	    update_nonsync();
 	    treeView.update_igc(data);
@@ -76,6 +82,7 @@ function OnLoad() {
     observerService.addObserver(tlog_observer, "gps_dbupdateigc", false);
     observerService.addObserver(tlog_observer, "gps_dbremoveigc", false);
     observerService.addObserver(tlog_observer, "gps_syncupdate", false);
+    observerService.addObserver(tlog_observer, "gps_trackdownsel", false);
 
     // Add view to the tree
     init_flight_tree();
@@ -128,6 +135,7 @@ function OnUnload() {
     observerService.removeObserver(tlog_observer, "gps_dbremoveigc");
     observerService.removeObserver(tlog_observer, "gps_dbupdateigc");
     observerService.removeObserver(tlog_observer, "gps_syncupdate");
+    observerService.removeObserver(tlog_observer, "gps_trackdownsel");
 
     unload_gpstree();
 }

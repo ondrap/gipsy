@@ -696,7 +696,9 @@ void GpsItem::download_tracklog()
 	Tracklog *tlog = new Tracklog(igc);
 
 	// If the tracklog does not have any valid tracks, ignore it
-	// TODO: notify somehow user about this situation
+        // TODO: notify somehow user about this situation
+        last_error = "No valid tracklogs.";
+        Gipsy::notify(this, "gps_changed");
 	int breakcount;
 	tlog->IgcBreakCount(&breakcount);
 	if (!breakcount) {
@@ -743,29 +745,43 @@ void GpsItem::watcher_thread()
 
 	    Gipsy::notify(this, "gps_changed");
 	}
+
+	if (wstatus == W_DISCONNECT && gpstype == G_FLYMASTER) {
+            Gipsy::notify(this, "gps_trackdownsel");
+        }
+
 	if (wstatus == W_DISCONNECT || gpstype == G_AIRCOTEC) {
 	    wstatus = W_CONNECTED;
 	    Gipsy::notify(this, "gps_changed");
 	}
-	if ((auto_download || download_now) && wstatus == W_CONNECTED) {
-	    try {
-		download_tracklog();
-		last_error = "";
-	    } catch (NoData e) {
-		// No data - aircotec
-		delete gps;
-		gps = NULL;
-		continue;
-	    } catch (Exception e) {
-		last_error = e.error;
-		Gipsy::notify(this, "gps_changed");
-		delete gps;
-		gps = NULL;
-		break;
-	    }
-	    download_now = false;
-	}
-	delete gps; gps = NULL;
+        if ((auto_download || download_now) && wstatus == W_CONNECTED) {
+            /*
+            if (gpstype == G_FLYMASTER && !gps->selected_tracks.size()) {
+                if (download_now) {
+                    download_now = false;
+                    Gipsy::notify(this, "gps_trackdownsel");
+                    continue;
+                }
+            }
+            */
+            try {
+                download_tracklog();
+                last_error = "";
+            } catch (NoData e) {
+                // No data - aircotec
+                delete gps;
+                gps = NULL;
+                continue;
+            } catch (Exception e) {
+                last_error = e.error;
+                Gipsy::notify(this, "gps_changed");
+                delete gps;
+                gps = NULL;
+                break;
+            }
+            download_now = false;
+        }
+        delete gps; gps = NULL;
     }
     reset();
     Gipsy::notify(this, "gps_changed");
