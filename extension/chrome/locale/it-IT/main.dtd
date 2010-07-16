@@ -1,6 +1,10 @@
 <!ENTITY gipsy.title "GiPSy Flight Manager">
 
 <!ENTITY menu.sendxc "Invia Voli a XContest" >
+<!-- NEW -->
+<!ENTITY menu.importgpx "Import GPX file" >
+<!ENTITY menu.googlemapdownload "Download GoogleMap definitions" >
+<!-- NEW -->
 
 <!ENTITY tab.flights "Voli" >
 <!ENTITY tab.devices "Connessione al GPS" >
@@ -123,6 +127,13 @@
 <!ENTITY prefs.savesubdirs "Salva i nuovi voli nella subdirectory 'pilot name/year'" >
 <!ENTITY prefs.units "Unità">
 <!ENTITY prefs.metricsystem "Sistema metrico">
+<!-- NEW -->
+<!ENTITY prefs.autoselect "Automatically select today's tracks">
+<!ENTITY prefs.usercommands "User commands">
+<!ENTITY prefs.usertitle "Title">
+<!ENTITY prefs.usercmd "Program path">
+<!ENTITY prefs.userparams "Additional parameters">
+<!-- NEW -->
 
 <!-- Proprietà -->
 <!ENTITY prop.dontsend "Non inviare a XContest" >

@@ -21,7 +21,7 @@ int main(int argc, char **argv)
 	cout << "Device: " << ports[i].device << ", devname: " << ports[i].devname << endl;
 	if (ports[i].device == "/dev/ttyUSB0") {
             try {
-                Gps *gps = make_gps(ports[i].device, GPS_FLYMASTER);
+                Gps *gps = make_gps(ports[i].device, GPS_COMPEO);
                 if (gps) {
                     cout << "GPS type: " << gps->gpsname << ", unitid: " << gps->gpsunitid << endl;
     /*                

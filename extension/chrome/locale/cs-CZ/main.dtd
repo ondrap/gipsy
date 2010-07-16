@@ -1,6 +1,8 @@
 <!ENTITY gipsy.title "GiPSy správce letů">
 
 <!ENTITY menu.sendxc "Poslat lety do XContestu" >
+<!ENTITY menu.importgpx "Importovat soubor GPX" >
+<!ENTITY menu.googlemapdownload "Stáhni definice pro GoogleMapy" >
 
 <!ENTITY tab.flights "Lety" >
 <!ENTITY tab.devices "Propojení s GPS" >
@@ -121,10 +123,13 @@
 <!ENTITY prefs.changedir "Změnit složku GiPSy" >
 <!ENTITY prefs.changetohome "Nastavit složku GiPSy na 'Domovská složka/gipsy'" >
 <!ENTITY prefs.savesubdirs "Ukládat nové lety do podsložek ve tvaru 'jméno pilota/rok'" >
-<!-- NEW -->
 <!ENTITY prefs.units "Jednotky">
 <!ENTITY prefs.metricsystem "Metrický systém">
-<!-- NEW -->
+<!ENTITY prefs.autoselect "Automaticky vybrat dnešní tracklogy">
+<!ENTITY prefs.usercommands "Vlastní programy">
+<!ENTITY prefs.usertitle "Název">
+<!ENTITY prefs.usercmd "Cesta k programu">
+<!ENTITY prefs.userparams "Další parametry">
 
 <!-- Properties -->
 <!ENTITY prop.dontsend "Let nebude poslán do XContestu" >

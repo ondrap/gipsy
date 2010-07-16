@@ -8,12 +8,7 @@
 class CompeoGps : public NMEAGps {
     public:
         CompeoGps(SerialDev *pdev) : NMEAGps(pdev) {
-            try {
-                init_gps();
-            } catch (Exception e) {
-                delete pdev;
-                throw e;
-            }
+            init_gps();
         };
         virtual ~CompeoGps() {};
         /* Download tracklog from GPS */

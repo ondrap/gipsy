@@ -58,7 +58,7 @@ class NMEAGps : public Gps {
         NMEAGps(SerialDev *pdev) { 
             dev = pdev; 
         };
-        virtual ~NMEAGps() { delete dev;};
+        virtual ~NMEAGps() { delete dev; };
         SerialDev *dev;
     protected:
         std::vector<std::string> send_command(const std::string &command, const std::vector<std::string> &parameters);

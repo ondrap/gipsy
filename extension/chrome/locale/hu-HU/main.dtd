@@ -1,6 +1,10 @@
 <!ENTITY gipsy.title "GiPSy Repülés nyilvántartó">
 
 <!ENTITY menu.sendxc "Táv küldés XContest-re" >
+<!-- NEW -->
+<!ENTITY menu.importgpx "Import GPX file" >
+<!ENTITY menu.googlemapdownload "Download GoogleMap definitions" >
+<!-- NEW -->
 
 <!ENTITY tab.flights "Repülések" >
 <!ENTITY tab.devices "GPS kapcsolat" >
@@ -14,7 +18,9 @@
 <!ENTITY preferences.key "e" >
 <!ENTITY collapse.all "Elrejti/mutatja mindet" >
 <!ENTITY show.source "IGC forrás" >
+<!-- NEW -->
 <!ENTITY create.logbook "Create flight log" >
+<!-- NEW -->
 
 <!ENTITY file "File" >
 <!ENTITY file.key "f" >
@@ -124,6 +130,11 @@
 <!-- NEW -->
 <!ENTITY prefs.units "Units">
 <!ENTITY prefs.metricsystem "Metric system">
+<!ENTITY prefs.autoselect "Automatically select today's tracks">
+<!ENTITY prefs.usercommands "User commands">
+<!ENTITY prefs.usertitle "Title">
+<!ENTITY prefs.usercmd "Program path">
+<!ENTITY prefs.userparams "Additional parameters">
 <!-- NEW -->
 
 <!-- Properties -->

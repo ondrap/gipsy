@@ -51,7 +51,7 @@
 		id="autodownload_ck"
 		onsynctopreference="return save_autodownload();"/>
       <checkbox preference="autoselecttoday"
-                label="Automatically select today's tracks" />
+                label="&prefs.autoselect;" />
     </groupbox>
     <groupbox>
       <caption label="&prefs.datadir;" />
@@ -73,36 +73,39 @@
 		id="metric_ok" />
     </groupbox>
     <groupbox>
-        <caption label="User commands" />
-        <grid>
-            <columns>
-                <column />
-                <column />
-                <column />
-            </columns>
-            <rows>
-                <row>
-                    <vbox>Title</vbox>
-                    <vbox>Command path</vbox>
-                    <vbox>Additional parameters</vbox>
-                </row>
-                <row>
-                    <textbox id="usercmd_1_title" preference="usercmd_1_title" />
-                    <textbox id="usercmd_1_cmd" preference="usercmd_1_cmd" />
-                    <textbox id="usercmd_1_params" preference="usercmd_1_params" />
-                </row>
-                <row>
-                    <textbox id="usercmd_2_title" preference="usercmd_2_title" />
-                    <textbox id="usercmd_2_cmd" preference="usercmd_2_cmd" />
-                    <textbox id="usercmd_2_params" preference="usercmd_2_params" />
-                </row>
-                <row>
-                    <textbox id="usercmd_3_title" preference="usercmd_3_title" />
-                    <textbox id="usercmd_3_cmd" preference="usercmd_3_cmd" />
-                    <textbox id="usercmd_3_params" preference="usercmd_3_params" />
-                </row>
-            </rows>
-        </grid>
+        <caption label="&prefs.usercommands;" />
+        <vbox>
+            <grid>
+                <columns>
+                    <column />
+                    <column />
+                    <column />
+                </columns>
+                <rows>
+                    <row>
+                        <vbox>&prefs.usertitle;</vbox>
+                        <vbox>&prefs.usercmd;</vbox>
+                        <vbox>&prefs.userparams;</vbox>
+                    </row>
+                    <row>
+                        <textbox id="usercmd_1_title" preference="usercmd_1_title" />
+                        <textbox id="usercmd_1_cmd" preference="usercmd_1_cmd" />
+                        <textbox id="usercmd_1_params" preference="usercmd_1_params" />
+                    </row>
+                    <row>
+                        <textbox id="usercmd_2_title" preference="usercmd_2_title" />
+                        <textbox id="usercmd_2_cmd" preference="usercmd_2_cmd" />
+                        <textbox id="usercmd_2_params" preference="usercmd_2_params" />
+                    </row>
+                    <row>
+                        <textbox id="usercmd_3_title" preference="usercmd_3_title" />
+                        <textbox id="usercmd_3_cmd" preference="usercmd_3_cmd" />
+                        <textbox id="usercmd_3_params" preference="usercmd_3_params" />
+                    </row>
+                </rows>
+            </grid>
+            <label>command_path &lt;igc_file&gt; &lt;output file&gt; [additional_parameters]</label>
+        </vbox>
     </groupbox>
   </prefpane>
 

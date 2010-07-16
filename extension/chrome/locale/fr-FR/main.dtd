@@ -1,6 +1,10 @@
 <!ENTITY gipsy.title "GiPSy Flight Manager">
 
 <!ENTITY menu.sendxc "Envoyer des vols à Xcontest" >
+<!-- NEW -->
+<!ENTITY menu.importgpx "Import GPX file" >
+<!ENTITY menu.googlemapdownload "Download GoogleMap definitions" >
+<!-- NEW -->
 
 <!ENTITY tab.flights "Vols" >
 <!ENTITY tab.devices "Connexion au GPS" >
@@ -14,7 +18,9 @@
 <!ENTITY preferences.key "p" >
 <!ENTITY collapse.all "Tout masquer/afficher" >
 <!ENTITY show.source "Montrer la source IGC" >
+<!-- NEW -->
 <!ENTITY create.logbook "Create flight log" >
+<!-- NEW -->
 
 <!ENTITY file "Fichier" >
 <!ENTITY file.key "i" >
@@ -124,6 +130,11 @@
 <!-- NEW -->
 <!ENTITY prefs.units "Units">
 <!ENTITY prefs.metricsystem "Metric system">
+<!ENTITY prefs.autoselect "Automatically select today's tracks">
+<!ENTITY prefs.usercommands "User commands">
+<!ENTITY prefs.usertitle "Title">
+<!ENTITY prefs.usercmd "Program path">
+<!ENTITY prefs.userparams "Additional parameters">
 <!-- NEW -->
 
 <!-- Properties -->

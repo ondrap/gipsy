@@ -54,14 +54,14 @@
 	<menuitem label="&menu.sendxc;"
 		  oncommand="window.openDialog('chrome://gipsy/content/synchro.xul', 'gipsy_synchro', 'dialog=yes,chrome,modal=no');" 
 		  id="xsend_menu" />
-	<menuitem label="Import GPX file"
+	<menuitem label="&menu.importgpx;"
 		    oncommand="import_gpx();"
 		    />
 	<menuseparator />
 	<menuitem label="&preferences;" 
 		  oncommand="window.openDialog('chrome://gipsy/content/preferences.xul', 'gipsy_prefs', 'chrome,modal=no')" 
 		  accesskey="&preferences.key;" />
-	<menuitem label="Update Google maps URLs" 
+	<menuitem label="&menu.googlemapdownload;" 
 		  oncommand="download_map_definitions()"  />
 	<menuseparator />
 	<menuitem label="&close;" oncommand="window.close()" 
@@ -73,7 +73,7 @@
 	<menuitem label="&problem;"
 		  oncommand="window.openDialog('chrome://gipsy/content/help.xul', 'gipsy_help', 'dialog=yes,chrome,modal=yes');" />
 	<menuitem label="&about;"
-		  oncommand="window.openDialog('chrome://gipsy/content/about.xul', 'gipsy_about', 'dialog=yes,chrome,modal=yes,width=270,height=80,top=200,left=400');" />
+		  oncommand="window.openDialog('chrome://gipsy/content/about.xul', 'gipsy_about', 'dialog=yes,chrome,modal=yes,width=270,height=160,top=200,left=400');" />
       </menupopup>
     </menu>
   </menubar>
