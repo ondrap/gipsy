@@ -77,10 +77,11 @@ string CompeoGps::download_igc(int track, dt_callback cb, void *arg)
             igc << ch;
             
             if (cb) {
-                // TODO: Think something better
-                bool rv = cb(arg, (size/1000) % 20, 20);
-                if (!rv)
-                    throw Exception("Download cancelled");
+                if (size % 100) {
+                    bool rv = cb(arg, ((size/1000) % 20) + 1, 21);
+                    if (!rv)
+                        throw Exception("Download cancelled");
+                }
             }
         } catch (TimeoutException e) {
             break;

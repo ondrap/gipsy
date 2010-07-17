@@ -108,6 +108,7 @@ function OnLoad() {
 
     elem('w_gpsname').value = tracklog.igcGetParam('gpsname');
     elem('w2_gpsname').value = tracklog.igcGetParam('gpsname');
+    elem('w3_gpsname').value = tracklog.igcGetParam('gpsname');
 
     // Fill out country list on the flight info wizard
     var clist = elem('country_input');

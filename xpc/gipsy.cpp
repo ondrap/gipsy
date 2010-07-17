@@ -676,7 +676,7 @@ bool GpsItem::progress_updater(int cnt, int tot)
     if (tot)
 	newval = cnt*100 / tot;
 
-    if (newval > progress + 5 || (newval > 0 && newval < 5)) {
+    if (newval > progress + 5 || newval < progress - 5) {
 	progress = newval;
 	// Remove error if we have some progress;
 	last_error = "";
@@ -743,6 +743,8 @@ void GpsItem::download_tracklog()
             string igccontent = gps->download_igc(selected_tracks[i], _progress_updater, (void *)this);
             if (igccontent.size()) {
                 Igc *igc = new OriginalIgc(igccontent);
+                igc->gpsname = gps->gpsname;
+                igc->gpsunitid = gps->gpsunitid;
                 obtained_tracklog(igc, false);
             }
         }

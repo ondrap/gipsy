@@ -143,102 +143,107 @@
 	      onpageadvanced="return onpageinfoadvance()" 
 	      onpagerewound="document.getElementById('newtrk_window').canAdvance=true"
 	      onpageshow="onfillshow()" >
-    <tabbox id="fill_tabbox">
-      <tabs>
-	<tab label="&basic;" />
-	<tab label="&advanced;" />
-      </tabs>
-      <tabpanels>
-	<tabpanel>
-	  <grid flex="1">
-	    <columns>
-	      <column/>
-	      <column flex="1"/>
-	    </columns>
-	    
-	    <rows>
-	      <row>
-		<label value="&pilot;:" />
-		<menulist editable="true" id="pilot_input" 
-			  oncommand="handle_pilot_select(event) "/>
-	      </row>
-	      <row>
-		<label value="&faicat;" />
-		<menulist id="faiclass_input">
-		  <menupopup>
-		    <menuitem label="FAI-3 (PG)" value="3" />
-		    <menuitem label="FAI-1 (HG)" value="1" />
-		    <menuitem label="FAI-5 (Rigid wing)" value="5" />
-		    <menuitem label="FAI-2 (Rigid wing)" value="2" />
-		  </menupopup>
-		</menulist>
-	      </row>
-	      <row>
-		<label value="&glider;:" />
-		<menulist editable="true" id="glider_input" />
-	      </row>
-	      <row>
-		<box/>
-		<checkbox id="biplace_input" label="&biplace;" 
-			  checked="false" />
-	      </row>
-	      
-	      <row>
-		<label value="&launch.long;:" />
-		<hbox>
-		  <menulist id="country_input" >
-		    <menupopup id="country_list" />
-		  </menulist>
-		  <menulist editable="true" id="site_input" flex="1" 
-			    oncommand="handle_site_menu(event)" />
-		</hbox>
-	      </row>
-	      <row>
-		<label value="&comment;:" />	
-		<textbox multiline="true" id="comment_input" />
-	      </row>
-	      <row>
-		<box/>
-		<checkbox id="xcontest_input" label="&xcontest.send;" 
-			  checked="true" 
-			  oncommand="var nval = ! event.target.checked; document.getElementById('xcontestid_label').disabled = nval; document.getElementById('xcontestid_input').disabled = nval;update_mandatory_pinfo();" />
-	      </row>
-	      <row>
-		<label id="xcontestid_label" value="&xcontest.login;:" />
-		<textbox id="xcontestid_input" />
-	      </row>
-	    </rows>
-	  </grid>
-	</tabpanel>
-      
-	<tabpanel>
-	  <grid flex="1">
-	    <columns>
-	      <column/>
-	      <column flex="1"/>
-	    </columns>
-	    
-	    <rows>
-	      <row>
-		<label value="&finfo.fileid;:" />
-		<textbox id="igccode_input" maxlength="3" />
-	      </row>
-	      <row>
-		<box />
-		<radiogroup id="file_format">
-		  <radio label="&finfo.longname;"
-			 id="long"/>
-		  <radio label="&finfo.shortname;"
-			 id="short"/>
-		  <radio label="&finfo.longsite;"
-			 id="long_site"/>
-		</radiogroup>
-	      </row>
-	    </rows>
-	  </grid>
-	</tabpanel>
-      </tabpanels>
-    </tabbox>
+    <vbox>
+        <hbox>
+            <label id="w3_gpsname" style="font-weight: bold" />
+        </hbox>
+        <tabbox id="fill_tabbox">
+        <tabs>
+            <tab label="&basic;" />
+            <tab label="&advanced;" />
+        </tabs>
+        <tabpanels>
+            <tabpanel>
+            <grid flex="1">
+                <columns>
+                <column/>
+                <column flex="1"/>
+                </columns>
+                
+                <rows>
+                <row>
+                    <label value="&pilot;:" />
+                    <menulist editable="true" id="pilot_input" 
+                            oncommand="handle_pilot_select(event) "/>
+                </row>
+                <row>
+                    <label value="&faicat;" />
+                    <menulist id="faiclass_input">
+                    <menupopup>
+                        <menuitem label="FAI-3 (PG)" value="3" />
+                        <menuitem label="FAI-1 (HG)" value="1" />
+                        <menuitem label="FAI-5 (Rigid wing)" value="5" />
+                        <menuitem label="FAI-2 (Rigid wing)" value="2" />
+                    </menupopup>
+                    </menulist>
+                </row>
+                <row>
+                    <label value="&glider;:" />
+                    <menulist editable="true" id="glider_input" />
+                </row>
+                <row>
+                    <box/>
+                    <checkbox id="biplace_input" label="&biplace;" 
+                            checked="false" />
+                </row>
+                
+                <row>
+                    <label value="&launch.long;:" />
+                    <hbox>
+                    <menulist id="country_input" >
+                        <menupopup id="country_list" />
+                    </menulist>
+                    <menulist editable="true" id="site_input" flex="1" 
+                                oncommand="handle_site_menu(event)" />
+                    </hbox>
+                </row>
+                <row>
+                    <label value="&comment;:" />	
+                    <textbox multiline="true" id="comment_input" />
+                </row>
+                <row>
+                    <box/>
+                    <checkbox id="xcontest_input" label="&xcontest.send;" 
+                            checked="true" 
+                            oncommand="var nval = ! event.target.checked; document.getElementById('xcontestid_label').disabled = nval; document.getElementById('xcontestid_input').disabled = nval;update_mandatory_pinfo();" />
+                </row>
+                <row>
+                    <label id="xcontestid_label" value="&xcontest.login;:" />
+                    <textbox id="xcontestid_input" />
+                </row>
+                </rows>
+            </grid>
+            </tabpanel>
+        
+            <tabpanel>
+            <grid flex="1">
+                <columns>
+                <column/>
+                <column flex="1"/>
+                </columns>
+                
+                <rows>
+                <row>
+                    <label value="&finfo.fileid;:" />
+                    <textbox id="igccode_input" maxlength="3" />
+                </row>
+                <row>
+                    <box />
+                    <radiogroup id="file_format">
+                    <radio label="&finfo.longname;"
+                            id="long"/>
+                    <radio label="&finfo.shortname;"
+                            id="short"/>
+                    <radio label="&finfo.longsite;"
+                            id="long_site"/>
+                    </radiogroup>
+                </row>
+                </rows>
+            </grid>
+            </tabpanel>
+        </tabpanels>
+        </tabbox>
+    </vbox>
   </wizardpage> 
 
   <wizardpage label="&filinfo.title;" 
