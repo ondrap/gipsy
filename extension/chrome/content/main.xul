@@ -10,8 +10,7 @@
     title="&gipsy.title;"
     orient="vertical"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-    xmlns:svg="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:html="http://www.w3.org/1999/xhtml"
     persist="width height" >
 
   <stringbundle id="bundle" src="chrome://gipsy/locale/main.properties"/>
@@ -266,7 +265,7 @@
 
 	  <splitter />
 
-	  <vbox>
+	  <vbox flex="1">
 	    <radiogroup orient="horizontal"
 			oncommand="update_maptype()">
 		<hbox>
@@ -285,81 +284,10 @@
 			label="&map.airspace;" oncommand="update_maptype()" />
 	    </hbox>
 	    
-	  <svg:svg width="520" height="500" viewBox="0 0 520 500" >
-	    <svg:rect x="1" y="1" width="519" height="498"
-		      fill="none" stroke="darkgrey" />
-	    <svg:g transform="translate(5,5)">
-	      
-	      <svg:flcontainer id="fprofile"
-			       width="510" height="490">
-
-		<svg:rect x="-1" y="-1" width="512" height="362" fill="none"
-			  stroke="white" stroke-width="0.5" />
-	      
-		<!-- Path for clipping mapcontainer -->
-		<svg:defs>
-		  <svg:clipPath id="mapclip">
-		    <svg:rect x="0" y="0" width="510" height="360" />
-		  </svg:clipPath>
-		</svg:defs>
-
-		<svg:g clip-path="url(#mapclip)">
-		  <svg:flmapcontainer width="510" height="360" 
-				    id="mapcontainer" 
-				     >
-		    <svg:flgmap />
-		    <svg:flflatmap />
-		    <svg:flmapicons />
-		    <svg:flmapdrag />
-		  </svg:flmapcontainer>
-		</svg:g>
-
-		<!-- Kontrola mapy-->
-		<svg:image xlink:href="chrome://gipsy/content/up.png"
-			   x="12" y="5" width="16" height="16" 
-			   onmousedown="elem('mapcontainer').move('up')" 
-			   style="cursor:pointer" />
-		
-		<svg:image xlink:href="chrome://gipsy/content/left.png"
-			   x="3" y="23" width="16" height="16" 
-			   onmousedown="elem('mapcontainer').move('left')"
-			   style="cursor:pointer"/>
-		<svg:image xlink:href="chrome://gipsy/content/right.png"
-			   x="21" y="23" width="16" height="16" 
-			   onmousedown="elem('mapcontainer').move('right')" 
-			   style="cursor:pointer" />
-		<svg:image xlink:href="chrome://gipsy/content/down.png"
-			   x="12" y="41" width="16" height="16" 
-			   onmousedown="elem('mapcontainer').move('down')" 
-			   style="cursor:pointer"/>
-		
-		<svg:image xlink:href="chrome://gipsy/content/zoomin.png"
-			   x="12" y="61" width="16" height="16" 
-			   onmousedown="elem('mapcontainer').zoom('in')" 
-			   style="cursor:pointer" />
-		<svg:image xlink:href="chrome://gipsy/content/zoomout.png"
-			   x="12" y="79" width="16" height="16" 
-			   onmousedown="elem('mapcontainer').zoom('out')" 
-			   style="cursor:pointer" />
-		
-		<!-- Speed profiles -->
-		<svg:flcontainer height="70" transform="translate(0,370)"> 
-		  <svg:flaltprofile />
-		  <svg:fltimespan /> 
-		  <svg:flspeedprofile prof-opacity="0.3"
-				      marker="right" marker-style="fill:green"
-				      markerline="green"
-				      stroke-dasharray="0,3,2,1"
-				      fill="green" stroke="gray" />
-		  <svg:flprofmouse x="0" y="0" 
-				   transx="5" 
-				   mapcontainer="mapcontainer" />
-		  <svg:flpointdata pointname="point" 
-				   transform="translate(0,75)" />
-		</svg:flcontainer>
-	      </svg:flcontainer>
-	    </svg:g>
-	  </svg:svg>
+            
+            <html:div style="width:100%;height:100%;background:black" flex="1" id="gmap">
+                
+            </html:div>
 
 	  </vbox>
 	</hbox>
