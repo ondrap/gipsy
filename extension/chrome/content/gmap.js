@@ -257,7 +257,7 @@ TerrainMap.prototype.make_canvas = function(tlog, i) {
     
     var ctx = canvas.getContext('2d');
     ctx.beginPath();
-    ctx.strokeStyle = sprintf('rgb(%d,%d,128)', (i * 30) % 250, 255 - ((i*50) % 250), (128 + i * 40) % 250);
+    ctx.strokeStyle = sprintf('rgb(%d,%d,%d)', 255 - ((i * 50) % 250), (170 + i * 40) % 250, (60 + i * 30) % 250);
     var point = tlog.igcPoint(0);
     ctx.moveTo(this.projectlon(point.lon) - startx, this.projectlat(point.lat) - starty);
     for (var i=1; i < tlog.igcPointCount(); i++) {
