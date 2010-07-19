@@ -53,8 +53,8 @@ function TerrainMap(id) {
         self.y += self.lasty - evt.clientY;
         
         // Check map limits
-        var xlimit = 256 * (1 << (17 - self.zoom)) - self.main.offsetWidth;
-        var ylimit = 256 * (1 << (17 - self.zoom)) - self.main.offsetHeight;
+        var xlimit = self.xlimit() - self.main.offsetWidth;
+        var ylimit = self.ylimit() - self.main.offsetHeight;
         if (self.x > xlimit)
             self.x = xlimit;
         if (self.y > ylimit)
@@ -113,6 +113,14 @@ TerrainMap.prototype.gen_img = function(png, x, y) {
     return zoomin;
 }
 
+TerrainMap.prototype.xlimit = function() {
+    return 256 * (1 << (17 - this.zoom));
+}
+
+TerrainMap.prototype.ylimit = function()  {
+    return 256 * (1 << (17 - this.zoom));
+}
+
 TerrainMap.prototype.clean_map = function() {
     this.loaded_tiles = Array();
     while ( this.maparea.childNodes.length >= 1 )
@@ -159,6 +167,9 @@ TerrainMap.prototype.load_images = function() {
     // Show areas that are outside the bounds function
     for (var x=this.x; x < this.x + this.main.clientWidth + 256; x += 256)
         for (var y=this.y; y < this.y + this.main.clientHeight + 256; y += 256) {
+            if (x >= this.xlimit() || y >= this.ylimit())
+                continue;
+            
             var xtile = Math.floor(x / 256);
             var ytile = Math.floor(y / 256);
             for (var layerid=0; layerid < this.maplayers.length; layerid++) {
