@@ -29,7 +29,7 @@ function TerrainMap(id) {
     this.dragging = false;
     this.x = 0;
     this.y = 0;
-    this.zoom = 14;
+    this.zoom = 15;
     // Array to store loaded tiles
     this.loaded_tiles = new Array();
 
@@ -140,13 +140,14 @@ TerrainMap.prototype.zoom_out = function() {
 
 // Zoom in, leave the center of the map inplace
 TerrainMap.prototype.zoom_in = function() {
-    if (this.zoom == 0)
+    // Pixel offsets are too high for zoom=0, don't allow it
+    if (this.zoom == 1)
         return;
     this.zoom--;
     // Clean up map area
     this.clean_map();
-    this.x = Math.floor((this.x + this.main.offsetWidth/2) * 2) - this.main.offsetWidth / 2;
-    this.y = Math.floor((this.y + this.main.offsetHeight/2) * 2) - this.main.offsetHeight / 2;
+    this.x = Math.floor((this.x + this.main.offsetWidth/2) * 2 - this.main.offsetWidth / 2);
+    this.y = Math.floor((this.y + this.main.offsetHeight/2) * 2 - this.main.offsetHeight / 2);
     this.dragarea.style.left = (-this.x).toString() + 'px';
     this.dragarea.style.top = (-this.y).toString() + 'px';
         

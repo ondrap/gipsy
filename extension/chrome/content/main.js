@@ -192,8 +192,7 @@ function update_maptype() {
     layers.push(maptype);
 
     var flov = elem('map_overlay');
-    if (maptype == 'map_googlesat' || 
-	maptype == 'map_pgweb' || maptype == 'map_terrain') {
+    if (maptype == 'map_googlesat' || 	maptype == 'map_pgweb') {
 	flov.disabled = false;
 	if (flov.checked)
 	    layers.push('map_googleoverlay');
