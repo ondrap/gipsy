@@ -275,3 +275,27 @@ function format_ms(speed) {
 	return sprintf("%.1f m/s", speed);
     return sprintf("%d ft/m", Math.round(speed * 3.2808399 * 60));
 }    
+
+function findPosX(obj)
+{
+    var curleft = 0;
+    while(1)  {
+        curleft += obj.offsetLeft;
+        if(!obj.offsetParent)
+            break;
+        obj = obj.offsetParent;
+    }
+    return curleft;
+}
+
+function findPosY(obj)
+{
+    var curtop = 0;
+    while(1) {
+        curtop += obj.offsetTop;
+        if(!obj.offsetParent)
+        break;
+        obj = obj.offsetParent;
+    }
+    return curtop;
+}

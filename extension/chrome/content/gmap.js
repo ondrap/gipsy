@@ -3,26 +3,35 @@
 htmlns = "http://www.w3.org/1999/xhtml";
 
 function TerrainMap(id) {
+    var self = this;
+
     this.main = document.getElementById(id);
     this.main.style.overflow = 'hidden';
     this.main.style.position = 'relative';
 
+    // Add controls
+    var zoomin = this.gen_img('zoomin.png', 12, 61);
+    this.main.appendChild(zoomin);
+    zoomin.addEventListener('click', function() { self.zoom_in(); }, false);
+    var zoomout = this.gen_img('zoomout.png', 12, 79);
+    this.main.appendChild(zoomout);
+    zoomout.addEventListener('click', function() { self.zoom_out(); }, false);
+    
+    // Add scroll area
     this.dragarea = document.createElementNS(htmlns, 'div');
     this.dragarea.style.position = 'absolute';
     this.main.appendChild(this.dragarea);
     
+    // Add map
     this.maparea = document.createElementNS(htmlns, 'div');
     this.dragarea.appendChild(this.maparea);
-    this.maparea.appendChild(document.createTextNode('Hello World'));
 
     this.dragging = false;
     this.x = 0;
     this.y = 0;
-    this.zoom = 13;
+    this.zoom = 14;
     // Array to store loaded tiles
     this.loaded_tiles = new Array();
-
-    var self = this;
 
     this.mousedown = function(evt) {
         if (evt.which == 1) {
@@ -65,13 +74,77 @@ function TerrainMap(id) {
     this.resize = function() {
         self.load_images();
     }
+    this.dblclick = function(evt) {
+        // Move center to the place of the doubleclick
+        var lx = evt.clientX - findPosX(self.main);
+        var ly = evt.clientY - findPosY(self.main);
+        self.x += lx - Math.floor(self.main.offsetWidth / 2);
+        if (self.x < 0)
+            self.x = 0;
+        self.y += ly - Math.floor(self.main.offsetHeight / 2);
+        if (self.y < 0)
+            self.y = 0;
+        self.zoom_in();
+    }
     
-    this.main.addEventListener('mousedown', this.mousedown, false);
-    this.main.addEventListener('mousemove', this.mousemove, false);
+    this.dragarea.addEventListener('mousedown', this.mousedown, false);
+    this.dragarea.addEventListener('mousemove', this.mousemove, false);
+    this.dragarea.addEventListener('dblclick', this.dblclick, false);
     window.addEventListener('resize', this.resize, false);
     window.addEventListener('mouseup', this.mouseup, false);
 
     this.load_images();
+}
+
+TerrainMap.prototype.gen_img = function(png, x, y) {
+    var zoomin = document.createElementNS(htmlns, 'img');
+    zoomin.setAttribute('src', png);
+    zoomin.style.position = 'absolute';
+    zoomin.style.zIndex = '300';
+    zoomin.style.top = y + 'px';
+    zoomin.style.left = x + 'px';
+    return zoomin;
+}
+
+TerrainMap.prototype.clean_map = function() {
+    this.loaded_tiles = Array();
+    while ( this.maparea.childNodes.length >= 1 )
+        this.maparea.removeChild(this.maparea.firstChild);
+}
+
+// Zoom out, leave the center of the map in place
+TerrainMap.prototype.zoom_out = function() {
+    if (this.zoom == 17)
+        return;
+    this.zoom++;
+    this.clean_map();
+    // Update X/Y coordinates, so that the center remains at the same place
+    this.x = Math.floor((this.x + this.main.offsetWidth/2) / 2) - this.main.offsetWidth / 2;
+    if (this.x < 0)
+        this.x = 0;
+    this.y = Math.floor((this.y + this.main.offsetHeight/2) / 2) - this.main.offsetHeight / 2;
+    if (this.y < 0)
+        this.y = 0;
+    this.dragarea.style.left = (-this.x).toString() + 'px';
+    this.dragarea.style.top = (-this.y).toString() + 'px';
+
+    this.load_images();
+}
+
+// Zoom in, leave the center of the map inplace
+TerrainMap.prototype.zoom_in = function() {
+    if (this.zoom == 0)
+        return;
+    this.zoom--;
+    // Clean up map area
+    this.clean_map();
+    this.x = Math.floor((this.x + this.main.offsetWidth/2) * 2) - this.main.offsetWidth / 2;
+    this.y = Math.floor((this.y + this.main.offsetHeight/2) * 2) - this.main.offsetHeight / 2;
+    this.dragarea.style.left = (-this.x).toString() + 'px';
+    this.dragarea.style.top = (-this.y).toString() + 'px';
+        
+    this.load_images();
+    
 }
 
 TerrainMap.prototype.load_images = function() {
