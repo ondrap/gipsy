@@ -1,5 +1,5 @@
-CXXFLAGS = -Wall -DDEBUG -DUSE_LIBUSB
-#CXXFLAGS = -Wall -DVALIDATOR
+#CXXFLAGS = -Wall -DDEBUG -DUSE_LIBUSB
+CXXFLAGS = -Wall -DVALIDATOR -DHAVE_CRYPTO
 OBJS = gps.o phys.o data.o garmin.o igc.o flymaster.o compeo.o
 
 WINLIBS = -lsetupapi

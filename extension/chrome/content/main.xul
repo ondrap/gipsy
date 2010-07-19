@@ -17,6 +17,7 @@
 
   <script src="util.js" />
   <script src="countries.js" />
+  <script src="gmap.js" />
   <script src="main.js" />
   <script src="flighttree.js" />
   <script src="gpstree.js" />
@@ -285,10 +286,7 @@
 	    </hbox>
 	    
             
-            <html:div style="width:100%;height:100%;background:black" flex="1" id="gmap">
-                
-            </html:div>
-
+            <html:div flex="1" id="gmap" />
 	  </vbox>
 	</hbox>
       </tabpanel>

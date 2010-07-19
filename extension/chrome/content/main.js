@@ -89,7 +89,8 @@ function OnLoad() {
 
     rescan_dir();
     update_nonsync();
-    update_maptype();
+    // update_maptype();
+    create_gmap();
 
     // initalize GPS device tree
     init_gpstree();
@@ -99,6 +100,11 @@ function OnLoad() {
     if (gstore.OS == 'WINNT')
 	elem('popup_launch').style.display = '-moz-box';
     ctx_setup_usercmd();
+}
+
+var gmap;
+function create_gmap() {
+    gmap = new TerrainMap('gmap');
 }
 
 function ctx_setup_usercmd() {
