@@ -93,6 +93,12 @@ function TerrainMap(id) {
     window.addEventListener('resize', this.resize, false);
     window.addEventListener('mouseup', this.mouseup, false);
 
+    this.maplayers = [];
+}
+
+TerrainMap.prototype.set_layers = function(layers) {
+    this.maplayers = layers;
+    this.clean_map();
     this.load_images();
 }
 
@@ -103,6 +109,7 @@ TerrainMap.prototype.gen_img = function(png, x, y) {
     zoomin.style.zIndex = '300';
     zoomin.style.top = y + 'px';
     zoomin.style.left = x + 'px';
+    zoomin.style.cursor = 'pointer';
     return zoomin;
 }
 
@@ -153,15 +160,24 @@ TerrainMap.prototype.load_images = function() {
         for (var y=this.y; y < this.y + this.main.clientHeight + 256; y += 256) {
             var xtile = Math.floor(x / 256);
             var ytile = Math.floor(y / 256);
-            var link = this.get_map_link('map_googlemap', this.zoom, xtile, ytile, 'vt/lyrs=m@129');
-            if (!this.loaded_tiles[link]) {
-                this.loaded_tiles[link] = true;
-                img = document.createElementNS(htmlns, 'img');
-                img.setAttribute('src', link);
-                img.style.left = (xtile * 256) + 'px';
-                img.style.top = (ytile * 256) + 'px';
-                img.style.position = 'absolute';
-                this.maparea.appendChild(img);
+            for (var layerid=0; layerid < this.maplayers.length; layerid++) {
+                var maptype = this.maplayers[layerid];
+                var mapsuffix = '';
+                if (maptype != 'map_pgweb' && maptype != 'map_airspace')
+                    mapsuffix = get_string_pref(maptype);
+                var link = this.get_map_link(maptype, this.zoom, xtile, ytile, mapsuffix);
+                if (!this.loaded_tiles[link]) {
+                    this.loaded_tiles[link] = true;
+                    img = document.createElementNS(htmlns, 'img');
+                    img.setAttribute('src', link);
+                    img.style.left = (xtile * 256) + 'px';
+                    img.style.top = (ytile * 256) + 'px';
+                    img.style.width = '256px';
+                    img.style.height = '256px';
+                    img.style.position = 'absolute';
+                    img.style.zIndex = 100 + layerid;
+                    this.maparea.appendChild(img);
+                }
             }
         }
 };

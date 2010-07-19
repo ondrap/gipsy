@@ -89,8 +89,8 @@ function OnLoad() {
 
     rescan_dir();
     update_nonsync();
-    // update_maptype();
     create_gmap();
+    update_maptype();
 
     // initalize GPS device tree
     init_gpstree();
@@ -179,40 +179,36 @@ function update_nonsync()
 
 // Initialize map according to checkbox/radiobox states
 function update_maptype() {
-    var flmap = elem('mapcontainer');
+    var layers = [];
+    var maptype;
     var maps = ['map_googlemap', 'map_googlesat', 'map_nomap',
 		'map_pgweb', 'map_terrain' ];
     for (var i=0; i < maps.length; i++) {
 	if (elem(maps[i]).selected) {
-	    flmap.set_property('maptype', maps[i]);
-	    var maptype = maps[i];
+            maptype = maps[i];
 	    break;
 	}
     }
+    layers.push(maptype);
+
     var flov = elem('map_overlay');
     if (maptype == 'map_googlesat' || 
 	maptype == 'map_pgweb' || maptype == 'map_terrain') {
 	flov.disabled = false;
 	if (flov.checked)
-	    flmap.set_property('mapoverlay', 'map_googleoverlay');
-	else
-	    flmap.set_property('mapoverlay', null);
-    } else {
+	    layers.push('map_googleoverlay');
+    } else
 	flov.disabled = true;
-	flmap.set_property('mapoverlay', null);
-    }
 
     var flairspace = elem('map_airspace');
     if (maptype != 'map_nomap') {
 	flairspace.disabled = false;
 	if (flairspace.checked)
-	    flmap.set_property('mapairspace', 'map_airspace');
-	else
-	    flmap.set_property('mapairspace', null);
-    } else {
+	    layers.push('map_airspace');
+    } else
 	flairspace.disabled = true;
-	flmap.set_property('mapairspace', null);
-    }
+    
+    gmap.set_layers(layers);
 }
 
 function import_gpx() {

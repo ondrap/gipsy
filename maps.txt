@@ -1,4 +1,4 @@
-map_googlemap:vt/lyrs=m@111&hl=en
-map_googleoverlay:vt/lyrs=h@111&hl=en
-map_terrain:vt/v=w2p.111&hl=en
-map_googlesat:kh?v=47
+map_googlemap:vt/lyrs=m@129&hl=en
+map_googleoverlay:vt/lyrs=h@129&hl=en
+map_terrain:vt/lyrs=t@125,r@129&hl=en
+map_googlesat:kh?v=65
