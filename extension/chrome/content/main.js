@@ -181,15 +181,14 @@ function update_nonsync()
 function update_maptype() {
     var layers = [];
     var maptype;
-    var maps = ['map_googlemap', 'map_googlesat', 'map_nomap',
-		'map_pgweb', 'map_terrain' ];
+    var maps = ['map_googlemap', 'map_googlesat', 'map_pgweb', 'map_terrain' ];
     for (var i=0; i < maps.length; i++) {
 	if (elem(maps[i]).selected) {
             maptype = maps[i];
+            layers.push(maptype);
 	    break;
 	}
     }
-    layers.push(maptype);
 
     var flov = elem('map_overlay');
     if (maptype == 'map_googlesat' || 	maptype == 'map_pgweb') {

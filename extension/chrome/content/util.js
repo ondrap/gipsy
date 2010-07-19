@@ -248,6 +248,12 @@ function elem(id) {
     return document.getElementById(id);
 }
 
+// Remove all children form na element
+function empty(el) {
+    while ( el.childNodes.length >= 1 )
+        el.removeChild(el.firstChild);
+}
+
 function _(str) {
     return elem('bundle').getString(str);
 }

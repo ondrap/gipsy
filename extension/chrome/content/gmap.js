@@ -2,6 +2,7 @@
 
 htmlns = "http://www.w3.org/1999/xhtml";
 
+// Mapping object - give it an identifier of a div element and it will build a complete map
 function TerrainMap(id) {
     var self = this;
 
@@ -25,6 +26,10 @@ function TerrainMap(id) {
     // Add map
     this.maparea = document.createElementNS(htmlns, 'div');
     this.dragarea.appendChild(this.maparea);
+    
+    // Add tracklog
+    this.tracklogarea = document.createElementNS(htmlns, 'div');
+    this.dragarea.appendChild(this.tracklogarea);
 
     this.dragging = false;
     this.x = 0;
@@ -32,6 +37,7 @@ function TerrainMap(id) {
     this.zoom = 15;
     // Array to store loaded tiles
     this.loaded_tiles = new Array();
+    this.tracklogs = [];
 
     this.mousedown = function(evt) {
         if (evt.which == 1) {
@@ -43,7 +49,6 @@ function TerrainMap(id) {
     this.mouseup = function(evt) {
         if (self.dragging && evt.which == 1) {
             self.dragging = false;
-            self.load_images();
         }
     }
     this.mousemove = function(evt) {
@@ -53,8 +58,8 @@ function TerrainMap(id) {
         self.y += self.lasty - evt.clientY;
         
         // Check map limits
-        var xlimit = self.xlimit() - self.main.offsetWidth;
-        var ylimit = self.ylimit() - self.main.offsetHeight;
+        var xlimit = self.limit() - self.main.offsetWidth;
+        var ylimit = self.limit() - self.main.offsetHeight;
         if (self.x > xlimit)
             self.x = xlimit;
         if (self.y > ylimit)
@@ -69,10 +74,10 @@ function TerrainMap(id) {
         self.dragarea.style.top = (-self.y).toString() + 'px';
         self.lastx = evt.clientX;
         self.lasty = evt.clientY;
-        self.load_images();
+        self.load_maps();
     }
     this.resize = function() {
-        self.load_images();
+        self.load_maps();
     }
     this.dblclick = function(evt) {
         // Move center to the place of the doubleclick
@@ -87,44 +92,207 @@ function TerrainMap(id) {
         self.zoom_in();
     }
     
-    this.dragarea.addEventListener('mousedown', this.mousedown, false);
-    this.dragarea.addEventListener('mousemove', this.mousemove, false);
-    this.dragarea.addEventListener('dblclick', this.dblclick, false);
+    this.main.addEventListener('mousedown', this.mousedown, true);
+    this.main.addEventListener('mousemove', this.mousemove, false);
+    this.main.addEventListener('dblclick', this.dblclick, false);
     window.addEventListener('resize', this.resize, false);
     window.addEventListener('mouseup', this.mouseup, false);
 
     this.maplayers = [];
 }
 
+// Set map layers
+// (list of strings)
 TerrainMap.prototype.set_layers = function(layers) {
     this.maplayers = layers;
     this.clean_map();
-    this.load_images();
+    this.load_maps();
 }
 
+// Generate an image of control button
 TerrainMap.prototype.gen_img = function(png, x, y) {
     var zoomin = document.createElementNS(htmlns, 'img');
     zoomin.setAttribute('src', png);
     zoomin.style.position = 'absolute';
-    zoomin.style.zIndex = '300';
+    zoomin.style.zIndex = '2000';
     zoomin.style.top = y + 'px';
     zoomin.style.left = x + 'px';
     zoomin.style.cursor = 'pointer';
     return zoomin;
 }
 
-TerrainMap.prototype.xlimit = function() {
+// Project longitude into X-coordinates starting at X=0 when LON=-180
+TerrainMap.prototype.projectlon = function(lon) {
+    var scale = this.limit() / 360;
+    return Math.round((lon + 180) * scale);
+}
+
+// Project latitude into Y-coordinates starting at Y=0 when LAT=-90
+TerrainMap.prototype.projectlat = function(lat) {
+    var lat = lat * 2 * Math.PI / 360;
+    var merclat = 0.5 * Math.log((1 + Math.sin(lat))/ (1 - Math.sin(lat)));
+    // We are rectangular, therefore the linear scale is:
+    var scale = this.limit() / (2 * Math.PI);
+    var centercoord = merclat * scale;
+    return Math.round(this.limit() / 2 - centercoord);
+}
+
+// Return best zoom for a given scale
+TerrainMap.prototype.nice_google_zoom = function(pscale) {
+    var zoom = 17;
+    while (zoom > 0) {
+        var myscale = 256 / (2 * Math.PI / Math.pow(2, (17 - zoom)));
+        if (pscale < myscale)
+            break;
+        zoom--;
+    }
+    return zoom + 1;
+}
+
+// Get minimum from tracklog statistics
+function get_min_tlogs(tracklogs, key) {
+    var val = tracklogs[0].igcGetStat(key);
+    for (var i=1; i < tracklogs.length; i++) {
+        var nval = tracklogs[i].igcGetStat(key);
+        if (nval < val)
+            val = nval;
+    }
+    return val;
+}
+
+// Get maximum from tracklog statistics
+function get_max_tlogs(tracklogs, key) {
+    var val = tracklogs[0].igcGetStat(key);
+    for (var i=1; i < tracklogs.length; i++) {
+        var nval = tracklogs[i].igcGetStat(key);
+        if (nval > val)
+            val = nval;
+    }
+    return val;
+}
+
+// Move+zoom map so that all tracklogs are visible
+TerrainMap.prototype.focus_tracklogs = function() {
+    if (!this.tracklogs.length)
+        return;
+
+    tlog = this.tracklogs[0];
+    var minlon = get_min_tlogs(this.tracklogs, tlog.STAT_LON_MIN);
+    var maxlon = get_max_tlogs(this.tracklogs, tlog.STAT_LON_MAX);
+    var minlat = get_min_tlogs(this.tracklogs, tlog.STAT_LAT_MIN);
+    var maxlat = get_max_tlogs(this.tracklogs, tlog.STAT_LAT_MAX);
+    
+    // Find ideal zoom level + position
+    var xscale = this.main.offsetWidth / (tlog.svgProjectLon(maxlon) - tlog.svgProjectLon(minlon));
+    var yscale = this.main.offsetHeight / (tlog.svgProjectLat(maxlat) - tlog.svgProjectLat(minlat));
+    if (xscale < yscale)
+        var scale = xscale;
+    else
+        var scale = yscale;
+    // Update scale to be a nice value for googlemaps
+    this.zoom = this.nice_google_zoom(scale);
+    
+    // Set left X/Y
+    this.x = (this.projectlon(minlon) + this.projectlon(maxlon)) / 2;
+    this.x -= this.main.offsetWidth / 2;
+    this.y = (this.projectlat(minlat) + this.projectlat(maxlat)) / 2;
+    this.y -= this.main.offsetHeight / 2;
+    this.dragarea.style.left = (-this.x).toString() + 'px';
+    this.dragarea.style.top = (-this.y).toString() + 'px';
+    
+    this.clean_map();
+    this.load_maps();
+    this.reload_tracklogs();
+}
+
+// Set tracklogs to be shown
+TerrainMap.prototype.set_tracklogs = function(tracklogs) {
+    this.tracklogs = tracklogs;
+    this.focus_tracklogs();
+    this.reload_tracklogs();
+}
+
+// Redraw tracklogs (e.g. because of changed zoom level)
+TerrainMap.prototype.reload_tracklogs = function() {
+    empty(this.tracklogarea);
+    for (var i=0; i < this.tracklogs.length; i++)
+        this.draw_tracklog(i);
+}
+
+// Create an icon that should be shown on the map
+TerrainMap.prototype.make_icon = function(png, lat, lon) {
+    var icon = document.createElementNS(htmlns, 'img');
+    icon.setAttribute('src', png);
+    icon.style.position = 'absolute';
+    icon.style.zIndex = 1100;
+    icon.style.marginTop = '-34px';
+    icon.style.marginLeft = '-10px';
+    icon.style.top = this.projectlat(lat) + 'px';
+    icon.style.left = this.projectlon(lon) + 'px';
+    
+    return icon;
+}
+
+// Create a canvas with a tracklog
+TerrainMap.prototype.make_canvas = function(tlog, i) {
+    var canvas = document.createElementNS(htmlns, 'canvas');
+    
+    var scale = this.limit() / (2 * Math.PI);
+    var minlon = tlog.igcGetStat(tlog.STAT_LON_MIN);
+    var maxlon = tlog.igcGetStat(tlog.STAT_LON_MAX);
+    var minlat = tlog.igcGetStat(tlog.STAT_LAT_MIN);
+    var maxlat = tlog.igcGetStat(tlog.STAT_LAT_MAX);
+    
+    var startx = this.projectlon(minlon);
+    var starty = this.projectlat(maxlat);
+    
+    var width = this.projectlon(maxlon) - this.projectlon(minlon) + 1;
+    var height = this.projectlat(minlat) - this.projectlat(maxlat) + 1;
+    canvas.setAttribute('width', width);
+    canvas.setAttribute('height', height);
+    canvas.style.top = starty + 'px';
+    canvas.style.left = startx + 'px';
+    canvas.style.zIndex = 1000;
+    canvas.style.position = 'absolute';
+    
+    var ctx = canvas.getContext('2d');
+    ctx.beginPath();
+    ctx.strokeStyle = sprintf('rgb(%d,%d,128)', (i * 30) % 250, 255 - ((i*50) % 250), (128 + i * 40) % 250);
+    var point = tlog.igcPoint(0);
+    ctx.moveTo(this.projectlon(point.lon) - startx, this.projectlat(point.lat) - starty);
+    for (var i=1; i < tlog.igcPointCount(); i++) {
+        var point = tlog.igcPoint(i);
+        ctx.lineTo(this.projectlon(point.lon) - startx, this.projectlat(point.lat) - starty);
+    }
+    ctx.stroke();
+
+    return canvas;
+}
+
+// Create a tracklog and pinpoint it on a dragarea
+TerrainMap.prototype.draw_tracklog = function(tidx) {
+    var tlog = this.tracklogs[tidx];
+    var start = tlog.igcPoint(0);
+    var starticon = this.make_icon('start.png', start.lat, start.lon);
+    this.tracklogarea.appendChild(starticon);
+
+    var cil = tlog.igcPoint(tlog.igcPointCount() - 1);
+    var cilicon = this.make_icon('cil.png', cil.lat, cil.lon);
+    this.tracklogarea.appendChild(cilicon);
+    
+    this.tracklogarea.appendChild(this.make_canvas(tlog, tidx));
+}
+
+// Return dimension of the map given the current zoom level
+TerrainMap.prototype.limit = function() {
     return 256 * (1 << (17 - this.zoom));
 }
 
-TerrainMap.prototype.ylimit = function()  {
-    return 256 * (1 << (17 - this.zoom));
-}
-
+// Remove all images from a map
 TerrainMap.prototype.clean_map = function() {
+    this.dragging = false;
     this.loaded_tiles = Array();
-    while ( this.maparea.childNodes.length >= 1 )
-        this.maparea.removeChild(this.maparea.firstChild);
+    empty(this.maparea);
 }
 
 // Zoom out, leave the center of the map in place
@@ -143,7 +311,8 @@ TerrainMap.prototype.zoom_out = function() {
     this.dragarea.style.left = (-this.x).toString() + 'px';
     this.dragarea.style.top = (-this.y).toString() + 'px';
 
-    this.load_images();
+    this.load_maps();
+    this.reload_tracklogs();
 }
 
 // Zoom in, leave the center of the map inplace
@@ -159,15 +328,16 @@ TerrainMap.prototype.zoom_in = function() {
     this.dragarea.style.left = (-this.x).toString() + 'px';
     this.dragarea.style.top = (-this.y).toString() + 'px';
         
-    this.load_images();
-    
+    this.load_maps();
+    this.reload_tracklogs();
 }
 
-TerrainMap.prototype.load_images = function() {
+// Load visible images into dragarea
+TerrainMap.prototype.load_maps = function() {
     // Show areas that are outside the bounds function
     for (var x=this.x; x < this.x + this.main.clientWidth + 256; x += 256)
         for (var y=this.y; y < this.y + this.main.clientHeight + 256; y += 256) {
-            if (x >= this.xlimit() || y >= this.ylimit())
+            if (x >= this.limit() || y >= this.limit())
                 continue;
             
             var xtile = Math.floor(x / 256);
@@ -194,6 +364,7 @@ TerrainMap.prototype.load_images = function() {
         }
 };
 
+// Return a link for a given map
 TerrainMap.prototype.get_map_link = function(maptype, zoom, xtile, ytile, mapsuffix) {
     if (maptype == 'map_googlemap') {
         var svr = 'mt' + Math.floor(Math.random() * 4);

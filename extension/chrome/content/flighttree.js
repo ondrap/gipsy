@@ -309,19 +309,25 @@ var treeView = {
         }
     },
 
+    get_selected_fnames : function() {
+        var flist = [];
+        var rangeCount = this.treebox.view.selection.getRangeCount();
+        for (var i=0; i < rangeCount; i++) {
+            var start = {};
+            var end = {};
+            this.treebox.view.selection.getRangeAt(i,start,end);
+            for(var c=start.value; c <= end.value; c++) {
+                if (this.rows[c].flight)
+                    flist.push(this.rows[c].value);
+            }
+        }
+        
+        return flist;
+    },
+
     // Export selected file to GPX
     export_file : function(format, dtype) {
-	var flist = [];
-	var rangeCount = this.treebox.view.selection.getRangeCount();
-	for (var i=0; i < rangeCount; i++) {
-	    var start = {};
-	    var end = {};
-	    this.treebox.view.selection.getRangeAt(i,start,end);
-	    for(var c=start.value; c <= end.value; c++) {
-		if (this.rows[c].flight)
-		    flist.push(this.rows[c].value);
-	    }
-	}
+	var flist = this.get_selected_fnames();
 	if (flist.length == 0)
 	    return;
 
@@ -488,14 +494,15 @@ var flightmodel = {
 	var dinfo = gstore.getFlightFile(this.fname);
 	this.stats_update(dinfo);
 	this.xcontest_update(dinfo);
-	if (this.tlog) {
-	    document.getElementById('fprofile').set_property('tracklog', this.tlog);
-
-	    var date = new Date(this.tlog.igcPoint(0).time);
-	    var dt = sprintf('ondrap/%d.%d.%d/%d:%02d',date.getUTCDate(),
-			     date.getUTCMonth()+1, date.getUTCFullYear(),
-			     date.getUTCHours(), date.getUTCMinutes());
-	}
+	
+        var flist = treeView.get_selected_fnames();
+        if (flist.length != 0) {
+            var tlist = [];
+            for (var i=0; i < flist.length; i++) {
+                tlist.push(gstore.loadTracklog(flist[i]));
+            }
+            gmap.set_tracklogs(tlist);
+        }
     },
 
     xcontest_update : function(dinfo) {
