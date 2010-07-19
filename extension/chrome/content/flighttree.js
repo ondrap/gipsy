@@ -502,6 +502,7 @@ var flightmodel = {
                 tlist.push(gstore.loadTracklog(flist[i]));
             }
             gmap.set_tracklogs(tlist);
+            gprofile.set_tracklog(tlist[0]);
         }
     },
 

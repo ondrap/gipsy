@@ -103,8 +103,10 @@ function OnLoad() {
 }
 
 var gmap;
+var gprofile;
 function create_gmap() {
     gmap = new TerrainMap('gmap');
+    gprofile = new TracklogProfile('gprofile', 100);
 }
 
 function ctx_setup_usercmd() {

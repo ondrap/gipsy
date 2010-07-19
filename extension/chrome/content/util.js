@@ -305,3 +305,10 @@ function findPosY(obj)
     }
     return curtop;
 }
+
+function fire_resize_event()
+{
+    var evobj = document.createEvent('HTMLEvents');
+    evobj.initEvent('resize', false, false);
+    window.dispatchEvent(evobj);
+}
