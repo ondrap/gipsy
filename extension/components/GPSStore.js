@@ -199,7 +199,33 @@ GPSStore.prototype = {
 	}
 	return tlog;
     },
+    // Load optimization from file
+    loadOptimization : function(fname)
+    {
+        if (!fname)
+            return null;
 
+        var file = this.getIGCFile(fname);
+        try {
+            var data = "";  
+            var fstream = Components.classes["@mozilla.org/network/file-input-stream;1"].
+                                    createInstance(Components.interfaces.nsIFileInputStream);
+            var cstream = Components.classes["@mozilla.org/intl/converter-input-stream;1"].  
+                                    createInstance(Components.interfaces.nsIConverterInputStream);  
+            fstream.init(file, -1, 0, 0);  
+            cstream.init(fstream, "UTF-8", 0, 0); // you can use another encoding here if you wish  
+
+            let (str = {}) {  
+                cstream.readString(-1, str); // read the whole file and put it in str.value  
+                data = str.value;  
+            }
+            cstream.close(); // this closes fstream
+            return eval('(' + data + ')');
+        } catch (e) {
+            dump(e);
+            return null;
+        }
+    },
 
     recursive_scan_igc : function(dir, dname) {
 	var filelist = [];

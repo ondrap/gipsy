@@ -30,6 +30,10 @@ function TerrainMap(id) {
     // Add tracklog
     this.tracklogarea = document.createElementNS(htmlns, 'div');
     this.dragarea.appendChild(this.tracklogarea);
+    // Add optimization area
+    this.optimarea = document.createElementNS(htmlns, 'div');
+    this.dragarea.appendChild(this.optimarea);
+    
     
     this.glider_icon = this.make_icon('glider.png', 0, 0);
 
@@ -40,6 +44,7 @@ function TerrainMap(id) {
     // Array to store loaded tiles
     this.loaded_tiles = new Array();
     this.tracklogs = [];
+    this.optimizations = [];
 
     this.mousedown = function(evt) {
         if (evt.which == 1) {
@@ -93,7 +98,15 @@ function TerrainMap(id) {
             self.y = 0;
         self.zoom_in();
     }
-    
+    this.lastrightclick = 0;
+    this.rightclick = function(evt) {
+        var ddate = new Date().valueOf();
+        if (ddate - self.lastrightclick < 300)
+            self.zoom_out();
+        else
+            self.lastrightclick = ddate;
+    }
+    this.main.addEventListener('contextmenu', this.rightclick, false);
     this.main.addEventListener('mousedown', this.mousedown, true);
     this.main.addEventListener('mousemove', this.mousemove, false);
     this.main.addEventListener('dblclick', this.dblclick, false);
@@ -219,8 +232,61 @@ TerrainMap.prototype.focus_tracklogs = function() {
 // Set tracklogs to be shown
 TerrainMap.prototype.set_tracklogs = function(tracklogs) {
     this.tracklogs = tracklogs;
+    this.optimizations = [];
     this.focus_tracklogs();
     this.reload_tracklogs();
+}
+
+// Set optimization data to be drawn
+TerrainMap.prototype.set_optimizations = function(optimizations) {
+    this.optimizations = optimizations;
+    this.reload_optimizations();
+}
+
+// Redraw newly all optimizations
+TerrainMap.prototype.reload_optimizations = function() {
+    empty(this.optimarea);
+    for (var i=0; i < this.optimizations.length; i++)
+        this.draw_optimization(i);
+}
+
+// Draw optimization data
+TerrainMap.prototype.draw_optimization = function(i) {
+    var opt = this.optimizations[i];
+    
+    var startx = this.projectlon(opt.drawMin[1]);
+    var starty = this.projectlat(opt.drawMax[0]);
+    
+    var width = this.projectlon(opt.drawMax[1]) - startx;
+    var height = this.projectlat(opt.drawMin[0]) - starty;
+    
+    var canvas = document.createElementNS(htmlns, 'canvas');
+    canvas.setAttribute('width', width);
+    canvas.setAttribute('height', height);
+    canvas.style.top = starty + 'px';
+    canvas.style.left = startx + 'px';
+    canvas.style.zIndex = 1020;
+    canvas.style.position = 'absolute';
+    
+    ctx = canvas.getContext('2d');
+    
+    // Draw lines
+    ctx.strokeStyle = 'red';
+    for (var i=0; i < opt.drawLines.length; i++) {
+        ctx.beginPath();
+        var x = this.projectlon(opt.drawLines[i][0][1]) - startx;
+        var y = this.projectlat(opt.drawLines[i][0][0]) - starty;
+        ctx.moveTo(x, y);
+        x = this.projectlon(opt.drawLines[i][1][1]) - startx;
+        y = this.projectlat(opt.drawLines[i][1][0]) - starty;
+        ctx.lineTo(x, y);
+        ctx.stroke();
+    }
+    // Inject optimized points
+    for (var i=0; i < opt.drawPoints.length; i++)
+        this.optimarea.appendChild(this.make_icon('turnpoint.png', opt.drawPoints[i][0], opt.drawPoints[i][1]));
+    
+    this.optimarea.appendChild(canvas);
 }
 
 // Redraw tracklogs (e.g. because of changed zoom level)
@@ -228,6 +294,7 @@ TerrainMap.prototype.reload_tracklogs = function() {
     empty(this.tracklogarea);
     for (var i=0; i < this.tracklogs.length; i++)
         this.draw_tracklog(i);
+    this.reload_optimizations();
 }
 
 // Create an icon that should be shown on the map
@@ -366,8 +433,11 @@ TerrainMap.prototype.load_maps = function() {
                 if (maptype != 'map_pgweb' && maptype != 'map_airspace')
                     mapsuffix = get_string_pref(maptype);
                 var link = this.get_map_link(maptype, this.zoom, xtile, ytile, mapsuffix);
-                if (!this.loaded_tiles[link]) {
-                    this.loaded_tiles[link] = true;
+                // Link is not unique, use different string to avoid
+                // loading the same image multiple times
+                var lid = maptype + this.zoom + ' ' + xtile + ' ' + ytile + ' ' + mapsuffix;
+                if (!this.loaded_tiles[lid]) {
+                    this.loaded_tiles[lid] = true;
                     img = document.createElementNS(htmlns, 'img');
                     img.setAttribute('src', link);
                     img.style.left = (xtile * 256) + 'px';

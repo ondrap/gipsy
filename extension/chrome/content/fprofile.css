@@ -28,10 +28,6 @@ flrangecontrol {
 	font-size: 10px;
 }
 
-flflatmap {
-	-moz-binding: url('chrome://gipsy/content/fgmap.xbl#flflatmap');
-}
-
 flpointdata {
 	-moz-binding: url('chrome://gipsy/content/fprofile.xbl#flpointdata');
 }
@@ -70,29 +66,13 @@ flreselection {
 	-moz-binding: url('chrome://gipsy/content/fprofile.xbl#flreselection');
 }
 
-flmapcontainer {
-	-moz-binding: url('chrome://gipsy/content/fgmap.xbl#flmapcontainer');
-}
-
 flzvalidate {
 	-moz-binding: url('chrome://gipsy/content/fprofile.xbl#flzvalidate');
 }
 
 
-flmapicons {
-	-moz-binding: url('chrome://gipsy/content/fgmap.xbl#flmapicons');
-}
-
 flprofmouse {
 	-moz-binding: url('chrome://gipsy/content/fprofile.xbl#flprofmouse');
-}
-
-flgmap {
-	-moz-binding: url('chrome://gipsy/content/fgmap.xbl#flgmap');
-}
-
-flmapdrag {
-	-moz-binding: url('chrome://gipsy/content/fgmap.xbl#flmapdrag');
 }
 
 .pointinfo text {

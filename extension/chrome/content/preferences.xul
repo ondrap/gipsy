@@ -41,6 +41,12 @@
                   type="string" />
       <preference id="usercmd_3_params" name="extensions.gipsy.usercmd_3_params" 
                   type="string" />
+      <preference id="usercmd_1_type" name="extensions.gipsy.usercmd_1_type"
+                  type="string" />
+      <preference id="usercmd_2_type" name="extensions.gipsy.usercmd_2_type"
+                  type="string" />
+      <preference id="usercmd_3_type" name="extensions.gipsy.usercmd_3_type"
+                  type="string" />
     </preferences>    
 
     <groupbox>
@@ -80,6 +86,7 @@
                     <column />
                     <column />
                     <column />
+                    <column />
                 </columns>
                 <rows>
                     <row>
@@ -91,16 +98,34 @@
                         <textbox id="usercmd_1_title" preference="usercmd_1_title" />
                         <textbox id="usercmd_1_cmd" preference="usercmd_1_cmd" />
                         <textbox id="usercmd_1_params" preference="usercmd_1_params" />
+                        <menulist id="usercmd_1_type" preference="usercmd_1_type">
+                            <menupopup>
+                                <menuitem label="Text" value="text" />
+                                <menuitem label="HSPoints" value="hspoints" />
+                            </menupopup>
+                        </menulist>
                     </row>
                     <row>
                         <textbox id="usercmd_2_title" preference="usercmd_2_title" />
                         <textbox id="usercmd_2_cmd" preference="usercmd_2_cmd" />
                         <textbox id="usercmd_2_params" preference="usercmd_2_params" />
+                        <menulist id="usercmd_2_type" preference="usercmd_2_type">
+                            <menupopup>
+                                <menuitem label="Text" value="text" />
+                                <menuitem label="HSPoints" value="hspoints" />
+                            </menupopup>
+                        </menulist>
                     </row>
                     <row>
                         <textbox id="usercmd_3_title" preference="usercmd_3_title" />
                         <textbox id="usercmd_3_cmd" preference="usercmd_3_cmd" />
                         <textbox id="usercmd_3_params" preference="usercmd_3_params" />
+                        <menulist id="usercmd_3_type" preference="usercmd_3_type">
+                            <menupopup>
+                                <menuitem label="Text" value="text" />
+                                <menuitem label="HSPoints" value="hspoints" />
+                            </menupopup>
+                        </menulist>
                     </row>
                 </rows>
             </grid>

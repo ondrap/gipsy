@@ -286,9 +286,13 @@ var treeView = {
         procname.initWithPath(get_string_pref('usercmd_' + num + '_cmd'));
         process.init(procname);
 
-        var dirsvc = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
-        var tmpfile = dirsvc.get('TmpD', Components.interfaces.nsILocalFile);
-        tmpfile.appendRelativePath('gipsy.output');
+        if (get_string_pref('usercmd_' + num + '_type') == 'hspoints') {
+            var tmpfile = gstore.getIGCFile(flightmodel.fname + '.opt');
+        } else {
+            var dirsvc = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
+            var tmpfile = dirsvc.get('TmpD', Components.interfaces.nsILocalFile);
+            tmpfile.appendRelativePath('gipsy.output');
+        }
         
         args = [ file.path, tmpfile.path ];
         
@@ -302,10 +306,10 @@ var treeView = {
         if (process.exitValue) {
             alert('Process failed.');
         } else {
-            // var istream = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream);
-            // istream.init(tmpfile, -1, -1, Components.interfaces.nsIFileInputStream.CLOSE_ON_EOF);
-            // var bistream = Components.classes[""].createInstance(Components.interfaces.nsIBinaryInputStream);
-            window.openDialog('file:///' + tmpfile.path, 'user_output', 'dialog=yes, chrome, modal=yes');
+            if (get_string_pref('usercmd_' + num + '_type') == 'hspoints') {
+                flightmodel.update_opts();
+            } else
+                window.openDialog('file:///' + tmpfile.path, 'user_output', 'dialog=yes, chrome, modal=yes');
         }
     },
 
@@ -498,12 +502,23 @@ var flightmodel = {
         var flist = treeView.get_selected_fnames();
         if (flist.length != 0) {
             var tlist = [];
-            for (var i=0; i < flist.length; i++) {
+            for (var i=0; i < flist.length; i++)
                 tlist.push(gstore.loadTracklog(flist[i]));
-            }
             gmap.set_tracklogs(tlist);
             gprofile.set_tracklog(tlist[0]);
+            this.update_opts();
         }
+    },
+    
+    update_opts : function() {
+        var flist = treeView.get_selected_fnames();
+        var optlist = [];
+        for (var i=0; i < flist.length; i++) {
+            var opt = gstore.loadOptimization(flist[i] + '.opt');
+            if (opt)
+                optlist.push(opt);
+        }
+        gmap.set_optimizations(optlist);
     },
 
     xcontest_update : function(dinfo) {
