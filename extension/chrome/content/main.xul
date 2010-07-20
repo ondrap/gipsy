@@ -288,13 +288,13 @@
             
             <html:div flex="1" id="gmap" />
             <html:div id="map-status">
-                <span>»&altitude;</span>
+                <span>»&map.altitude;</span>
                 <strong id="prof-alt"> </strong>
-                <span>»vario</span>
+                <span>»&map.vario;</span>
                 <strong id="prof-vario"></strong>
-                <span>»&speed;</span>
+                <span>»&map.speed;</span>
                 <strong id="prof-speed"></strong>
-                <span>»time</span>
+                <span>»&map.time;</span>
                 <strong id="prof-time"></strong>
             </html:div>
             <html:div id="gprofile" />

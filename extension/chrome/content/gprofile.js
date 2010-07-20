@@ -87,13 +87,13 @@ TracklogProfile.prototype.draw_heightlines = function(ctx, scale, minheight, max
     for (var height=minheight; height <= maxheight; height += divider) {
         ctx.beginPath();
         var y = Math.floor(this.canvas.height - scale * (height - minheight));
-        if (height % (divider * 2)) {
+        if (((height + 0.1) % (divider * 2)) < 1) {
             ctx.strokeStyle = '#b9b9b9';
         } else {
             ctx.strokeStyle = '#797979';
             ctx.fillStyle = 'black';
             ctx.textBaseline = 'top';
-            ctx.fillText(height + ' m', 0, y + 2);
+            ctx.fillText(format_m(height), 0, y + 2);
         }
         ctx.moveTo(0, y + 0.5); // WHY??? we must do +0.5 to get a perfectly aligned line???
         ctx.lineTo(this.canvas.width, y + 0.5);
@@ -154,8 +154,11 @@ TracklogProfile.prototype.draw = function() {
     
     var maxheight = this.max_height();
     var minheight = this.min_height();
-    // TODO: divider*2 kvuli non-metric systemum
-    if (maxheight - minheight < 1000) {
+    
+    var divider = 500;
+    if (!get_bool_pref('metric'))
+            divider = 457.2;
+    if (maxheight - minheight < divider * 2) {
         if (minheight > 0)
             minheight = 0;
     }

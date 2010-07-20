@@ -264,6 +264,12 @@ function format_km(dist) {
     return sprintf("%.1f mi.", dist / 1609.344);
 }
 
+function format_km2(dist) {
+    if (get_bool_pref('metric'))
+        return sprintf("%.2f km", dist / 1000);
+    return sprintf("%.2f mi.", dist / 1609.344);
+}
+
 function format_m(dist) {
     if (get_bool_pref('metric'))
 	return sprintf("%d m", Math.round(dist));

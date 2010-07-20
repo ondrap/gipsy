@@ -134,8 +134,7 @@ function show_point_data(tlog, pidx) {
     var point = tlog.igcPoint(pidx);
     var prevpoint = tlog.igcPoint(pidx - 1);
  
-    // TODO: non-metric soustava!
-    set_text('prof-alt', point.alt + ' m');
+    set_text('prof-alt', format_m(point.alt));
     set_text('prof-vario', format_ms(point.vario(prevpoint)));
     set_text('prof-speed', format_kmh(point.speed(prevpoint)));
     set_text('prof-time',  _fmttime(new Date(point.time)));

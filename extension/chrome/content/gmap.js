@@ -318,10 +318,10 @@ TerrainMap.prototype.draw_optimization = function(i) {
     tbl.style.padding = '0';
     tbl.style.borderCollapse = 'collapse';
     tbl.style.borderBottom = 'thin solid lightgrey';
-    this.add_tbl_line(tbl, 'League', opt.drawScore.scoreLeague);
-    this.add_tbl_line(tbl, 'Route', opt.drawScore.scoreShape);
-    this.add_tbl_line(tbl, 'Distance', sprintf('%.2f km', opt.drawScore.scoreDistance));
-    this.add_tbl_line(tbl, 'Points', sprintf('%.2f', opt.drawScore.scorePoints));
+    this.add_tbl_line(tbl, _('sc_league'), opt.drawScore.scoreLeague);
+    this.add_tbl_line(tbl, _('sc_route'), opt.drawScore.scoreShape);
+    this.add_tbl_line(tbl, _('sc_distance'), format_km2(opt.drawScore.scoreDistance * 1000));
+    this.add_tbl_line(tbl, _('sc_points'), sprintf('%.2f', opt.drawScore.scorePoints));
     this.optresarea.appendChild(tbl);
     
     this.optimarea.appendChild(canvas);

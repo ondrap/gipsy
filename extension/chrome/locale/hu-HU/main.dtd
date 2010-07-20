@@ -54,6 +54,12 @@
 <!ENTITY map.googlemap "Google térkép" >
 <!ENTITY map.googlemaplayer "GoogleMap réteg" >
 <!ENTITY map.airspace "Légterek" >
+<!-- NEW -->
+<!ENTITY map.speed "speed">
+<!ENTITY map.altitude "altitude">
+<!ENTITY map.vario "vario">
+<!ENTITY map.time "time">
+<!-- NEW -->
 
 <!ENTITY duration "Időtartam" >
 

@@ -50,6 +50,13 @@
 <!ENTITY map.googlemap "Mapa Google" >
 <!ENTITY map.googlemaplayer "Silnice" >
 <!ENTITY map.airspace "Prostory" >
+<!-- NEW -->
+<!ENTITY map.speed "rychlost">
+<!ENTITY map.altitude "výška">
+<!ENTITY map.vario "vario">
+<!ENTITY map.time "čas">
+<!-- NEW -->
+
 
 <!ENTITY duration "Doba letu" >
 

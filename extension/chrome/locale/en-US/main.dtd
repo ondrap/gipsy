@@ -51,6 +51,11 @@
 <!ENTITY map.googlemaplayer "GoogleMap Layer" >
 <!ENTITY map.airspace "Airspace" >
 
+<!ENTITY map.speed "speed">
+<!ENTITY map.altitude "altitude">
+<!ENTITY map.vario "vario">
+<!ENTITY map.time "time">
+
 <!ENTITY duration "Duration" >
 
 <!ENTITY stat.sdist "Start-landing distance" >
