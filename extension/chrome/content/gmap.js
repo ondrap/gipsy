@@ -34,7 +34,7 @@ function TerrainMap(id) {
     this.dragging = false;
     this.x = 0;
     this.y = 0;
-    this.zoom = 15;
+    this.zoom = 16;
     // Array to store loaded tiles
     this.loaded_tiles = new Array();
     this.tracklogs = [];
@@ -260,8 +260,15 @@ TerrainMap.prototype.make_canvas = function(tlog, i) {
     ctx.strokeStyle = sprintf('rgb(%d,%d,%d)', 255 - ((i * 50) % 250), (170 + i * 40) % 250, (60 + i * 30) % 250);
     var point = tlog.igcPoint(0);
     ctx.moveTo(this.projectlon(point.lon) - startx, this.projectlat(point.lat) - starty);
+    
+    var lasttime = 0;
     for (var i=1; i < tlog.igcPointCount(); i++) {
         var point = tlog.igcPoint(i);
+        // Make it slightly faster
+        if (this.zoom >= 5 && point.time - lasttime < 10*1000)
+            continue;
+
+        lasttime = point.time;
         ctx.lineTo(this.projectlon(point.lon) - startx, this.projectlat(point.lat) - starty);
     }
     ctx.stroke();
