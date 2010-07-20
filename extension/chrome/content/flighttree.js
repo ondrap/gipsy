@@ -345,7 +345,8 @@ var treeView = {
 	for (var i=0; i < flist.length; i++) {
 	    var tlog = gstore.loadTracklog(flist[i]);
 	    var dinfo = gstore.getFlightFile(flist[i]);
-	    gpx.addTracklog(tlog, dinfo);
+            var opt = gstore.loadOptimization(flist[i] + '.opt');
+	    gpx.addTracklog(tlog, dinfo, opt);
 	}
 
 	var nsIFilePicker = Components.interfaces.nsIFilePicker;

@@ -30,6 +30,7 @@
     <menuitem label="GPX thermals" style="display:none" id="gpxthermals"
 	      oncommand="treeView.export_file('gpx', 'thermals')" />
     <menuitem label="&kml.save;" oncommand="treeView.export_file('kml', 'tracklog')" />
+    <menuitem label="&svg.save;" oncommand="treeView.export_file('svg', 'tracklog')" />
     <menuitem label="&create.logbook;" oncommand="treeView.export_file('html', 'flighttrack')" />
     <menuitem label="&delete;" oncommand="treeView.delete_cmd()" />
     <menuseparator />

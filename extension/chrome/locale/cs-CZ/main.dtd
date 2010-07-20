@@ -86,6 +86,7 @@
 <!ENTITY pilot.all "Všichni piloti">
 <!ENTITY gpx.save "Uložit ve formátu GPX">
 <!ENTITY kml.save "Uložit ve formátu KML">
+<!ENTITY svg.save "Uložit ve formátu SVG">
 
 <!-- New track -->
 <!ENTITY newtrk.title "Zpracování tracklogu" >

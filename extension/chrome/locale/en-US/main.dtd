@@ -84,6 +84,7 @@
 <!ENTITY pilot.all "All pilots">
 <!ENTITY gpx.save "Export to GPX">
 <!ENTITY kml.save "Export to KML">
+<!ENTITY svg.save "Export to SVG">
 
 <!-- New track -->
 <!ENTITY newtrk.title "Tracklog processing" >

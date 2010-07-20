@@ -87,6 +87,7 @@
 <!ENTITY pilot.all "Tutti i piloti">
 <!ENTITY gpx.save "Esporta in GPX">
 <!ENTITY kml.save "Esporta in KML">
+<!ENTITY svg.save "Esporta in SVG">
 
 <!-- nuova traccia -->
 <!ENTITY newtrk.title "Elaborazione del registro di traccia" >

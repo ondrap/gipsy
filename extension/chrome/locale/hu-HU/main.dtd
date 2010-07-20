@@ -89,6 +89,7 @@
 <!ENTITY pilot.all "Minden pilóta">
 <!ENTITY gpx.save "Exportálás GPX-be">
 <!ENTITY kml.save "Exportálás KML-be">
+<!ENTITY svg.save "Exportálás SVG-be">
 
 <!-- New track -->
 <!ENTITY newtrk.title "Tracklog feldolgozás" >

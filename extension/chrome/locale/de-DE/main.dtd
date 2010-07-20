@@ -89,6 +89,7 @@
 <!ENTITY pilot.all "Alle Piloten">
 <!ENTITY gpx.save "Exportiere zu GPX">
 <!ENTITY kml.save "Exportiere zu KML">
+<!ENTITY svg.save "Exportiere zu SVG">
 
 <!-- New track -->
 <!ENTITY newtrk.title "Tracklog Bearbeitung" >

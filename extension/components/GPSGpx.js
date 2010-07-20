@@ -99,24 +99,43 @@ GPSGpx.prototype = {
 	var root = this.doc.createElementNS(ns, 'html');
 	this.doc.appendChild(root);
 
+        var head = this.newel(root, 'head');
+        var style = this.newel(head, 'style');
+        style.setAttribute('type', 'text/css');
+        var st = this.doc.createTextNode('\
+                table { border-collapse: collapse; font: 10pt Arial;width: 100%; }\
+                td, th { border: thin solid darkgray; } \
+                thead *, tfoot * { font-weight: normal; text-align: left;background: lightgrey; } \
+        ');
+        style.appendChild(st);
+
 	var body = this.newel(root, 'body');
-	
 	var table = this.newel(body, 'table');
-	table.setAttribute('border', '1');
-	var head = this.newel(table, 'tr');
+	
+	var thead = this.newel(table, 'thead');
+	var head = this.newel(thead, 'tr');
 	this.txtel(head, 'th', 'Date');
 	this.txtel(head, 'th', 'Pilot');
 	this.txtel(head, 'th', 'Glider');
 	this.txtel(head, 'th', 'Launch');
 	this.txtel(head, 'th', 'Landing');
 	this.txtel(head, 'th', 'Duration');
+	this.txtel(head, 'th', 'League');
+	this.txtel(head, 'th', 'Route');
+	this.txtel(head, 'th', 'Distance');
+	this.txtel(head, 'th', 'Points');
 	this.txtel(head, 'th', 'Comment');
 
+        var tbody = this.newel(table, 'tbody');
+        var totduration = 0;
+        var totdistance = 0;
+        var totpoints = 0;
 	for (var i=0; i < this.tracklogs.length; i++) {
-	    var row = this.newel(table, 'tr');
+	    var row = this.newel(tbody, 'tr');
 
 	    var tlog = this.tracklogs[i].tracklog;
 	    var dinfo = this.tracklogs[i].dinfo;
+	    var opt = this.tracklogs[i].optinfo;
 	    
 	    var date = new Date(tlog.igcPoint(0).time);
 	    var datetxt = sprintf('%d.%d.%d', date.getUTCDate(), date.getUTCMonth()+1, 
@@ -129,12 +148,41 @@ GPSGpx.prototype = {
 	    this.txtel(row, 'td', dinfo.landing);
 
 	    var duration = tlog.igcPoint(tlog.igcPointCount()-1).time - tlog.igcPoint(0).time;
+            totduration += duration;
 	    duration = new Date(duration);
 	    duration = sprintf("%02d:%02d:%02d", duration.getUTCHours(), duration.getUTCMinutes(), 
 			       duration.getUTCSeconds());
 	    this.txtel(row, 'td', duration);
+	    
+	    if (!opt) {
+                this.txtel(row, 'td', '');this.txtel(row, 'td', '');this.txtel(row, 'td', '');this.txtel(row, 'td', '');
+            } else {
+                var dsum = opt.drawScore;
+                this.txtel(row, 'td', dsum.scoreLeague);
+                this.txtel(row, 'td', dsum.scoreShape);
+                totdistance += opt.drawScore.scoreDistance;
+                this.txtel(row, 'td', format_km2(opt.drawScore.scoreDistance * 1000));
+                totpoints += opt.drawScore.scorePoints;
+                this.txtel(row, 'td', sprintf('%.2f', opt.drawScore.scorePoints));
+            }
 	    this.txtel(row, 'td', tlog.igcGetParamUTF8('comment'));
 	}
+	
+	var tfoot = this.newel(table, 'tfoot');
+	var row = this.newel(tfoot, 'tr');
+	
+	for (var i=0;i < 5; i++)
+            this.newel(row, 'td');
+        var duration = new Date(totduration);
+        duration = sprintf("%02d:%02d:%02d", duration.getUTCHours(), duration.getUTCMinutes(), 
+                            duration.getUTCSeconds());
+        this.txtel(row, 'td', duration);
+        // Skip 2
+        this.newel(row, 'td');this.newel(row, 'td');
+        // Add distance & points
+        this.txtel(row, 'td', format_km2(totdistance * 1000));
+        this.txtel(row, 'td', sprintf('%.2f', totpoints));
+        this.newel(row, 'td');
     },
 
     createGpxDOM : function(type) {
@@ -594,7 +642,7 @@ GPSGpx.prototype = {
 	var pscale = bounds.scale;
 	var zoom = this.svgGoogleZoom(pscale);
 	var dimension = 2*Math.PI / Math.pow(2, (17-zoom));
-	var prwidth = Math.round(dimension * pscale);
+	var prwidth = Math.floor(dimension * pscale);
 
 	var xtile = Math.floor((bounds.projminlon + Math.PI) / dimension);
 	var xstart = (xtile * dimension - (bounds.projminlon + Math.PI)) * pscale;
@@ -605,9 +653,9 @@ GPSGpx.prototype = {
 	    
 	    while (ystart < height) {
 		var svr = 'mt' + Math.floor(Math.random() * 4);
-		var link = 'http://' + svr + '.google.com/mt?n=404&v=ap.41';
+		var link = 'http://' + svr + '.google.com/vt/lyrs=t@125,r@129';
 		link += '&x=' + xtile + '&y=' + ytile + '&zoom=' + zoom;
-		var img = this.svgMapElement(Math.round(xstart), Math.round(ystart),
+		var img = this.svgMapElement(Math.floor(xstart), Math.floor(ystart),
 					     prwidth, prwidth, link);
 		g.appendChild(img);
 		
@@ -806,8 +854,8 @@ GPSGpx.prototype = {
 	el.appendChild(this.doc.createTextNode(text));
     },
 
-    addTracklog : function(tlog, dinfo) {
-	this.tracklogs.push({ tracklog: tlog, dinfo : dinfo });
+    addTracklog : function(tlog, dinfo, opt) {
+	this.tracklogs.push({ tracklog: tlog, dinfo : dinfo, optinfo : opt });
     },
 
     saveAs : function(file, format, dtype) {
@@ -833,8 +881,10 @@ GPSGpx.prototype = {
 	foStream.write(xmlhead, xmlhead.length);
 
 	var prettyOutput = XML(serializer.serializeToString(this.doc)).toXMLString();
+	// Somehow we have to convert it from binary to unicode and then write it to file
+	prettyOutput = cvt.ConvertFromUnicode(prettyOutput);
 	foStream.write(prettyOutput, prettyOutput.length);
-	    
+	
 	foStream.close();
     },
     

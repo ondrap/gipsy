@@ -89,6 +89,7 @@
 <!ENTITY pilot.all "Wszyscy piloci">
 <!ENTITY gpx.save "Exportuj do GPX">
 <!ENTITY kml.save "Exportuj do KML">
+<!ENTITY svg.save "Exportuj do SVG">
 
 <!-- New track -->
 <!ENTITY newtrk.title "Analiza zapisu lotu" >
