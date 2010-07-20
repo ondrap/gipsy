@@ -33,7 +33,18 @@ function TerrainMap(id) {
     // Add optimization area
     this.optimarea = document.createElementNS(htmlns, 'div');
     this.dragarea.appendChild(this.optimarea);
-    
+    // Add optimization results area
+    this.optresarea = document.createElementNS(htmlns, 'div');
+    this.optresarea.style.position = 'absolute';
+    this.optresarea.style.right = '0px';
+    this.optresarea.style.paddingRight = '1px';
+    this.optresarea.style.top = '0px';
+    this.optresarea.style.background = 'white';
+    this.optresarea.style.zIndex = 3000;
+    this.optresarea.style.opacity = 0.6;
+    this.optresarea.style.color = 'black';
+    this.optresarea.style.font = '9pt Arial';
+    this.main.appendChild(this.optresarea);
     
     this.glider_icon = this.make_icon('glider.png', 0, 0);
 
@@ -246,6 +257,7 @@ TerrainMap.prototype.set_optimizations = function(optimizations) {
 // Redraw newly all optimizations
 TerrainMap.prototype.reload_optimizations = function() {
     empty(this.optimarea);
+    empty(this.optresarea);
     for (var i=0; i < this.optimizations.length; i++)
         this.draw_optimization(i);
 }
@@ -301,7 +313,34 @@ TerrainMap.prototype.draw_optimization = function(i) {
     for (var i=0; i < opt.drawPoints.length; i++)
         this.optimarea.appendChild(this.make_icon('turnpoint.png', opt.drawPoints[i][0], opt.drawPoints[i][1]));
     
+    // Draw results
+    tbl = document.createElementNS(htmlns, 'table');
+    tbl.style.padding = '0';
+    tbl.style.borderCollapse = 'collapse';
+    tbl.style.borderBottom = 'thin solid lightgrey';
+    this.add_tbl_line(tbl, 'League', opt.drawScore.scoreLeague);
+    this.add_tbl_line(tbl, 'Route', opt.drawScore.scoreShape);
+    this.add_tbl_line(tbl, 'Distance', sprintf('%.2f km', opt.drawScore.scoreDistance));
+    this.add_tbl_line(tbl, 'Points', sprintf('%.2f', opt.drawScore.scorePoints));
+    this.optresarea.appendChild(tbl);
+    
     this.optimarea.appendChild(canvas);
+}
+
+TerrainMap.prototype.add_tbl_line = function(el, t1, t2) {
+    var tr = document.createElementNS(htmlns, 'tr');
+    el.appendChild(tr);
+    
+    var td = document.createElementNS(htmlns, 'td');
+    td.appendChild(document.createTextNode(t1));
+    tr.appendChild(td);
+    td.style.padding = '0';
+    td.style.paddingRight = '2px';
+    
+    td = document.createElementNS(htmlns, 'td');
+    td.appendChild(document.createTextNode(t2));
+    tr.appendChild(td);
+    td.style.padding = '0';
 }
 
 // Redraw tracklogs (e.g. because of changed zoom level)

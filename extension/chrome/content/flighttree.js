@@ -280,21 +280,27 @@ var treeView = {
 
     // Start user command
     user_command : function(num) {
-        var file = gstore.getIGCFile(flightmodel.fname);
+        var flist = this.get_selected_fnames();
+        for (var i=0; i < flist.length; i++)
+            this.user_command_fname(num, flist[i]);
+    },
+    
+    user_command_fname : function (num, fname) {
+        var file = gstore.getIGCFile(fname);
         var process = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
         var procname = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
         procname.initWithPath(get_string_pref('usercmd_' + num + '_cmd'));
         process.init(procname);
 
         if (get_string_pref('usercmd_' + num + '_type') == 'hspoints') {
-            var tmpfile = gstore.getIGCFile(flightmodel.fname + '.opt');
+            var tmpfile = gstore.getIGCFile(fname + '.opt');
         } else {
             var dirsvc = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
             var tmpfile = dirsvc.get('TmpD', Components.interfaces.nsILocalFile);
             tmpfile.appendRelativePath('gipsy.output');
         }
         
-        args = [ file.path, tmpfile.path ];
+        args = [ cvt.ConvertFromUnicode(file.path), cvt.ConvertFromUnicode(tmpfile.path) ];
         
         var params = get_string_pref('usercmd_' + num + '_params');
         params = params.split(' ');
@@ -394,6 +400,7 @@ var treeView = {
 		continue;
 	    var fname = this.rows[row].value;
 	    gstore.deleteFlightFile(fname);
+	    try { gstore.deleteFlightFile(fname + '.opt');} catch (e) {}; // Catch removal
 	    gstore.deleteFlightDb(fname);
 	}
     },
@@ -500,14 +507,18 @@ var flightmodel = {
 	this.xcontest_update(dinfo);
 	
         var flist = treeView.get_selected_fnames();
-        if (flist.length != 0) {
-            var tlist = [];
-            for (var i=0; i < flist.length; i++)
-                tlist.push(gstore.loadTracklog(flist[i]));
-            gmap.set_tracklogs(tlist);
-            gprofile.set_tracklog(tlist[0]);
-            this.update_opts();
-        }
+        if (flist.length == 0) 
+            return;
+
+        var tlist = [];
+        for (var i=0; i < flist.length; i++)
+            tlist.push(gstore.loadTracklog(flist[i]));
+
+        // Limit display to 6 tracklogs
+        tlist.splice(6);
+        gmap.set_tracklogs(tlist);
+        gprofile.set_tracklog(tlist[0]);
+        this.update_opts();
     },
     
     update_opts : function() {
@@ -518,6 +529,7 @@ var flightmodel = {
             if (opt)
                 optlist.push(opt);
         }
+        optlist.splice(6);
         gmap.set_optimizations(optlist);
     },
 
