@@ -30,6 +30,8 @@ function TerrainMap(id) {
     // Add tracklog
     this.tracklogarea = document.createElementNS(htmlns, 'div');
     this.dragarea.appendChild(this.tracklogarea);
+    
+    this.glider_icon = this.make_icon('glider.png', 0, 0);
 
     this.dragging = false;
     this.x = 0;
@@ -99,6 +101,15 @@ function TerrainMap(id) {
     window.addEventListener('mouseup', this.mouseup, false);
 
     this.maplayers = [];
+}
+
+TerrainMap.prototype.mark_position = function(lat, lon) {
+    var x = this.projectlon(lon);
+    var y = this.projectlat(lat);
+    this.glider_icon.style.left = x + 'px';
+    this.glider_icon.style.top = y + 'px';
+    if (this.glider_icon.parentNode == null)
+        this.tracklogarea.appendChild(this.glider_icon);
 }
 
 // Set map layers

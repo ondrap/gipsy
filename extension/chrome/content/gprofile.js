@@ -162,7 +162,7 @@ TracklogProfile.prototype.draw = function() {
     var scale = this.canvas.offsetHeight / (maxheight - minheight);
     
     ctx = this.canvas.getContext('2d');
-    ctx.fontSize = '7pt';
+    ctx.font = '7pt Arial';
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     ctx.beginPath();

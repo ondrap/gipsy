@@ -108,6 +108,12 @@ function create_gmap() {
     gmap = new TerrainMap('gmap');
     gprofile = new TracklogProfile('gprofile', 100);
     gprofile.add_eventhandler(show_point_data);
+    gprofile.add_eventhandler(show_point_position);
+}
+
+function show_point_position(tlog, pidx) {
+    var point = tlog.igcPoint(pidx);
+    gmap.mark_position(point.lat, point.lon);
 }
 
 function set_text(elname, text) {
