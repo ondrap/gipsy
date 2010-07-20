@@ -287,6 +287,16 @@
 	    </hbox>
             
             <html:div flex="1" id="gmap" />
+            <html:div id="map-status">
+                <span>»height</span>
+                <strong id="prof-alt"> </strong>
+                <span>»vario</span>
+                <strong id="prof-vario"></strong>
+                <span>»speed</span>
+                <strong id="prof-speed"></strong>
+                <span>»time</span>
+                <strong id="prof-time"></strong>
+            </html:div>
             <html:div id="gprofile" />
 	  </vbox>
 	</hbox>

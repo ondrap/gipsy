@@ -107,6 +107,32 @@ var gprofile;
 function create_gmap() {
     gmap = new TerrainMap('gmap');
     gprofile = new TracklogProfile('gprofile', 100);
+    gprofile.add_eventhandler(show_point_data);
+}
+
+function set_text(elname, text) {
+    var el = elem(elname);
+    empty(el);
+    node = document.createTextNode(text);
+    el.appendChild(node);
+}
+
+function _fmttime(time) {
+    return sprintf('%02d:%02d:%02d UTC', time.getUTCHours(), 
+                    time.getUTCMinutes(), time.getUTCSeconds());
+}
+
+function show_point_data(tlog, pidx) {
+    if (pidx == 0)
+        return;
+    var point = tlog.igcPoint(pidx);
+    var prevpoint = tlog.igcPoint(pidx - 1);
+ 
+    // TODO: non-metric soustava!
+    set_text('prof-alt', point.alt + ' m');
+    set_text('prof-vario', format_ms(point.vario(prevpoint)));
+    set_text('prof-speed', format_kmh(point.speed(prevpoint)));
+    set_text('prof-time',  _fmttime(new Date(point.time)));
 }
 
 function ctx_setup_usercmd() {

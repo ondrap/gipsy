@@ -43,3 +43,34 @@ treechildren::-moz-tree-row(scheduled, selected, focus) {
   background-color: Highlight;
 }
 
+#map-status {
+    background: #ebf0f4;
+    color: #346b8f;
+    font-size: 7pt;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+#map-status span, #map-status strong {
+    display: block;
+    float: left;
+    white-space: nowrap;
+}
+
+#map-status span {
+    padding-left: 3px;
+    padding-right: 2px;
+}
+
+#map-status strong {
+    border: 1px inset black;
+    padding-right: 2px;
+    text-align: right;
+    height: 2.7ex;
+    vertical-align: middle;
+}
+
+#prof-alt { width: 40px; color: #ff7901;background-color: white;}
+#prof-vario { width: 45px; color: maroon;background-color: #ffff66;}
+#prof-speed { width: 55px; color: black;background-color: #ffccb2;}
+#prof-time { width: 70px; background-color: white;}
