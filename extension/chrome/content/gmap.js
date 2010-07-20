@@ -254,11 +254,11 @@ TerrainMap.prototype.reload_optimizations = function() {
 TerrainMap.prototype.draw_optimization = function(i) {
     var opt = this.optimizations[i];
     
-    var startx = this.projectlon(opt.drawMin[1]);
-    var starty = this.projectlat(opt.drawMax[0]);
+    var startx = this.projectlon(opt.drawMin[1]) - 20;
+    var starty = this.projectlat(opt.drawMax[0]) - 20;
     
-    var width = this.projectlon(opt.drawMax[1]) - startx;
-    var height = this.projectlat(opt.drawMin[0]) - starty;
+    var width = this.projectlon(opt.drawMax[1]) - startx + 30;
+    var height = this.projectlat(opt.drawMin[0]) - starty + 30;
     
     var canvas = document.createElementNS(htmlns, 'canvas');
     canvas.setAttribute('width', width);
@@ -282,6 +282,21 @@ TerrainMap.prototype.draw_optimization = function(i) {
         ctx.lineTo(x, y);
         ctx.stroke();
     }
+    
+    // Draw texts
+    ctx.font = 'bold 10px Arial';
+    ctx.textBaseline = 'top';
+    for (var i=0; i < opt.drawTexts.length; i++) {
+        var text = opt.drawTexts[i][0];
+        var x = this.projectlon(opt.drawTexts[i][2]) - startx;
+        var y = this.projectlat(opt.drawTexts[i][1]) - starty;
+        x -= ctx.measureText(text).width / 2;
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText(text, x, y);
+        ctx.fillStyle = '#101010';
+        ctx.fillText(text, x+1, y+1);
+    }
+
     // Inject optimized points
     for (var i=0; i < opt.drawPoints.length; i++)
         this.optimarea.appendChild(this.make_icon('turnpoint.png', opt.drawPoints[i][0], opt.drawPoints[i][1]));
