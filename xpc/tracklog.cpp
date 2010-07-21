@@ -374,21 +374,25 @@ NS_IMETHODIMP Tracklog::IgcLoad(nsILocalFile *file)
     PRFileDesc *f; 
     rv = file->OpenNSPRFileDesc(PR_RDONLY, 0, &f); 
     if (NS_FAILED(rv)) 
-	return NS_ERROR_UNEXPECTED;
+		return NS_ERROR_UNEXPECTED;
     
-    // Read the whole file into string
+    // Read the whole file into a string
     stringstream text;
-	char c;
-	while (PR_Read(f, &c, 1) == 1) {
-		text << c;
-	}
+	const int bufsize = 1024;
+	char buffer[bufsize];
+	int read;
+	do {
+		int read = PR_Read(f, buffer, bufsize);
+		if (read)
+			text.write(buffer, read);
+	} while (read > 0);
     text << '\0';
     PR_Close(f);
-    
+
     igc = new Igc(text.str());
     // Expect at least 1 trackpoint
     if (! igc->tracklog.size())
-	return NS_ERROR_UNEXPECTED;
+		return NS_ERROR_UNEXPECTED;
 
     return NS_OK;
 }
