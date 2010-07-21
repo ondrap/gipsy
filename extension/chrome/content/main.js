@@ -65,9 +65,11 @@ function OnLoad() {
 	if (scanner.DLL_VERSION)
 	    dll_version = scanner.DLL_VERSION;
     } catch (e) { }
-    if (dll_version == 1) {
-	elem('mlr_gps').parentNode.removeChild(elem('mlr_gps'));
-	elem('flymaster_gps').parentNode.removeChild(elem('flymaster_gps'));
+    if (!scanner.gpsCryptoEnabled()) {
+        var warning = document.createElement('label');
+        warning.setAttribute('value',  'WARNING: Downloaded tracklgos will be without G-Record!!');
+        warning.style.color = 'red';
+        elem('statusbar').appendChild(warning);
     }
 
     // Check db version

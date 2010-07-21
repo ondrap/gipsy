@@ -329,7 +329,7 @@
     </tabpanels>
   </tabbox>
 
-  <statusbar id="statusbar" >
+  <statusbar id="statusbar">
     <statusbarpanel id="synchro_panel" />
   </statusbar>
 

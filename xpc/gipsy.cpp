@@ -505,6 +505,17 @@ NS_IMETHODIMP Gipsy::GpsReprocess(PRUint32 pos)
     return NS_OK;
 }
 
+/* boolean gpsCryptoEnabled (); */
+NS_IMETHODIMP Gipsy::GpsCryptoEnabled(PRBool *_retval)
+{
+#ifdef HAVE_CRYPTO
+    *_retval = 1;
+#else
+    *_retval = 0;
+#endif
+    return NS_OK;
+}
+
 /* void gpsChangeType (in long gtype); */
 NS_IMETHODIMP Gipsy::GpsChangeType(PRUint32 pos, PRInt32 gtype)
 {

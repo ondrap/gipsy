@@ -25,7 +25,7 @@ interface IGPSCallback : nsISupports {
 };
 
 /* Tracklog representation */
-[scriptable, uuid(30c28fe1-bac8-439b-9758-c35771d944c4)]
+[scriptable, uuid(3efe5f54-5b5d-40d2-8093-3e7c179ebe41)]
 interface IGPSIGC : nsISupports {
     // Save tracklog to .igc file */
     void igcSave(in nsILocalFile file);
@@ -146,7 +146,7 @@ interface IGPSIGC : nsISupports {
                          in long starty);
 };
 
-[scriptable, uuid(af92c16f-28f6-4681-9c69-7b9a875bee14)]
+[scriptable, uuid(32215b05-2658-42e7-b7fb-9b2b98e0653b)]
 interface IGPSDevInfo : nsISupports {
     readonly attribute string devname;    
     readonly attribute string gpsname;
@@ -178,7 +178,7 @@ interface IGPSDevInfo : nsISupports {
     void trackAdd(in unsigned long pos);
 };
 
-[scriptable, uuid(8bfaa56a-24c7-488c-a906-06f2cfc185a3)]
+[scriptable, uuid(3898b3f4-e9e2-44d4-9e18-9d43c3f4ab53)]
 interface IGPSScanner : nsISupports {
     // Internal DLL version
     const short DLL_VERSION = 2;
@@ -207,5 +207,7 @@ interface IGPSScanner : nsISupports {
 
     /* Change GPS type */
     void gpsChangeType(in unsigned long pos, in long gtype);
+    
+    /* Return true if compiled with crypto */
+    boolean gpsCryptoEnabled();
 };
-
