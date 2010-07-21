@@ -26,6 +26,9 @@ function TerrainMap(id) {
     // Add map
     this.maparea = document.createElementNS(htmlns, 'div');
     this.dragarea.appendChild(this.maparea);
+    // Choose some center of a map so that we could avoid huge x/y values
+    this.centerx = 0;
+    this.centery = 0;
     
     // Add tracklog
     this.tracklogarea = document.createElementNS(htmlns, 'div');
@@ -57,6 +60,11 @@ function TerrainMap(id) {
     this.tracklogs = [];
     this.optimizations = [];
 
+    this.__defineGetter__('realx', function() { return this.x + this.centerx; });
+    this.__defineSetter__('realx', function(newx) { this.x = newx - this.centerx; });
+    this.__defineGetter__('realy', function() { return this.y + this.centery; });
+    this.__defineSetter__('realy', function(newy) { this.y = newy - this.centery; });
+
     this.mousedown = function(evt) {
         if (evt.which == 1) {
             self.dragging = true;
@@ -78,15 +86,15 @@ function TerrainMap(id) {
         // Check map limits
         var xlimit = self.limit() - self.main.offsetWidth;
         var ylimit = self.limit() - self.main.offsetHeight;
-        if (self.x > xlimit)
-            self.x = xlimit;
-        if (self.y > ylimit)
-            self.y = ylimit;
-        
-        if (self.x < 0)
-            self.x = 0;
-        if (self.y < 0)
-            self.y = 0;
+        if (self.realx > xlimit)
+            self.realx = xlimit;
+        if (self.realy > ylimit)
+            self.realy = ylimit;
+
+        if (self.realx < 0)
+            self.realx = 0;
+        if (self.realy < 0)
+            self.realy = 0;
 
         self.dragarea.style.left = (-self.x).toString() + 'px';
         self.dragarea.style.top = (-self.y).toString() + 'px';
@@ -102,11 +110,11 @@ function TerrainMap(id) {
         var lx = evt.clientX - findPosX(self.main);
         var ly = evt.clientY - findPosY(self.main);
         self.x += lx - Math.floor(self.main.offsetWidth / 2);
-        if (self.x < 0)
-            self.x = 0;
+        if (self.realx < 0)
+            self.realx = 0;
         self.y += ly - Math.floor(self.main.offsetHeight / 2);
-        if (self.y < 0)
-            self.y = 0;
+        if (self.realy < 0)
+            self.realy = 0
         self.zoom_in();
     }
     this.lastrightclick = 0;
@@ -159,7 +167,7 @@ TerrainMap.prototype.gen_img = function(png, x, y) {
 // Project longitude into X-coordinates starting at X=0 when LON=-180
 TerrainMap.prototype.projectlon = function(lon) {
     var scale = this.limit() / 360;
-    return Math.round((lon + 180) * scale);
+    return Math.round((lon + 180) * scale) - this.centerx;
 }
 
 // Project latitude into Y-coordinates starting at Y=0 when LAT=-90
@@ -169,7 +177,7 @@ TerrainMap.prototype.projectlat = function(lat) {
     // We are rectangular, therefore the linear scale is:
     var scale = this.limit() / (2 * Math.PI);
     var centercoord = merclat * scale;
-    return Math.round(this.limit() / 2 - centercoord);
+    return Math.round(this.limit() / 2 - centercoord) - this.centery;
 }
 
 // Return best zoom for a given scale
@@ -228,12 +236,14 @@ TerrainMap.prototype.focus_tracklogs = function() {
     this.zoom = this.nice_google_zoom(scale);
     
     // Set left X/Y
-    this.x = (this.projectlon(minlon) + this.projectlon(maxlon)) / 2;
-    this.x -= this.main.offsetWidth / 2;
-    this.y = (this.projectlat(minlat) + this.projectlat(maxlat)) / 2;
-    this.y -= this.main.offsetHeight / 2;
-    this.dragarea.style.left = (-this.x).toString() + 'px';
-    this.dragarea.style.top = (-this.y).toString() + 'px';
+    this.centerx = 0;this.centery = 0; // projectlon take into account center(xy) values
+    this.centerx = (this.projectlon(minlon) + this.projectlon(maxlon)) / 2;
+    this.centerx -= this.main.offsetWidth / 2;
+    this.centery = (this.projectlat(minlat) + this.projectlat(maxlat)) / 2;
+    this.centery -= this.main.offsetHeight / 2;
+    this.x = 0; this.y = 0;
+    this.dragarea.style.left = '0px';
+    this.dragarea.style.top = '0px';
     
     this.clean_map();
     this.load_maps();
@@ -373,7 +383,7 @@ TerrainMap.prototype.make_canvas = function(tlog, i) {
     var maxlon = tlog.igcGetStat(tlog.STAT_LON_MAX);
     var minlat = tlog.igcGetStat(tlog.STAT_LAT_MIN);
     var maxlat = tlog.igcGetStat(tlog.STAT_LAT_MAX);
-    
+    // TODO: limit size of the canvas, if needed, use a smaller one
     var startx = this.projectlon(minlon);
     var starty = this.projectlat(maxlat);
     
@@ -389,7 +399,7 @@ TerrainMap.prototype.make_canvas = function(tlog, i) {
     var ctx = canvas.getContext('2d');
     ctx.strokeStyle = sprintf('rgb(%d,%d,%d)', 255 - ((i * 50) % 250), (170 + i * 40) % 250, (60 + i * 30) % 250);
 
-    tlog.drawCanvasTrack(ctx, this.limit(), startx, starty);
+    tlog.drawCanvasTrack(ctx, this.limit(), startx + this.centerx, starty + this.centery);
 
     return canvas;
 }
@@ -427,14 +437,15 @@ TerrainMap.prototype.zoom_out = function() {
     this.zoom++;
     this.clean_map();
     // Update X/Y coordinates, so that the center remains at the same place
-    this.x = Math.floor((this.x + this.main.offsetWidth/2) / 2) - this.main.offsetWidth / 2;
-    if (this.x < 0)
-        this.x = 0;
-    this.y = Math.floor((this.y + this.main.offsetHeight/2) / 2) - this.main.offsetHeight / 2;
-    if (this.y < 0)
-        this.y = 0;
-    this.dragarea.style.left = (-this.x).toString() + 'px';
-    this.dragarea.style.top = (-this.y).toString() + 'px';
+    this.centerx = Math.floor((this.realx + this.main.offsetWidth/2) / 2) - this.main.offsetWidth / 2;
+    if (this.centerx < 0)
+        this.centerx = 0;
+    this.centery = Math.floor((this.realy + this.main.offsetHeight/2) / 2) - this.main.offsetHeight / 2;
+    if (this.centery < 0)
+        this.centery = 0;
+    this.x = 0; this.y = 0;
+    this.dragarea.style.left = '0px';
+    this.dragarea.style.top = '0px';
 
     this.load_maps();
     this.reload_tracklogs();
@@ -443,15 +454,18 @@ TerrainMap.prototype.zoom_out = function() {
 // Zoom in, leave the center of the map inplace
 TerrainMap.prototype.zoom_in = function() {
     // Pixel offsets are too high for zoom=0, don't allow it
-    if (this.zoom == 1)
+    if (this.zoom == 0)
         return;
     this.zoom--;
     // Clean up map area
     this.clean_map();
-    this.x = Math.floor((this.x + this.main.offsetWidth/2) * 2 - this.main.offsetWidth / 2);
-    this.y = Math.floor((this.y + this.main.offsetHeight/2) * 2 - this.main.offsetHeight / 2);
-    this.dragarea.style.left = (-this.x).toString() + 'px';
-    this.dragarea.style.top = (-this.y).toString() + 'px';
+    // Restore centering
+    this.centerx = Math.floor((this.x + this.centerx + this.main.offsetWidth/2) * 2 - this.main.offsetWidth / 2);
+    this.centery = Math.floor((this.y + this.centery + this.main.offsetHeight/2) * 2 - this.main.offsetHeight / 2);
+    this.x = 0;
+    this.y = 0;
+    this.dragarea.style.left = '0px';
+    this.dragarea.style.top = '0px';
         
     this.load_maps();
     this.reload_tracklogs();
@@ -460,8 +474,8 @@ TerrainMap.prototype.zoom_in = function() {
 // Load visible images into dragarea
 TerrainMap.prototype.load_maps = function() {
     // Show areas that are outside the bounds function
-    for (var x=this.x; x < this.x + this.main.clientWidth + 256; x += 256)
-        for (var y=this.y; y < this.y + this.main.clientHeight + 256; y += 256) {
+    for (var x=this.x + this.centerx; x < this.x + this.centerx + this.main.clientWidth + 256; x += 256)
+        for (var y=this.y + this.centery; y < this.y + this.centery + this.main.clientHeight + 256; y += 256) {
             if (x >= this.limit() || y >= this.limit())
                 continue;
             
@@ -480,8 +494,8 @@ TerrainMap.prototype.load_maps = function() {
                     this.loaded_tiles[lid] = true;
                     img = document.createElementNS(htmlns, 'img');
                     img.setAttribute('src', link);
-                    img.style.left = (xtile * 256) + 'px';
-                    img.style.top = (ytile * 256) + 'px';
+                    img.style.left = (xtile * 256 - this.centerx) + 'px';
+                    img.style.top = (ytile * 256 - this.centery) + 'px';
                     img.style.width = '256px';
                     img.style.height = '256px';
                     img.style.position = 'absolute';
