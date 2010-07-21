@@ -79,7 +79,10 @@
 		id="metric_ok" />
     </groupbox>
     <groupbox>
-        <caption label="&prefs.usercommands;" />
+        <hbox>
+            <caption label="&prefs.usercommands;" />
+            <label value="( &help; )" onclick="window.openDialog('preferences.html', 'phelp', 'dialog=yes')" style="color:blue;text-decoration:underline;cursor:pointer" />
+        </hbox>
         <vbox>
             <grid>
                 <columns>

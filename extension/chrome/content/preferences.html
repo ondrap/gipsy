@@ -1,0 +1,53 @@
+<html>
+<head>
+    <title>Advanced settings of preferences</title>
+    <style type="text/css">
+        table {
+            border-collapse: collapse;
+            }
+        td {
+                border: thin solid darkgray;
+            }
+        a {
+            color: blue;
+            text-decoration: underline;
+            }
+    </style>
+</head>
+<body>
+    <h2>Setting the route optimizer</h2>
+    
+    GiPSy supports integration with a route optimizer which allows you to
+    directly find out the route that you have flown.
+    
+    <h2>Configuration</h2>
+    Download the optimizer for the appropriate platform from
+    <a href="http://www.penguin.cz/~ondrap/hspoints/" onclick="window.open('http://www.penguin.cz/~ondrap/hspoints/');return false;">this page</a>.
+    Then go to preferences of Gipsy and set the User command the following way:
+    <ul>
+        <li>Set title to some descriptive name</li>
+        <li>Enter the path to the download HSpoints binary</li>
+        <li>Enter the league to optimize as a parameter - e.g. XC for World Xcontest (see bellow for more)</li>
+        <li>Set the type of the program to 'HSPoints'</li>
+        <li>Close the preferences, close the GiPSy window.</li>
+    </ul>
+    Open GiPSy again, right-click on a flight and run the user command. When the command
+    finishes you will see the results on the map.
+    <p/>
+    List of optimization rules:
+    <table>
+        <tr>
+            <td>XC</td><td>World XContest</td>
+        </tr>
+        <tr>
+            <td>CZ</td><td>Czech XContest - Czech republic + Poland + Slovakia + Hunagery</td>
+        </tr>
+        <tr>
+            <td>CZX</td><td>Czech XContest - rest of the Europe</td>
+        </tr>
+        <tr>
+            <td>AU, FI, NE, SK, ES, CH, MX</td><td>Australia, Finland, Netherlands, Slovakia, Spain, Switzerland, Mexico</td>
+        </tr>
+    </table>
+</body>
+</html>
