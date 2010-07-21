@@ -12,6 +12,10 @@
 #include "data.h"
 #include "endian.h"
 
+#ifdef WIN32
+#   include "win_strptime.h"
+#endif
+
 #define XON   0x11
 #define XOFF 0x13
 /* Do not accept more characters then maxline */

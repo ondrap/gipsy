@@ -9,6 +9,10 @@
 #include "compeo.h"
 #include "igc.h"
 
+#ifdef WIN32
+#   include "win_strptime.h"
+#endif
+
 #define XON  0x11
 #define XOFF 0x13
 /* Do not accept more characters then maxline */
