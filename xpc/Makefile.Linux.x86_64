@@ -5,7 +5,7 @@ GECKO_SDK_PATH = /usr/lib/xulrunner-devel-$(XULVERSION)/sdk/
 GECKO_DEFINES = -DCRYPTPP
 GECKO_INCLUDES := `pkg-config --cflags  /usr/lib64/pkgconfig/libxul.pc`  -I/usr/include/xulrunner-$(XULVERSION)/unstable
 GECKO_LDFLAGS :=  `pkg-config --libs  /usr/lib64/pkgconfig/libxul.pc`
-CRYPTO_LIB = /usr/lib/libcryptopp.a
+CRYPTO_LIB = ../libs/libcryptopp.a
 
 CXX   = g++
  

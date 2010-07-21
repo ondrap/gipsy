@@ -5,6 +5,8 @@ OBJECTS = gipsy.o gipsymodule.o tracklog.o gpslib/data.o gpslib/garmin.o \
 
 TARGET = gipsy.so
 
+CPPFLAGS += -DHAVE_CRYPTO
+
 all: $(TARGET) IGPSScanner.xpt
 
 %.cpp: %.rl
