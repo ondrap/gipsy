@@ -1,0 +1,10 @@
+GiPSy Flight Manager
+====================
+
+GiPSy flight manager is a tool for downloading tracklogs of paraglider flights from GPS 
+and keeping database of the flights.
+
+GiPSy currently supports a wide range of GPS devices used by the paraglider pilots including
+Garmin, Aircotec, Brauniger, Flytec, Digifly, MLR and Flymaster devices.
+
+
