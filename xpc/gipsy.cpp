@@ -630,7 +630,7 @@ NS_IMETHODIMP GpsItem::GetTrackcount(PRInt32 *aTrackcount)
 }
 
 /* long trackStartTime (in long pos); */
-NS_IMETHODIMP GpsItem::TrackStartTime(PRUint32 pos, PRTime *_retval NS_OUTPARAM)
+NS_IMETHODIMP GpsItem::TrackStartTime(PRUint32 pos, PRTime *_retval)
 {
     if (pos >= saved_tracks.size())
         return NS_ERROR_UNEXPECTED;
@@ -640,7 +640,7 @@ NS_IMETHODIMP GpsItem::TrackStartTime(PRUint32 pos, PRTime *_retval NS_OUTPARAM)
 }
 
 /* long trackStopTime (in long pos); */
-NS_IMETHODIMP GpsItem::TrackStopTime(PRUint32 pos, PRTime *_retval NS_OUTPARAM)
+NS_IMETHODIMP GpsItem::TrackStopTime(PRUint32 pos, PRTime *_retval)
 {
     if (pos >= saved_tracks.size())
         return NS_ERROR_UNEXPECTED;

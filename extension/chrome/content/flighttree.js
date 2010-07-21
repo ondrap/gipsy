@@ -486,34 +486,37 @@ var flightmodel = {
     get fname() { return this._fname; },
 
     set fname(fname) {
-	if (fname)
-	    this.tlog = gstore.loadTracklog(fname);
-	else 
-	    this.tlog = null;
+        if (fname)
+            this.tlog = gstore.loadTracklog(fname);
+        else 
+            this.tlog = null;
 
-	if (this.tlog == null) {
-	    this._fname = null;
-	    this.stats_clean();
-	    return;
-	}
-	this._fname = fname;
+        if (this.tlog == null) {
+            this._fname = null;
+            this.stats_clean();
+            return;
+        }
+        this._fname = fname;
 
-	this.update();
+        this.update();
     },
 
     // Update screen according to the model
     update : function() {
-	var dinfo = gstore.getFlightFile(this.fname);
-	this.stats_update(dinfo);
-	this.xcontest_update(dinfo);
-	
+        var dinfo = gstore.getFlightFile(this.fname);
+        this.stats_update(dinfo);
+        this.xcontest_update(dinfo);
+
         var flist = treeView.get_selected_fnames();
         if (flist.length == 0) 
             return;
-
         var tlist = [];
-        for (var i=0; i < flist.length; i++)
-            tlist.push(gstore.loadTracklog(flist[i]));
+        if (flist.length == 1) { // Avoid unnecessary reparsing of the tracklog
+        	tlist.push(this.tlog);
+    	} else {
+            for (var i=0; i < flist.length; i++)
+                tlist.push(gstore.loadTracklog(flist[i]));
+    	}
 
         // Limit display to 6 tracklogs
         tlist.splice(6);
@@ -644,8 +647,8 @@ function tree_flight_select()
 {
     var row = document.getElementById('flight_tree').currentIndex;
     if (row < 0 || row >= treeView.rows.length || ! treeView.rows[row].flight) {
-	flightmodel.fname = null;
-	return true;
+		flightmodel.fname = null;
+		return true;
     }
     flightmodel.fname = treeView.rows[row].value;
 

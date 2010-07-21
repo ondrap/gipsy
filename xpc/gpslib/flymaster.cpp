@@ -123,7 +123,7 @@ void FlymasterGps::download_strack(size_t selected_track, PointArr &result, dt_c
     
     int pktcount = 0;
     int pcounter = 0;
-    int expcount = saved_tracks[selected_track].second - saved_tracks[selected_track].first;
+    int expcount = (int) (saved_tracks[selected_track].second - saved_tracks[selected_track].first);
     
     vector<string> args;
     args.push_back(tmptime);
@@ -303,7 +303,7 @@ vector<string> NMEAGps::receive_data(const string &command)
                 if (ch == '*') {
                     string cksum_s = string() + (char)dev->read();
                     cksum_s += (char)dev->read();
-                    unsigned char cksum_r = strtol(cksum_s.c_str(), NULL, 16);
+                    unsigned char cksum_r = (unsigned char) strtol(cksum_s.c_str(), NULL, 16);
                     dev->read();dev->read(); // CR, LF
                     if (cksum_r == cksum && recv_cmd == command)
                         return result;

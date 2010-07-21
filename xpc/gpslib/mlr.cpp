@@ -206,7 +206,7 @@ vector<string> MLRGps::receive_data(const string &command)
                 param = "";
                 if (ch == '*') {
                     string cksum_s = string() + (char)dev->read() + (char)dev->read();
-                    unsigned char cksum_r = strtol(cksum_s.c_str(), NULL, 16);
+                    unsigned char cksum_r = (unsigned char) strtol(cksum_s.c_str(), NULL, 16);
                     dev->read();dev->read(); // CR, LF
                     if (cksum_r == cksum && recv_cmd == command)
                         return result;
