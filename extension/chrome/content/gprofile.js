@@ -79,7 +79,8 @@ TracklogProfile.prototype.min_height = function() {
 }
 
 // Draw lines every 500m/1500ft
-TracklogProfile.prototype.draw_heightlines = function(ctx, scale, minheight, maxheight) {
+TracklogProfile.prototype.draw_heightlines = function(ctx, minheight, maxheight) {
+    var scale = this.canvas.height / (maxheight - minheight);
     var divider = 500;
     if (!get_bool_pref('metric'))
             divider = 457.2; // 1500 ft
@@ -87,7 +88,7 @@ TracklogProfile.prototype.draw_heightlines = function(ctx, scale, minheight, max
     for (var height=minheight; height <= maxheight; height += divider) {
         ctx.beginPath();
         var y = Math.floor(this.canvas.height - scale * (height - minheight));
-        if (((height + 0.1) % (divider * 2)) < 1) {
+        if (((height + 0.1) % (divider * 2)) > 1) {
             ctx.strokeStyle = '#b9b9b9';
         } else {
             ctx.strokeStyle = '#797979';
@@ -162,8 +163,6 @@ TracklogProfile.prototype.draw = function() {
         if (minheight > 0)
             minheight = 0;
     }
-    var scale = this.canvas.offsetHeight / (maxheight - minheight);
-    
     ctx = this.canvas.getContext('2d');
     ctx.font = '7pt Arial';
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -189,7 +188,7 @@ TracklogProfile.prototype.draw = function() {
     ctx.beginPath();ctx.moveTo(0, this.canvas.height - 0.5);
     ctx.lineTo(this.canvas.width, this.canvas.height - 0.5); ctx.stroke();
     
-    this.draw_heightlines(ctx, scale, minheight, maxheight);
+    this.draw_heightlines(ctx, minheight, maxheight);
     this.draw_timelines(ctx, starttime, endtime);
 }
 

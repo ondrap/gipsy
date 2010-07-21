@@ -1291,6 +1291,9 @@ NS_IMETHODIMP Tracklog::KmlTrack(char **_retval)
     return NS_OK;
 }
 
+/* Draw profile using given canvas context
+ * Use callback to return points that were added to the canvas
+ */
 /* void drawCanvasProfile (in nsIDOMCanvasRenderingContext2D ctx, in long width, in long height, in long minheight, in long maxheight); */
 NS_IMETHODIMP Tracklog::DrawCanvasProfile(nsIDOMCanvasRenderingContext2D *ctx,
                                           PRInt32 width, PRInt32 height, 
@@ -1299,6 +1302,9 @@ NS_IMETHODIMP Tracklog::DrawCanvasProfile(nsIDOMCanvasRenderingContext2D *ctx,
 {
     double scale = ((double) height) / (maxheight - minheight);
     
+    if (!ctx)
+        return NS_ERROR_NULL_POINTER;
+
     ctx->BeginPath();
     PRTime starttime = igc->tracklog[0].time;
     PRTime endtime = igc->tracklog[igc->tracklog.size() - 1].time; 
@@ -1315,7 +1321,7 @@ NS_IMETHODIMP Tracklog::DrawCanvasProfile(nsIDOMCanvasRenderingContext2D *ctx,
         int y = height - (alt - minheight) * scale;
         
         // Detect hole in tracklog
-        if (igc->tracklog[i].time - lasttime > 60*1000) {
+        if (igc->tracklog[i].time - lasttime > 60) {
             if (lasttime) {
                 ctx->Stroke();
                 ctx->LineTo(lastx, height);
@@ -1341,6 +1347,55 @@ NS_IMETHODIMP Tracklog::DrawCanvasProfile(nsIDOMCanvasRenderingContext2D *ctx,
     ctx->ClosePath();
     ctx->Fill();
     
+    return NS_OK;
+}
+
+// Projection functions for working with canvas
+// Project longitude directly to X coordinate with 0 on -180
+int Tracklog::canvasProjectLon(double lon, int limit)
+{
+    double scale = ((double) limit) / 360.0;
+    return round((lon + 180) * scale);
+}
+
+// Project latitude directly to Y coordinate with 0 on north pole
+int Tracklog::canvasProjectLat(double lat, int limit)
+{
+    lat = lat * 2.0 * M_PI / 360.0;
+    double merclat = 0.5 * log((1.0 + sin(lat))/ (1.0 - sin(lat)));
+    // We are rectangular, therefore the linear scale is:
+    double scale = limit / (2.0 * M_PI);
+    double centercoord = merclat * scale;
+    return round(((double) limit) / 2.0 - centercoord);
+}
+
+
+/* Draw track on canvas */
+/* void drawCanvasTrack (in nsIDOMCanvasRenderingContext2D ctx, in long limit, in long startx, in long starty); */
+NS_IMETHODIMP Tracklog::DrawCanvasTrack(nsIDOMCanvasRenderingContext2D *ctx, 
+                                        PRInt32 limit, PRInt32 startx, PRInt32 starty)
+{
+    if (!ctx)
+        return NS_ERROR_NULL_POINTER;
+
+    ctx->BeginPath();
+    Trackpoint *point = &igc->tracklog[0];
+    ctx->MoveTo(canvasProjectLon(point->lon, limit) - startx, 
+                canvasProjectLat(point->lat, limit) - starty);
+    
+    PRTime lasttime = 0;
+    for (size_t i = 1; i < igc->tracklog.size(); i++) {
+        point = &igc->tracklog[i];
+        // Make it slightly faster
+        if (limit <= 1048576 && point->time - lasttime < 5)
+            continue;
+
+        lasttime = point->time;
+        ctx->LineTo(canvasProjectLon(point->lon, limit) - startx, 
+                    canvasProjectLat(point->lat, limit) - starty);
+    }
+    ctx->Stroke();
+
     return NS_OK;
 }
 

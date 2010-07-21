@@ -140,6 +140,10 @@ interface IGPSIGC : nsISupports {
                            in long width, in long height,
                            in long minheight, in long maxheight,
                            in IGPSCallback callback);
+    void drawCanvasTrack(in nsIDOMCanvasRenderingContext2D ctx,
+                         in long limit,
+                         in long startx,
+                         in long starty);
 };
 
 [scriptable, uuid(af92c16f-28f6-4681-9c69-7b9a875bee14)]

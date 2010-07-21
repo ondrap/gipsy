@@ -35,6 +35,10 @@ private:
   int interval_start(int idx);
   int interval_end(int idx);
   nsresult getparam(const char *param, std::string &val);
+  
+  // Projection function for working on canvas
+  int canvasProjectLon(double lon, int limit);
+  int canvasProjectLat(double lat, int limit);
 
 protected:
   /* additional members */
