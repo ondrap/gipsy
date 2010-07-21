@@ -1,5 +1,6 @@
 #include "nsISupports.idl"
 #include "nsILocalFile.idl"
+#include "nsIDOMCanvasRenderingContext2D.idl"
 
 [scriptable, uuid(fc1ad2a8-a879-459e-a753-89eb9b46e521)]
 interface IGPSPoint : nsISupports {
@@ -15,6 +16,12 @@ interface IGPSPoint : nsISupports {
     double distance_raw(in double lat, in double lon);
 
     void initPoint(in double lat, in double lon, in double alt, in PRTime time);
+};
+
+/* Helper structure for callbacks */
+[scriptable, function, uuid(c5ca740f-097e-4363-b9d2-2d0bad063948)]
+interface IGPSCallback : nsISupports {
+    void addPoint(in long x, in long i);
 };
 
 /* Tracklog representation */
@@ -127,6 +134,12 @@ interface IGPSIGC : nsISupports {
 
     /* Create a KML track */
     string kmlTrack();
+    
+    /* Draw track/profile on canvas */
+    void drawCanvasProfile(in nsIDOMCanvasRenderingContext2D ctx, 
+                           in long width, in long height,
+                           in long minheight, in long maxheight,
+                           in IGPSCallback callback);
 };
 
 [scriptable, uuid(af92c16f-28f6-4681-9c69-7b9a875bee14)]

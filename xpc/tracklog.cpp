@@ -17,6 +17,7 @@ using namespace std;
 #include "nsCRT.h"
 #include "nsServiceManagerUtils.h"
 #include "nsComponentManagerUtils.h"
+#include "nsIDOMCanvasRenderingContext2D.h"
 #include "nsIDOMParser.h"
 #include "nsIFileStreams.h"
 #include "nsNetCID.h"
@@ -1290,6 +1291,60 @@ NS_IMETHODIMP Tracklog::KmlTrack(char **_retval)
     return NS_OK;
 }
 
+/* void drawCanvasProfile (in nsIDOMCanvasRenderingContext2D ctx, in long width, in long height, in long minheight, in long maxheight); */
+NS_IMETHODIMP Tracklog::DrawCanvasProfile(nsIDOMCanvasRenderingContext2D *ctx,
+                                          PRInt32 width, PRInt32 height, 
+                                          PRInt32 minheight, PRInt32 maxheight,
+                                          IGPSCallback *callback)
+{
+    double scale = ((double) height) / (maxheight - minheight);
+    
+    ctx->BeginPath();
+    PRTime starttime = igc->tracklog[0].time;
+    PRTime endtime = igc->tracklog[igc->tracklog.size() - 1].time; 
+    double timescale = ((double) width) / (endtime - starttime);
+
+    PRTime lasttime = 0;
+    int startx = 0;
+    int lastx = 0;
+    for (size_t i=0; i < igc->tracklog.size(); i++) {
+        int x = (igc->tracklog[i].time - starttime) * timescale;
+        int alt = igc->tracklog[i].gpsalt;
+        if (!alt)
+            alt = igc->tracklog[i].baroalt;
+        int y = height - (alt - minheight) * scale;
+        
+        // Detect hole in tracklog
+        if (igc->tracklog[i].time - lasttime > 60*1000) {
+            if (lasttime) {
+                ctx->Stroke();
+                ctx->LineTo(lastx, height);
+                ctx->LineTo(startx, height);
+                ctx->ClosePath();
+                ctx->Fill();
+            }
+            ctx->BeginPath();
+            ctx->MoveTo(x, y);
+            startx = x;
+        }
+        if (lastx != x) {
+            ctx->LineTo(x, y);
+            if (callback)
+                callback->AddPoint(x, i);
+        }
+        lasttime = igc->tracklog[i].time;
+        lastx = x;
+    }
+    ctx->Stroke();
+    ctx->LineTo(width, height);
+    ctx->LineTo(startx, height);
+    ctx->ClosePath();
+    ctx->Fill();
+    
+    return NS_OK;
+}
+
+
 NS_IMPL_ISUPPORTS1(GpsPoint, IGPSPoint);
 
 GpsPoint::GpsPoint() : lon(0), lat(0), alt(0), time(0)
@@ -1431,3 +1486,4 @@ Trackpoint GpsPoint::make_tpoint(IGPSPoint *other)
     return result;
 
 }
+

@@ -168,49 +168,21 @@ TracklogProfile.prototype.draw = function() {
     ctx.font = '7pt Arial';
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    ctx.beginPath();
     ctx.strokeStyle = '#ff7901';
     ctx.fillStyle = 'lightgrey';
-    
+
     var starttime = tlog.igcPoint(0).time;
     var endtime = tlog.igcPoint(tlog.igcPointCount() - 1).time;
-    var timescale = this.canvas.width / (endtime - starttime);
-    
-    var lasttime = 0;
-    var startx = 0;
-    var lastx = 0;
-    for (var i=0; i < tlog.igcPointCount(); i++) {
-        var point = tlog.igcPoint(i);
-        var x = (point.time - starttime) * timescale;
-        y = Math.floor(this.canvas.height - (point.alt - minheight) * scale);
-        
-        // Detect hole in tracklog
-        if (point.time - lasttime > 60*1000) {
-            if (lasttime) {
-                ctx.stroke();
-                ctx.lineTo(lastx, this.canvas.height);
-                ctx.lineTo(startx, this.canvas.height);
-                ctx.closePath();
-                ctx.fill();
-            }
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-            startx = x;
-        }
-        if (this.tpoints[Math.floor(x)] == null)
-            ctx.lineTo(x, y);
-        
-        this.tpoints[Math.floor(x)] = i;
-        lasttime = point.time;
-        lastx = x;
-    }
-    ctx.stroke();
-    ctx.lineTo(this.canvas.width, this.canvas.height);
-    ctx.lineTo(startx, this.canvas.height);
-    ctx.closePath();
-    ctx.fillStyle = 'lightgrey';
-    ctx.fill();
-    
+
+    // Optimized drawing of tracklog on canvas
+    // The callback function sets the indexes in a hash table for later
+    // reference
+    var self = this;
+    tlog.drawCanvasProfile(ctx, this.canvas.width, this.canvas.height,
+                           minheight, maxheight, 
+                           function(x,i) {self.tpoints[x] = i;}
+                           );
+
     // Draw top and bottom black lines
     ctx.strokeStyle = 'black';
     ctx.beginPath();ctx.moveTo(0, 0.5);ctx.lineTo(this.canvas.width, 0.5); ctx.stroke();
