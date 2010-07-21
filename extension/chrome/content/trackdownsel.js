@@ -1,5 +1,17 @@
 var gps;
 
+function fmtdate(date) {
+    return sprintf("%d.%d.%d %02d:%02d:%02d", date.getUTCDate(),
+                               date.getUTCMonth() + 1, date.getUTCFullYear(), 
+                               date.getUTCHours(), date.getUTCMinutes(),
+                               date.getUTCSeconds());
+}
+
+function fmttime(date) {
+    return sprintf("%02d:%02d:%02d", date.getUTCHours(), date.getUTCMinutes(),
+                               date.getUTCSeconds());
+}
+
 function OnLoad() {
     gps = window.arguments[0];
     
@@ -15,7 +27,7 @@ function OnLoad() {
         item.setAttribute('value', i);
         
         var cell1 = document.createElement('listcell');
-        cell1.setAttribute('label', startdate.toUTCString() + ' - ' + enddate.toUTCString());
+        cell1.setAttribute('label', fmtdate(startdate) + ' - ' + fmttime(enddate));
         
         item.appendChild(cell1);
         dlist.appendChild(item);
