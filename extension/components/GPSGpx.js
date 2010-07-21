@@ -165,7 +165,7 @@ GPSGpx.prototype = {
                 totpoints += opt.drawScore.scorePoints;
                 this.txtel(row, 'td', sprintf('%.2f', opt.drawScore.scorePoints));
             }
-	    this.txtel(row, 'td', tlog.igcGetParamUTF8('comment'));
+	    this.txtel(row, 'td', tlog.igcGetParam('comment'));
 	}
 	
 	var tfoot = this.newel(table, 'tfoot');
@@ -653,7 +653,7 @@ GPSGpx.prototype = {
 	    
 	    while (ystart < height) {
 		var svr = 'mt' + Math.floor(Math.random() * 4);
-		var link = 'http://' + svr + '.google.com/vt/lyrs=t@125,r@129';
+		var link = 'http://' + svr + '.google.com/' + get_string_pref('map_terrain');
 		link += '&x=' + xtile + '&y=' + ytile + '&zoom=' + zoom;
 		var img = this.svgMapElement(Math.floor(xstart), Math.floor(ystart),
 					     prwidth, prwidth, link);
