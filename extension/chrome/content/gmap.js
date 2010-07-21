@@ -6,6 +6,9 @@ htmlns = "http://www.w3.org/1999/xhtml";
 function TerrainMap(id) {
     var self = this;
 
+    // What to show to the user as a distance scale
+    this.distScales = [0.05, 0.1, 0.2, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 200, 500, 1000, 2000, 5000];
+    
     this.main = document.getElementById(id);
     this.main.style.overflow = 'hidden';
     this.main.style.position = 'relative';
@@ -22,6 +25,30 @@ function TerrainMap(id) {
     this.dragarea = document.createElementNS(htmlns, 'div');
     this.dragarea.style.position = 'absolute';
     this.main.appendChild(this.dragarea);
+    
+    // Add scaling
+    this.scalearea = document.createElementNS(htmlns, 'div');
+    this.scalearea.style.position = 'absolute';
+    this.scalearea.style.left = '10px';
+    this.scalearea.style.bottom = '5px';
+    this.scalearea.style.width = '130px';
+    this.scalearea.style.height = '15px';
+    this.scalearea.style.zIndex = '4000';
+    this.main.appendChild(this.scalearea);
+    
+    this.scalecanvas = document.createElementNS(htmlns, 'canvas');
+    this.scalecanvas.width = 130;
+    this.scalecanvas.height = 15;
+    this.scalecanvas.style.position = 'absolute';
+    this.scalearea.appendChild(this.scalecanvas);
+    
+    this.scalelabel = document.createElementNS(htmlns, 'span');
+    this.scalelabel.style.position = 'absolute';
+    this.scalelabel.style.color = 'white';
+    this.scalelabel.style.font = '9pt Arial';
+    this.scalelabel.style.top = '5px';
+    this.scalelabel.style.left = '10px';
+    this.scalearea.appendChild(this.scalelabel);
     
     // Add map
     this.maparea = document.createElementNS(htmlns, 'div');
@@ -75,6 +102,7 @@ function TerrainMap(id) {
     this.mouseup = function(evt) {
         if (self.dragging && evt.which == 1) {
             self.dragging = false;
+            self.show_scale();
         }
     }
     this.mousemove = function(evt) {
@@ -135,6 +163,38 @@ function TerrainMap(id) {
     this.maplayers = [];
 }
 
+TerrainMap.prototype.show_scale = function() {
+    // Set color of scalelabel
+    if (!this.maplayers.length || this.maplayers[0] == 'map_googlemap')
+        this.scalelabel.style.color = 'black';
+    else
+        this.scalelabel.style.color = 'white';
+    
+    var distance = this.distScales[this.zoom + 1];
+    var angle = 360 * (distance / (6378 * 2 * Math.PI));
+    // Detect latitude, make it larger
+    var lat = this.projecty(this.y + this.main.offsetHeight / 2);
+    angle = angle / Math.cos(2 * Math.PI * (lat / 360.0));
+    var width = this.projectlon(angle) - this.projectlon(0);
+    
+    empty(this.scalelabel);
+    this.scalelabel.appendChild(document.createTextNode(format_km0(distance * 1000)));
+    
+    ctx = this.scalecanvas.getContext('2d');
+
+    ctx.save();
+    ctx.translate(1.5, 1.5);
+    ctx.clearRect(0, 0, this.scalecanvas.width, this.scalecanvas.height);
+    ctx.strokeStyle = 'white';
+    ctx.strokeRect(0, 0, width, this.scalecanvas.height);
+    ctx.fillStyle = 'black';
+    ctx.fillRect(1, 1, width - 2, this.scalecanvas.height);
+    ctx.strokeRect(3, 3, width - 6, this.scalecanvas.height - 2);
+    ctx.clearRect(4, 4, width  - 8, this.scalecanvas.height);
+    ctx.restore();
+}
+
+// Put a glider_icon on a given position
 TerrainMap.prototype.mark_position = function(lat, lon) {
     var x = this.projectlon(lon);
     var y = this.projectlat(lat);
@@ -150,6 +210,7 @@ TerrainMap.prototype.set_layers = function(layers) {
     this.maplayers = layers;
     this.clean_map();
     this.load_maps();
+    this.show_scale();
 }
 
 // Generate an image of control button
@@ -178,6 +239,15 @@ TerrainMap.prototype.projectlat = function(lat) {
     var scale = this.limit() / (2 * Math.PI);
     var centercoord = merclat * scale;
     return Math.round(this.limit() / 2 - centercoord) - this.centery;
+}
+
+// Project Y-coordinate to latitude
+TerrainMap.prototype.projecty = function(y) {
+    var scale = this.limit() / (2 * Math.PI);
+    var centercoord = this.limit() / 2 - y - this.centery;
+    var merclat = centercoord / scale;
+    // Convert mercator coordinate back to degrees
+    return Math.atan(sinh(merclat)) * 360 / (2 * Math.PI);
 }
 
 // Return best zoom for a given scale
@@ -248,6 +318,7 @@ TerrainMap.prototype.focus_tracklogs = function() {
     this.clean_map();
     this.load_maps();
     this.reload_tracklogs();
+    this.show_scale();
 }
 
 // Set tracklogs to be shown
@@ -449,6 +520,7 @@ TerrainMap.prototype.zoom_out = function() {
 
     this.load_maps();
     this.reload_tracklogs();
+    this.show_scale();
 }
 
 // Zoom in, leave the center of the map inplace
@@ -469,6 +541,7 @@ TerrainMap.prototype.zoom_in = function() {
         
     this.load_maps();
     this.reload_tracklogs();
+    this.show_scale();
 }
 
 // Load visible images into dragarea

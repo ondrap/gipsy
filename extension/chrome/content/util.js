@@ -270,6 +270,15 @@ function format_km2(dist) {
     return sprintf("%.2f mi.", dist / 1609.344);
 }
 
+function format_km0(dist) {
+    if (get_bool_pref('metric')) {
+        if (dist < 1000)
+            return sprintf('%d m', dist);
+        return sprintf("%d km", dist / 1000);
+    }
+    return sprintf("%.1f mi.", dist / 1609.344);
+}
+
 function format_m(dist) {
     if (get_bool_pref('metric'))
 	return sprintf("%d m", Math.round(dist));
@@ -317,4 +326,9 @@ function fire_resize_event()
     var evobj = document.createEvent('HTMLEvents');
     evobj.initEvent('resize', false, false);
     window.dispatchEvent(evobj);
+}
+
+function sinh(arg) 
+{
+    return (Math.exp(arg) - Math.exp(-arg))/2;
 }
