@@ -497,7 +497,7 @@ var flightmodel = {
             return;
         }
         this._fname = fname;
-
+        
         this.update();
     },
 
@@ -517,7 +517,6 @@ var flightmodel = {
             for (var i=0; i < flist.length; i++)
                 tlist.push(gstore.loadTracklog(flist[i]));
     	}
-
         // Limit display to 6 tracklogs
         tlist.splice(6);
         gmap.set_tracklogs(tlist);

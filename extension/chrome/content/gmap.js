@@ -245,7 +245,6 @@ TerrainMap.prototype.set_tracklogs = function(tracklogs) {
     this.tracklogs = tracklogs;
     this.optimizations = [];
     this.focus_tracklogs();
-    this.reload_tracklogs();
 }
 
 // Set optimization data to be drawn
