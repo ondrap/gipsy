@@ -20,7 +20,7 @@ CXX   = g++
 GECKO_CONFIG_INCLUDE = -include mozilla-config.h 
 
 CPPFLAGS += -DUSE_LIBUSB -I/opt/local/include
-USB_LIB = /opt/local/lib/libusb.a -framework IOKit -framework CoreFoundation
-CPPFLAGS += -fshort-wchar -fexceptions -Wno-non-virtual-dtor
+USB_LIB = /opt/local/lib/libusb.a -framework IOKit -framework CoreFoundation -mmacosx-version-min=10.4
+CPPFLAGS += -fshort-wchar -fexceptions -Wno-non-virtual-dtor -mmacosx-version-min=10.4
 
 include rules.makefile

@@ -289,8 +289,8 @@ var treeView = {
         var file = gstore.getIGCFile(fname);
         var process = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
         var procname = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-        procname.initWithPath(get_string_pref('usercmd_' + num + '_cmd'));
         try {
+            procname.initWithPath(get_string_pref('usercmd_' + num + '_cmd'));
             process.init(procname);
         } catch (e) {
             alert('Cannot initialize - wrong path to user command?');

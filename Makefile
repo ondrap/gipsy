@@ -1,6 +1,6 @@
 # 
 
-all: gipsy.xpi gipsy_lite.xpi
+all: gipsy.xpi
 
 ia32:
 	$(MAKE) -C xpc
