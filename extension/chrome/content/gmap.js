@@ -7,7 +7,8 @@ function TerrainMap(id) {
     var self = this;
 
     // What to show to the user as a distance scale
-    this.distScales = [0.05, 0.1, 0.2, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 200, 500, 1000, 2000, 5000];
+    this.distScales = [15000, 5000, 2000, 1000, 500, 200, 200, 100, 50, 20, 10, 5, 2, 1, 0.5, 
+                       0.2, 0.1, 0.05, 0.02, 0.01 ];
     
     this.main = document.getElementById(id);
     this.main.style.overflow = 'hidden';
@@ -47,7 +48,7 @@ function TerrainMap(id) {
     this.scalelabel.style.color = 'white';
     this.scalelabel.style.font = '9pt Arial';
     this.scalelabel.style.top = '5px';
-    this.scalelabel.style.left = '10px';
+    this.scalelabel.style.left = '8px';
     this.scalearea.appendChild(this.scalelabel);
     
     // Add map
@@ -81,7 +82,7 @@ function TerrainMap(id) {
     this.dragging = false;
     this.x = 0;
     this.y = 0;
-    this.zoom = 16;
+    this.zoom = 1;
     // Array to store loaded tiles
     this.loaded_tiles = new Array();
     this.tracklogs = [];
@@ -173,7 +174,7 @@ TerrainMap.prototype.show_scale = function() {
     else
         this.scalelabel.style.color = 'white';
     
-    var distance = this.distScales[this.zoom + 1];
+    var distance = this.distScales[this.zoom];
     var angle = 360 * (distance / (6378 * 2 * Math.PI));
     // Detect latitude, make it larger
     var lat = this.projecty(this.y + this.main.offsetHeight / 2);
@@ -186,8 +187,8 @@ TerrainMap.prototype.show_scale = function() {
     ctx = this.scalecanvas.getContext('2d');
 
     ctx.save();
-    ctx.translate(1.5, 1.5);
     ctx.clearRect(0, 0, this.scalecanvas.width, this.scalecanvas.height);
+    ctx.translate(1.5, 1.5);
     ctx.strokeStyle = 'white';
     ctx.strokeRect(0, 0, width, this.scalecanvas.height);
     ctx.fillStyle = 'black';
@@ -255,14 +256,14 @@ TerrainMap.prototype.projecty = function(y) {
 
 // Return best zoom for a given scale
 TerrainMap.prototype.nice_google_zoom = function(pscale) {
-    var zoom = 17;
-    while (zoom > 0) {
-        var myscale = 256 / (2 * Math.PI / Math.pow(2, (17 - zoom)));
+    var zoom = 0;
+    while (zoom < 19) {
+        var myscale = 256 / (2 * Math.PI / Math.pow(2, zoom));
         if (pscale < myscale)
             break;
-        zoom--;
+        zoom++;
     }
-    return zoom + 1;
+    return zoom - 1;
 }
 
 // Get minimum from tracklog statistics
@@ -520,7 +521,7 @@ TerrainMap.prototype.draw_tracklog = function(tidx) {
 
 // Return dimension of the map given the current zoom level
 TerrainMap.prototype.limit = function() {
-    return 256 * (1 << (17 - this.zoom));
+    return 256 * (1 << this.zoom);
 }
 
 // Remove all images from a map
@@ -532,9 +533,9 @@ TerrainMap.prototype.clean_map = function() {
 
 // Zoom out, leave the center of the map in place
 TerrainMap.prototype.zoom_out = function() {
-    if (this.zoom == 17)
+    if (this.zoom == 0)
         return;
-    this.zoom++;
+    this.zoom--;
     this.clean_map();
     // Update X/Y coordinates, so that the center remains at the same place
     this.centerx = Math.floor((this.realx + this.main.offsetWidth/2) / 2) - this.main.offsetWidth / 2;
@@ -555,9 +556,9 @@ TerrainMap.prototype.zoom_out = function() {
 // Zoom in, leave the center of the map inplace
 TerrainMap.prototype.zoom_in = function() {
     // Pixel offsets are too high for zoom=0, don't allow it
-    if (this.zoom == 0)
+    if (this.zoom == 18)
         return;
-    this.zoom--;
+    this.zoom++;
     // Clean up map area
     this.clean_map();
     // Restore centering
@@ -613,33 +614,33 @@ TerrainMap.prototype.get_map_link = function(maptype, zoom, xtile, ytile, mapsuf
     if (maptype == 'map_googlemap') {
         var svr = 'mt' + Math.floor(Math.random() * 4);
         var link = 'http://' + svr + '.google.com/' + mapsuffix;
-        link += '&x=' + xtile + '&y=' + ytile + '&z=' + (17 - zoom);
+        link += '&x=' + xtile + '&y=' + ytile + '&z=' + zoom;
         // Security?
         link += '&s=' + 'Galileo'.substr(0, (xtile*3+ytile) % 8);
     } else if (maptype == 'map_googleoverlay') {
         var svr = 'mt' + Math.floor(Math.random() * 4);
         var link = 'http://' + svr + '.google.com/'  + mapsuffix;
-        link += '&x=' + xtile + '&y=' + ytile + '&z=' + (17 - zoom);
+        link += '&x=' + xtile + '&y=' + ytile + '&z=' + zoom;
         // Security?
         link += '&s=' + 'Galileo'.substr(0, (xtile*3+ytile) % 8);
     } else if (maptype == 'map_terrain') {
         var svr = 'mt' + Math.floor(Math.random() * 4);
         var link = 'http://' + svr + '.google.com/'  + mapsuffix;
-        link += '&x=' + xtile + '&y=' + ytile + '&z=' + (17 - zoom);
+        link += '&x=' + xtile + '&y=' + ytile + '&z=' + zoom;
         // Security?
         link += '&s=' + 'Galileo'.substr(0, (xtile*3+ytile) % 8);
     } else if (maptype == 'map_pgweb') {
         var link = 'http://maps.pgweb.cz/elev/';
-        link += (17-zoom) + '/' + xtile + '/' + ytile;
+        link += zoom + '/' + xtile + '/' + ytile;
     } else if (maptype == 'map_airspace') {
         var link = 'http://maps.pgweb.cz/airspace/';
-        link += (17-zoom) + '/' + xtile + '/' + ytile;
+        link += zoom + '/' + xtile + '/' + ytile;
     } else if (maptype == 'map_googlesat') {
         var svr = 'khm' + Math.floor(Math.random() * 4);
         var link = 'http://' + svr + '.google.com/' + mapsuffix;
 
         var zstring = '';
-        for (var i=zoom; i < 17; i++) {
+        for (var i=0; i < zoom; i++) {
             var xmod = xtile % 2;
             var ymod = ytile % 2;
             
