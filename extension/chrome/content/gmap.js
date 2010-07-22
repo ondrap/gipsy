@@ -85,6 +85,7 @@ function TerrainMap(id) {
     // Array to store loaded tiles
     this.loaded_tiles = new Array();
     this.tracklogs = [];
+    this.degraded_tracklogs = false;
     this.optimizations = [];
 
     this.__defineGetter__('realx', function() { return this.x + this.centerx; });
@@ -103,6 +104,8 @@ function TerrainMap(id) {
         if (self.dragging && evt.which == 1) {
             self.dragging = false;
             self.show_scale();
+            if (self.degraded_tracklogs)
+                self.reload_tracklogs();
         }
     }
     this.mousemove = function(evt) {
@@ -352,6 +355,18 @@ TerrainMap.prototype.draw_optimization = function(i) {
     var width = this.projectlon(opt.drawMax[1]) - startx + 30;
     var height = this.projectlat(opt.drawMin[0]) - starty + 30;
     
+    // limit size of the canvas, if needed, use a smaller one
+    if (width > this.main.offsetWidth * 3) {
+        width = this.main.offsetWidth * 3;
+        startx = this.x + this.main.offsetWidth / 2 - width / 2;
+        this.degraded_tracklogs = true;
+    }
+    if (height > this.main.offsetHeight * 3) {
+        height = this.main.offsetHeight * 3;
+        starty = this.y + this.main.offsetHeight / 2 - height / 2;
+        this.degraded_tracklogs = true;
+    }
+    
     var canvas = document.createElementNS(htmlns, 'canvas');
     canvas.setAttribute('width', width);
     canvas.setAttribute('height', height);
@@ -426,6 +441,7 @@ TerrainMap.prototype.add_tbl_line = function(el, t1, t2) {
 // Redraw tracklogs (e.g. because of changed zoom level)
 TerrainMap.prototype.reload_tracklogs = function() {
     empty(this.tracklogarea);
+    this.degraded_tracklogs = false;
     for (var i=0; i < this.tracklogs.length; i++)
         this.draw_tracklog(i);
     this.reload_optimizations();
@@ -454,12 +470,25 @@ TerrainMap.prototype.make_canvas = function(tlog, i) {
     var maxlon = tlog.igcGetStat(tlog.STAT_LON_MAX);
     var minlat = tlog.igcGetStat(tlog.STAT_LAT_MIN);
     var maxlat = tlog.igcGetStat(tlog.STAT_LAT_MAX);
-    // TODO: limit size of the canvas, if needed, use a smaller one
+    
     var startx = this.projectlon(minlon);
     var starty = this.projectlat(maxlat);
     
     var width = this.projectlon(maxlon) - this.projectlon(minlon) + 1;
     var height = this.projectlat(minlat) - this.projectlat(maxlat) + 1;
+    
+    // limit size of the canvas, if needed, use a smaller one
+    if (width > this.main.offsetWidth * 3) {
+        width = this.main.offsetWidth * 3;
+        startx = this.x + this.main.offsetWidth / 2 - width / 2;
+        this.degraded_tracklogs = true;
+    }
+    if (height > this.main.offsetHeight * 3) {
+        height = this.main.offsetHeight * 3;
+        starty = this.y + this.main.offsetHeight / 2 - height / 2;
+        this.degraded_tracklogs = true;
+    }
+    
     canvas.setAttribute('width', width);
     canvas.setAttribute('height', height);
     canvas.style.top = starty + 'px';
