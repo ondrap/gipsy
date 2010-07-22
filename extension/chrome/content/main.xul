@@ -22,7 +22,7 @@
   <script src="flighttree.js" />
   <script src="gpstree.js" />
 
-  <popup id="tree_popup">
+  <popup id="tree_popup" onpopupshowing="ctx_setup_usercmd()" >
     <menuitem label="&open;..." oncommand="treeView.launch_file()" 
 	      id="popup_launch" style="display:none" />
     <menuitem label="&show.source;" oncommand="treeView.show_file()" />
