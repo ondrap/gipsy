@@ -3,8 +3,6 @@ OBJECTS = gipsy.o gipsymodule.o tracklog.o gpslib/data.o gpslib/garmin.o \
 	prefparser.o gpslib/foreignigc.o gpslib/mlr.o gpslib/flymaster.o \
 	gpslib/compeo.o
 
-TARGET = gipsy.so
-
 CPPFLAGS += -DHAVE_CRYPTO
 
 all: $(TARGET) IGPSScanner.xpt
@@ -41,7 +39,7 @@ IGPSScanner.xpt: IGPSScanner.idl
 	$(XPIDL) -I$(XULIDLPATH) -m typelib $<
 
 $(TARGET): $(OBJECTS)
-	$(CXX) -Wall -Os -o $(TARGET) -shared $(OBJECTS) $(CRYPTO_LIB) $(USB_LIB) $(GECKO_LDFLAGS)
+	$(CXX) -Wall -Os -o $(TARGET) $(SHARED) $(OBJECTS) $(CRYPTO_LIB) $(USB_LIB) $(GECKO_LDFLAGS)
 	chmod +x $(TARGET)
 	strip $(TARGET)
 dep:

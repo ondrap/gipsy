@@ -1,13 +1,16 @@
 XULVERSION=1.9.0.15
-XPIDL = /usr/lib/xulrunner-$(XULVERSION)/xpidl
-XULIDLPATH = /usr/share/idl/xulrunner-$(XULVERSION)/stable/
-GECKO_SDK_PATH = /usr/lib/xulrunner-devel-$(XULVERSION)/sdk/
-GECKO_DEFINES =
-GECKO_INCLUDES := `pkg-config --cflags  /usr/lib/pkgconfig/libxul.pc` `pkg-config --cflags  /usr/lib/pkgconfig/libxul-unstable.pc`
-GECKO_LDFLAGS :=  `pkg-config --libs  /usr/lib/pkgconfig/libxul.pc`
+XPIDL = /root/devel/xulrunner-sdk/bin/xpidl
+XULIDLPATH = /root/devel/xulrunner-sdk/idl
+GECKO_SDK_PATH = /root/devel/xulrunner-sdk/sdk
+#GECKO_DEFINES = -fPIC -Wall -Wconversion -Wpointer-arith -Woverloaded-virtual -Wsynth -Wno-ctor-dtor-privacy -Wno-non-virtual-dtor -Wcast-align -Wno-long-long -fno-strict-aliasing -fshort-wchar -pthread 
+GECKO_DEFINES = -Wall -Wconversion -Wpointer-arith -Woverloaded-virtual -Wsynth -Wno-ctor-dtor-privacy -Wno-non-virtual-dtor -Wcast-align -Wno-long-long -fno-strict-aliasing -pthread -fshort-wchar
+GECKO_INCLUDES := -I/root/devel/xulrunner-sdk/include -I/root/devel/xulrunner-sdk/include/nspr
+GECKO_LDFLAGS := -L/root/devel/xulrunner-sdk/lib -lxpcomglue_s -lxul -lxpcom -lplds4 -lplc4 -lnspr4 -lpthread -ldl
+SHARED = -shared
+TARGET = gipsy.so
 
-#CPPFLAGS += HAVE_CRYPTO
-#CRYPTO_LIB = /usr/lib/libcrypto++.a
+CPPFLAGS += -DCRYPTPP
+CRYPTO_LIB = /usr/lib/libcryptopp.a
 
 CXX   = g++
  

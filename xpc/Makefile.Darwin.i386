@@ -1,0 +1,26 @@
+XPIDL = /Users/ondrap/xulrunner-sdk/bin/xpidl
+XULIDLPATH = /Users/ondrap/xulrunner-sdk/idl/
+GECKO_SDK_PATH = /Users/ondrap/xulrunner-sdk/
+GECKO_DEFINES = -DXP_UNIX -DXP_MACOSX
+GECKO_INCLUDES := -I/Users/ondrap/xulrunner-sdk/sdk/include -I/Users/ondrap/xulrunner-sdk/include -I/Users/ondrap/xulrunner-sdk/include/xpcom
+GECKO_LDFLAGS := -L/Applications/Firefox.app/Contents/MacOS/ -L/Users/ondrap/xulrunner-sdk/lib -lxpcomglue_s -lxpcom -lnspr4 -lplc4 -Wl,-executable_path,/Applications/Firefox.app/Contents/MacOS/ 
+
+CPPFLAGS += -DCRYPTPP -I/Users/ondrap/
+CRYPTO_LIB = /Users/ondrap/crypto/lib/libcryptopp.a
+SHARED = -dynamiclib
+TARGET = gipsy.dylib
+
+CXX   = g++
+ 
+# Change this to point at your Gecko SDK directory. 
+ 
+# GCC only define which allows us to not have to #include mozilla-config 
+# in every .cpp file.  If your not using GCC remove this line and add 
+# #include "mozilla-config.h" to each of your .cpp files. 
+GECKO_CONFIG_INCLUDE = -include mozilla-config.h 
+
+CPPFLAGS += -DUSE_LIBUSB -I/opt/local/include
+USB_LIB = /opt/local/lib/libusb.a -framework IOKit -framework CoreFoundation
+CPPFLAGS += -fshort-wchar -fexceptions -Wno-non-virtual-dtor
+
+include rules.makefile
