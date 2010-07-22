@@ -41,7 +41,6 @@ IGPSScanner.xpt: IGPSScanner.idl
 $(TARGET): $(OBJECTS)
 	$(CXX) -Wall -Os -o $(TARGET) $(SHARED) $(OBJECTS) $(CRYPTO_LIB) $(USB_LIB) $(GECKO_LDFLAGS)
 	chmod +x $(TARGET)
-	strip $(TARGET)
 dep:
 	gcc -MM *.cpp gpslib/*.cpp > .depend
 
