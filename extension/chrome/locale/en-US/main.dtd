@@ -50,6 +50,7 @@
 <!ENTITY map.googlemap "GoogleMap" >
 <!ENTITY map.googlemaplayer "GoogleMap Layer" >
 <!ENTITY map.airspace "Airspace" >
+<!ENTITY map.optimization "Route calculation" >
 
 <!ENTITY map.speed "speed">
 <!ENTITY map.altitude "altitude">

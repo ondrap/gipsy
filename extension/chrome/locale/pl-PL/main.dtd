@@ -55,6 +55,7 @@
 <!ENTITY map.googlemaplayer "GoogleMap Layer" >
 <!ENTITY map.airspace "Przestrzeń powietrzna" >
 <!-- NEW -->
+<!ENTITY map.optimization "Route calculation" >
 <!ENTITY map.speed "speed">
 <!ENTITY map.altitude "altitude">
 <!ENTITY map.vario "vario">

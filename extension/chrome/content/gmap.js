@@ -88,6 +88,7 @@ function TerrainMap(id) {
     this.tracklogs = [];
     this.degraded_tracklogs = false;
     this.optimizations = [];
+    this.showopt = true;
 
     this.__defineGetter__('realx', function() { return this.x + this.centerx; });
     this.__defineSetter__('realx', function(newx) { this.x = newx - this.centerx; });
@@ -165,6 +166,13 @@ function TerrainMap(id) {
     window.addEventListener('mouseup', this.mouseup, false);
 
     this.maplayers = [];
+}
+
+TerrainMap.prototype.set_showopt = function(val) {
+    if (this.showopt != val) {
+        this.showopt = val;
+        this.reload_optimizations();
+    }
 }
 
 TerrainMap.prototype.show_scale = function() {
@@ -342,6 +350,10 @@ TerrainMap.prototype.set_optimizations = function(optimizations) {
 TerrainMap.prototype.reload_optimizations = function() {
     empty(this.optimarea);
     empty(this.optresarea);
+    // Exit if disabled
+    if (!this.showopt)
+        return;
+
     for (var i=0; i < this.optimizations.length; i++)
         this.draw_optimization(i);
 }

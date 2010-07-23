@@ -242,6 +242,7 @@ function update_maptype() {
 	flairspace.disabled = true;
     
     gmap.set_layers(layers);
+    gmap.set_showopt(elem('map_optimization').checked);
 }
 
 function import_gpx() {

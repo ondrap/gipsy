@@ -285,6 +285,8 @@
 			checked="true" />
 	      <checkbox id="map_airspace" persist="checked"
 			label="&map.airspace;" oncommand="update_maptype()" />
+              <checkbox id="map_optimization" persist="checked"
+                        label="&map.optimization;" oncommand="gmap.set_showopt(elem('map_optimization').checked)" checked="true" />
 	    </hbox>
             
             <html:div flex="1" id="gmap" />

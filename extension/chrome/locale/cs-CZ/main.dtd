@@ -51,6 +51,7 @@
 <!ENTITY map.googlemaplayer "Silnice" >
 <!ENTITY map.airspace "Prostory" >
 <!-- NEW -->
+<!ENTITY map.optimization "Výpočet trasy" >
 <!ENTITY map.speed "rychlost">
 <!ENTITY map.altitude "výška">
 <!ENTITY map.vario "vario">
