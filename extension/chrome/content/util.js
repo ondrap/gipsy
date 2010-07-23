@@ -297,26 +297,43 @@ function format_ms(speed) {
     return sprintf("%d ft/m", Math.round(speed * 3.2808399 * 60));
 }    
 
-function findPosX(obj)
+function findPosX(startobj)
 {
     var curleft = 0;
+    var obj = startobj;
     while(1)  {
         curleft += obj.offsetLeft;
         if(!obj.offsetParent)
             break;
         obj = obj.offsetParent;
     }
+    // Go through all objects anyway and add scrolls
+    obj = startobj;
+    while (obj) {
+        if (obj.scrollLeft)
+            curleft -= obj.scrollLeft;
+        obj = obj.parentNode;
+    }
+    
     return curleft;
 }
 
 function findPosY(obj)
 {
     var curtop = 0;
+    var obj = startobj;
     while(1) {
         curtop += obj.offsetTop;
         if(!obj.offsetParent)
         break;
         obj = obj.offsetParent;
+    }
+    // Go through all objects anyway and add scrolls
+    obj = startobj;
+    while (obj) {
+        if (obj.scrollTop)
+            curleft -= obj.scrollTop;
+        obj = obj.parentNode;
     }
     return curtop;
 }
