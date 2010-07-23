@@ -332,3 +332,19 @@ function sinh(arg)
 {
     return (Math.exp(arg) - Math.exp(-arg))/2;
 }
+
+// Call fill text or older version (FF3.0) if that fails (needed for firefox 3.0)
+function ctxFillText(ctx, text, x, y) 
+{
+    try {
+        ctx.fillText(text, x, y);
+    } catch (e) {
+        ctx.save();
+        ctx.mozTextStyle = ctx.font;
+        ctx.translate(x, y);
+        if (ctx.textBaseline == 'top')
+            ctx.translate(0, 8);
+        ctx.mozDrawText(text);
+        ctx.restore();
+    }
+}

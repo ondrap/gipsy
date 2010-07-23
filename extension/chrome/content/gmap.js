@@ -400,9 +400,9 @@ TerrainMap.prototype.draw_optimization = function(i) {
         var y = this.projectlat(opt.drawTexts[i][1]) - starty;
         x -= ctx.measureText(text).width / 2;
         ctx.fillStyle = '#ffffff';
-        ctx.fillText(text, x, y);
+        ctxFillText(ctx, text, x, y);
         ctx.fillStyle = '#101010';
-        ctx.fillText(text, x+1, y+1);
+        ctxFillText(ctx, text, x+1, y+1);
     }
 
     // Inject optimized points

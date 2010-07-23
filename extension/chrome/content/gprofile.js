@@ -94,7 +94,7 @@ TracklogProfile.prototype.draw_heightlines = function(ctx, minheight, maxheight)
             ctx.strokeStyle = '#797979';
             ctx.fillStyle = 'black';
             ctx.textBaseline = 'top';
-            ctx.fillText(format_m(height), 0, y + 2);
+            ctxFillText(ctx, format_m(height), 0, y + 2);
         }
         ctx.moveTo(0, y + 0.5); // WHY??? we must do +0.5 to get a perfectly aligned line???
         ctx.lineTo(this.canvas.width, y + 0.5);
@@ -133,7 +133,7 @@ TracklogProfile.prototype.draw_timelines = function(ctx, starttime, endtime) {
             ctx.textBaseline = 'bottom';
             var acdate = new Date(time);
             var text = acdate.getUTCHours() + ':00';
-            ctx.fillText(text, x, this.canvas.height - MINUTESTICK30);
+            ctxFillText(ctx, text, x, this.canvas.height - MINUTESTICK30);
         } else if (!((time - dhour) % (1800 * 1000)))
             ctx.lineTo(x, this.canvas.height - MINUTESTICK30);
         else 
