@@ -77,8 +77,13 @@ function TerrainMap(id) {
     this.optresarea.style.font = '9pt Arial';
     this.main.appendChild(this.optresarea);
     
-    this.glider_icon = this.make_icon('glider.png', 0, 0);
-
+    // Glider background imaginery
+    this.glider_background = new Image();
+    this.glider_background.src = 'glider-background.png';
+    this.glider_foreground = new Image();
+    this.glider_foreground.src = 'glider-foreground.png';
+    this.glider_icon = null; // Initialize it later - at least the back/foreground gets loaded first
+    
     this.dragging = false;
     this.x = 0;
     this.y = 0;
@@ -206,8 +211,32 @@ TerrainMap.prototype.show_scale = function() {
     ctx.restore();
 }
 
+TerrainMap.prototype.make_glider_icon = function() {
+    var canvas = document.createElementNS(htmlns, 'canvas');
+    canvas.style.marginLeft = '-10px';
+    canvas.style.marginTop = '-34px';
+    canvas.style.position = 'absolute';
+    canvas.width = 21;
+    canvas.height = 34;
+    
+    var ctx = canvas.getContext('2d');
+    
+    ctx.save();
+    ctx.fillStyle = '#505050';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.drawImage(this.glider_background, 0, 0);
+    ctx.restore();
+    ctx.drawImage(this.glider_foreground, 0, 0);
+    
+    return canvas;
+}
+
 // Put a glider_icon on a given position
 TerrainMap.prototype.mark_position = function(lat, lon) {
+    if (!this.glider_icon)
+        this.glider_icon = this.make_glider_icon();
+    
     var x = this.projectlon(lon);
     var y = this.projectlat(lat);
     this.glider_icon.style.left = x + 'px';
@@ -474,6 +503,11 @@ TerrainMap.prototype.make_icon = function(png, lat, lon) {
     return icon;
 }
 
+// Return color of track based on index of track
+TerrainMap.prototype.track_color = function(i) {
+    return sprintf('rgb(%d,%d,%d)', 255 - ((i * 50) % 250), (170 + i * 40) % 250, (60 + i * 30) % 250);
+}
+
 // Create a canvas with a tracklog
 TerrainMap.prototype.make_canvas = function(tlog, i) {
     var canvas = document.createElementNS(htmlns, 'canvas');
@@ -510,7 +544,7 @@ TerrainMap.prototype.make_canvas = function(tlog, i) {
     canvas.style.position = 'absolute';
     
     var ctx = canvas.getContext('2d');
-    ctx.strokeStyle = sprintf('rgb(%d,%d,%d)', 255 - ((i * 50) % 250), (170 + i * 40) % 250, (60 + i * 30) % 250);
+    ctx.strokeStyle = this.track_color(i);
 
     try {
         tlog.drawCanvasTrack(ctx, this.limit(), startx + this.centerx, starty + this.centery);
