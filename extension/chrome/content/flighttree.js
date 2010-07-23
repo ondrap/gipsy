@@ -19,7 +19,7 @@ var treeView = {
     rows : [],
     get rowCount() { return this.rows.length; },    
 
-    getCellText : function(row,column) {
+    getCellText : function(row, column) {
 	return this.rows[row][column.id];
     },
     hasNextSibling: function(row, afterIndex) 
@@ -133,12 +133,22 @@ var treeView = {
 			synchro : newitems[i].synchro,
 			value : newitems[i].file,
 			separator : false,
-			flight : true
+			flight : true,
+			running_usercmd : false
 		});
 	    }
 	    this.treebox.rowCountChanged(row + 1, newitems.length);
 	}
-    } ,
+    },
+
+    set_running_usercmd : function(fname, val) {
+        for (var i=0; i < this.rows.length; i++)
+            if (this.rows[i].value == fname) {
+                this.rows[i].running_usercmd = val;
+                this.treebox.invalidateRow(i);
+                break;
+            }
+    },
 
     isSeparator: function(row) { 
 	return this.rows[row].separator; 
@@ -150,9 +160,14 @@ var treeView = {
 	return this.rows[row].level;
     },
 
-    getImageSrc: function(row,col){ return null; },
+    // Return progress icon if the flight is running a command
+    getImageSrc: function(row, column) {
+        if (column.id == 'col_date' && this.rows[row].running_usercmd)
+            return 'progress.gif';
+        return null;
+    },
 
-    getRowProperties: function(row,props) {
+    getRowProperties: function(row, props) {
 	if (this.rows[row].synchro == gstore.SYNCHRO_ENABLED) {
 	    var aserv = Components.classes["@mozilla.org/atom-service;1"]
 	            .createInstance(Components.interfaces.nsIAtomService);
@@ -281,11 +296,28 @@ var treeView = {
     // Start user command
     user_command : function(num) {
         var flist = this.get_selected_fnames();
-        for (var i=0; i < flist.length; i++)
-            this.user_command_fname(num, flist[i]);
+        var self = this;
+        var callback = function(subject, topic, tmpfile) {
+            subject = subject.QueryInterface(Components.interfaces.nsIProcess);
+            self.set_running_usercmd(flist[0], false);
+            if (subject.exitValue == 0 && topic == 'process-finished') {
+                if (get_string_pref('usercmd_' + num + '_type') == 'hspoints') {
+                    flightmodel.update_opts();
+                } else 
+                    window.openDialog('file:///' + tmpfile.path, 'user_output' + flist[0], 'dialog=no, chrome, modal=no');
+
+                // Continue on the others
+                flist.splice(0, 1);
+                if (flist.length)
+                    self.user_command_fname(num, flist[0], callback);
+            } else {
+                alert('Processing failed on file: ' + flist[0]);
+            }
+        }
+        this.user_command_fname(num, flist[0], callback);
     },
     
-    user_command_fname : function (num, fname) {
+    user_command_fname : function (num, fname, callback) {
         var file = gstore.getIGCFile(fname);
         var process = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
         var procname = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
@@ -312,30 +344,35 @@ var treeView = {
         for (var i=0; i < params.length; i++)
             args.push(params[i]);
         
-        process.run(true, args, args.length);
-
-        if (process.exitValue) {
-            alert('Process failed.');
-        } else {
-            if (get_string_pref('usercmd_' + num + '_type') == 'hspoints') {
-                flightmodel.update_opts();
-            } else
-                window.openDialog('file:///' + tmpfile.path, 'user_output', 'dialog=yes, chrome, modal=yes');
+        // Set icon
+        observer = {
+            observe : function (topic, subject, data) { callback(topic, subject, tmpfile); }
         }
+        this.set_running_usercmd(fname, true);
+        process.runAsync(args, args.length, observer);
+    },
+
+    get_selected_rows : function() {
+        var rowlist = [];
+        var rangeCount = this.treebox.view.selection.getRangeCount();
+        
+        for (var i=0; i < rangeCount; i++) {
+            var start = {};
+            var end = {};
+            this.treebox.view.selection.getRangeAt(i, start, end);
+            for (var c=start.value; c <= end.value; c++) {
+                if (this.rows[c].flight)
+                    rowlist.push(c);
+            }
+        }
+        return rowlist;
     },
 
     get_selected_fnames : function() {
         var flist = [];
-        var rangeCount = this.treebox.view.selection.getRangeCount();
-        for (var i=0; i < rangeCount; i++) {
-            var start = {};
-            var end = {};
-            this.treebox.view.selection.getRangeAt(i,start,end);
-            for(var c=start.value; c <= end.value; c++) {
-                if (this.rows[c].flight)
-                    flist.push(this.rows[c].value);
-            }
-        }
+        var rowlist = this.get_selected_rows();
+        for (var i=0; i < rowlist.length; i++)
+            flist.push(this.rows[rowlist[i]].value);
         
         return flist;
     },
