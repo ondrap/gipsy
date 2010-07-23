@@ -500,9 +500,36 @@ TerrainMap.prototype.make_canvas = function(tlog, i) {
     var ctx = canvas.getContext('2d');
     ctx.strokeStyle = sprintf('rgb(%d,%d,%d)', 255 - ((i * 50) % 250), (170 + i * 40) % 250, (60 + i * 30) % 250);
 
-    tlog.drawCanvasTrack(ctx, this.limit(), startx + this.centerx, starty + this.centery);
+    try {
+        tlog.drawCanvasTrack(ctx, this.limit(), startx + this.centerx, starty + this.centery);
+    } catch (e) {
+        // Probably FF 3.5 - fallback to javascript version
+        this.drawCanvasTrack(tlog, ctx, startx + this.centerx, starty + this.centery);
+    }
 
     return canvas;
+}
+
+// Javascript fallback function when ctx API for FF 3.6 is not available
+TerrainMap.prototype.drawCanvasTrack = function(tlog, ctx, startx, starty) {
+    var xdiff = this.centerx - startx;
+    var ydiff = this.centery - starty;
+    
+    ctx.beginPath();
+    var point = tlog.igcPoint(0);
+    ctx.moveTo(this.projectlon(point.lon) + xdiff, this.projectlat(point.lat) + ydiff);
+    
+    var lasttime = 0;
+    for (var i=1; i < tlog.igcPointCount(); i++) {
+        var point = tlog.igcPoint(i);
+        // Make it slightly faster
+        if (this.zoom >= 5 && point.time - lasttime < 10*1000)
+            continue;
+
+        lasttime = point.time;
+        ctx.lineTo(this.projectlon(point.lon) + xdiff,  this.projectlat(point.lat) + ydiff);
+    }
+    ctx.stroke();
 }
 
 // Create a tracklog and pinpoint it on a dragarea

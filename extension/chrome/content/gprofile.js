@@ -177,10 +177,15 @@ TracklogProfile.prototype.draw = function() {
     // The callback function sets the indexes in a hash table for later
     // reference
     var self = this;
-    tlog.drawCanvasProfile(ctx, this.canvas.width, this.canvas.height,
-                           minheight, maxheight, 
-                           function(x,i) {self.tpoints[x] = i;}
-                           );
+    var cbset = function(x,i) {self.tpoints[x] = i;};
+    // Callback for filling tpoints with tracklog point indexes
+    try {
+        tlog.drawCanvasProfile(ctx, this.canvas.width, this.canvas.height,
+                            minheight, maxheight, cbset);
+    } catch (e) {
+        // Probably FF 3.5 - fallback to javacript version
+        this.drawCanvasProfile(tlog, ctx, minheight, maxheight, cbset);
+    }
 
     // Draw top and bottom black lines
     ctx.strokeStyle = 'black';
@@ -190,6 +195,49 @@ TracklogProfile.prototype.draw = function() {
     
     this.draw_heightlines(ctx, minheight, maxheight);
     this.draw_timelines(ctx, starttime, endtime);
+}
+
+// Javascript fallback function when ctx API for FF 3.6 is not available
+TracklogProfile.prototype.drawCanvasProfile = function(tlog, ctx, minheight, maxheight, callback)
+{
+    var starttime = tlog.igcPoint(0).time;
+    var endtime = tlog.igcPoint(tlog.igcPointCount() - 1).time;
+    var timescale = this.canvas.width / (endtime - starttime);
+    var scale = this.canvas.height / (maxheight - minheight);
+    
+    var lasttime = 0;
+    var startx = 0;
+    var lastx = 0;
+    for (var i=0; i < tlog.igcPointCount(); i++) {
+        var point = tlog.igcPoint(i);
+        var x = Math.floor((point.time - starttime) * timescale);
+        y = Math.floor(this.canvas.height - (point.alt - minheight) * scale);
+        
+        // Detect hole in tracklog
+        if (point.time - lasttime > 60*1000) {
+            if (lasttime) {
+                ctx.stroke();
+                ctx.lineTo(lastx, this.canvas.height);
+                ctx.lineTo(startx, this.canvas.height);
+                ctx.closePath();
+                ctx.fill();
+            }
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            startx = x;
+        }
+        if (lastx != x) {
+            ctx.lineTo(x, y);
+            callback(x, i);
+        }
+        lasttime = point.time;
+        lastx = x;
+    }
+    ctx.stroke();
+    ctx.lineTo(this.canvas.width, this.canvas.height);
+    ctx.lineTo(startx, this.canvas.height);
+    ctx.closePath();
+    ctx.fill();
 }
 
 // Set new tracklog to a profile
