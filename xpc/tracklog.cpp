@@ -1320,9 +1320,7 @@ NS_IMETHODIMP Tracklog::DrawCanvasProfile(nsIDOMCanvasRenderingContext2D *ctx,
     int lastx = 0;
     for (size_t i=0; i < igc->tracklog.size(); i++) {
         int x = (igc->tracklog[i].time - starttime) * timescale;
-        int alt = igc->tracklog[i].gpsalt;
-        if (!alt)
-            alt = igc->tracklog[i].baroalt;
+        int alt = igc->tracklog[i].alt();
         int y = height - (alt - minheight) * scale;
         
         // Detect hole in tracklog

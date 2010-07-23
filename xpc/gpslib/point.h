@@ -59,17 +59,23 @@ struct Trackpoint {
 	return distance(other) / diff;
     }
     
-    // Return Baro altitude, if 0 then GPS altitude
+    // Return GPS altitude, if 0 then Baro altitude
     double alt() const {
-	if (baroalt != 0.0)
-	    return baroalt;
-	return gpsalt;
+	if (gpsalt != 0.0)
+	    return gpsalt;
+	return baroalt;
+    }
+    // Return altitude, prefere baro altitude
+    double altPbaro() const {
+        if (baroalt != 0.0)
+            return baroalt;
+        return gpsalt;
     }
 
     double vario(const Trackpoint &other) const {
 	if (other.time == time)
 	    return 0;
-	return (alt() - other.alt()) / (time - other.time);
+	return (altPbaro() - other.altPbaro()) / (time - other.time);
     }
 };
 

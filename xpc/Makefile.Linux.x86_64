@@ -1,4 +1,4 @@
-XULVERSION=1.9.2.6
+XULVERSION=1.9.2.7
 XPIDL = /usr/lib64/xulrunner-$(XULVERSION)/xpidl
 XULIDLPATH = /usr/share/idl/xulrunner-$(XULVERSION)/
 GECKO_SDK_PATH = /usr/lib/xulrunner-devel-$(XULVERSION)/sdk/
