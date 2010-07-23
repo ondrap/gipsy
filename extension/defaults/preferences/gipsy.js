@@ -1,5 +1,5 @@
-pref("extensions.gipsy.portdisabled", "");
-pref("extensions.gipsy.usbdisabled", "");
+pref("extensions.gipsy.portenabled", "");
+pref("extensions.gipsy.usbenabled", "");
 pref("extensions.gipsy.autodownload", true);
 pref("extensions.gipsy.gpsusbtypes", "");
 pref("extensions.gipsy.gpsporttypes", "");

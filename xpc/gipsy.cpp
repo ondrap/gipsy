@@ -95,15 +95,15 @@ bool Gipsy::prefs_scan_enabled(const GpsItem &item)
 	if (item.portinfo.usb_vendor == GARMIN_VENDOR)
 	    return true;
 
-	for (unsigned int i=0; i < DisabledUSB.size(); i++)
-	    if (item.portinfo.usb_vendor == DisabledUSB[i])
-		return false;
+	for (unsigned int i=0; i < EnabledUSB.size(); i++)
+	    if (item.portinfo.usb_vendor == EnabledUSB[i])
+		return true;
     } else {
-	for (unsigned int i=0; i < DisabledPort.size(); i++)
-	    if (item.portinfo.devname == DisabledPort[i])
-		return false;
+	for (unsigned int i=0; i < EnabledPort.size(); i++)
+	    if (item.portinfo.devname == EnabledPort[i])
+		return true;
     }
-    return true;
+    return false;
 }
 
 int Gipsy::prefs_gpstype(const GpsItem &item)
@@ -132,21 +132,21 @@ void Gipsy::prefs_save(void)
     if (NS_FAILED(rv))
 	return;
 
-    // DisabledUSB
+    // EnabledUSB
     stringstream iprefs;
     
-    for (unsigned int i=0; i < DisabledUSB.size(); i++)
-	if (DisabledUSB[i] != GARMIN_VENDOR)
-	    iprefs << DisabledUSB[i] << ' ';
+    for (unsigned int i=0; i < EnabledUSB.size(); i++)
+	if (EnabledUSB[i] != GARMIN_VENDOR)
+	    iprefs << EnabledUSB[i] << ' ';
     iprefs << '\0';
 
-    branch->SetCharPref("usbdisabled", iprefs.str().c_str());
+    branch->SetCharPref("usbenabled", iprefs.str().c_str());
 
-    // DisabledPort
+    // EnabledPort
     string sprefs;
-    for (unsigned int i=0; i < DisabledPort.size(); i++) 
-	sprefs += DisabledPort[i] + '|';
-    branch->SetCharPref("portdisabled", sprefs.c_str());
+    for (unsigned int i=0; i < EnabledPort.size(); i++) 
+	sprefs += EnabledPort[i] + '|';
+    branch->SetCharPref("portenabled", sprefs.c_str());
 
     // GpsTypesUSB
     stringstream gtprefs;
@@ -181,15 +181,15 @@ void Gipsy::prefs_load(void)
     if (NS_FAILED(rv))
 	return;
 
-    rv = branch->GetCharPref("usbdisabled", &result);
+    rv = branch->GetCharPref("usbenabled", &result);
     if (!NS_FAILED(rv)) {
-	prefs_parse_disusb(result);
+	prefs_parse_enausb(result);
 	PR_Free(result);
     }
 
-    rv = branch->GetCharPref("portdisabled", &result);
+    rv = branch->GetCharPref("portenabled", &result);
     if (!NS_FAILED(rv)) {
-	prefs_parse_disport(result);
+	prefs_parse_enaport(result);
 	PR_Free(result);
     }
 
@@ -428,29 +428,29 @@ NS_IMETHODIMP Gipsy::GpsToggle(PRUint32 pos, PRBool newstate)
     /* Update preferences table */
     
     if (newstate) {
-	// Remove from disabled table
-	if (gps->portinfo.usb_vendor) {
-	    for (vector<unsigned int>::iterator it = DisabledUSB.begin();
-		 it < DisabledUSB.end(); ++it) {
-		if (*it == gps->portinfo.usb_vendor) {
-		    DisabledUSB.erase(it);
-		    break;
-		}
-	    }
-	} else {
-	    for (vector<string>::iterator it = DisabledPort.begin();
-		 it < DisabledPort.end(); ++it) {
-		if (*it == gps->portinfo.devname) {
-		    DisabledPort.erase(it);
-		    break;
-		}
-	    }
-	}
+        if (gps->portinfo.usb_vendor)
+            EnabledUSB.push_back(gps->portinfo.usb_vendor);
+        else
+            EnabledPort.push_back(gps->portinfo.devname);
     } else {
-	if (gps->portinfo.usb_vendor)
-	    DisabledUSB.push_back(gps->portinfo.usb_vendor);
-	else
-	    DisabledPort.push_back(gps->portinfo.devname);
+        // Remove from enabled table
+        if (gps->portinfo.usb_vendor) {
+            for (vector<unsigned int>::iterator it = EnabledUSB.begin();
+                 it < EnabledUSB.end(); ++it) {
+                if (*it == gps->portinfo.usb_vendor) {
+                    EnabledUSB.erase(it);
+                    break;
+                }
+            }
+        } else {
+            for (vector<string>::iterator it = EnabledPort.begin();
+                 it < EnabledPort.end(); ++it) {
+                if (*it == gps->portinfo.devname) {
+                    EnabledPort.erase(it);
+                    break;
+                }
+            }
+        }
     }
     prefs_save();
 

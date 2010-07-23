@@ -5,10 +5,10 @@
 using namespace std;
 
 %%{
-    machine prefdisusb;
+    machine prefenausb;
     include common "prefcommon.rl";
     
-    action addport { DisabledUSB.push_back(i); }
+    action addport { EnabledUSB.push_back(i); }
     
     port = int " " @addport;
 
@@ -16,7 +16,7 @@ using namespace std;
 	0 @{fbreak;};
 }%%
 
-void Gipsy::prefs_parse_disusb(char *p)
+void Gipsy::prefs_parse_enausb(char *p)
 {
     int cs;
     int i = 0;
@@ -30,7 +30,7 @@ void Gipsy::prefs_parse_disusb(char *p)
     machine usbprefport;
     include common "prefcommon.rl";
 
-    action addport { DisabledPort.push_back(s); }
+    action addport { EnabledPort.push_back(s); }
 
     port = string "|" @addport;
 
@@ -38,7 +38,7 @@ void Gipsy::prefs_parse_disusb(char *p)
 	0 @{fbreak;};
 }%%
 
-void Gipsy::prefs_parse_disport(char *p)
+void Gipsy::prefs_parse_enaport(char *p)
 {
     string s;
     char *begin = NULL;

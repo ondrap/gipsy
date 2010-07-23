@@ -91,8 +91,8 @@ private:
 
     void prefs_load(void);
     void prefs_save(void);
-    void prefs_parse_disusb(char *p);
-    void prefs_parse_disport(char *p);
+    void prefs_parse_enausb(char *p);
+    void prefs_parse_enaport(char *p);
     void prefs_parse_usbgpstype(char *p);
     void prefs_parse_portgpstype(char *p);
 
@@ -105,8 +105,8 @@ private:
     PRLock *lock;
     GpsList gpslist;
 
-    std::vector<unsigned int> DisabledUSB;
-    std::vector<std::string> DisabledPort;
+    std::vector<unsigned int> EnabledUSB;
+    std::vector<std::string> EnabledPort;
     std::map< unsigned int, int > GpsTypesUSB;
     std::map< std::string, int > GpsTypesPort;
     
