@@ -50,11 +50,13 @@ using namespace std;
  * to prevent collision with others use our function */
 struct tm *my_gmtime(const time_t *timep)
 {
-    static struct tm mtm;
-
+#ifdef MINGW
+    static __declspec( thread ) struct tm mtm;
     gmtime_s(&mtm, timep);
-
     return &mtm;
+#else
+    return gmtime(timep);
+#endif
 }
 # define round(x)       floor((x) + 0.5)
 # define snprintf(...)  _snprintf(__VA_ARGS__)
