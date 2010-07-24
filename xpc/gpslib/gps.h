@@ -27,7 +27,7 @@ public:
     std::string error;
 
     Exception() {};
-    Exception(const std::string &str);
+	Exception(const std::string &str) { error = str; };
 };
 
 /* Exception thrown when no data is received (for Aircotec to distinguish between bad data received)*/

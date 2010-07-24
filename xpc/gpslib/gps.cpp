@@ -55,11 +55,6 @@ using namespace std;
 #  define DPRINT(fmt,...)
 #endif
 
-Exception::Exception(const string &str) 
-{ 
-    error = str; 
-}
-
 string Gps::download_igc(int track, dt_callback cb, void *)
 {
     throw Exception("Not implemented.");
