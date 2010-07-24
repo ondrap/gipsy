@@ -137,9 +137,17 @@ function show_point_data(tlog, pidx) {
     var prevpoint = tlog.igcPoint(pidx - 1);
  
     set_text('prof-alt', format_m(point.alt));
-    set_text('prof-vario', format_ms(point.vario(prevpoint)));
     set_text('prof-speed', format_kmh(point.speed(prevpoint)));
     set_text('prof-time',  _fmttime(new Date(point.time)));
+    
+    // Do 5-second averaging - find point 5 seconds ago
+    for (var i=pidx - 2; i > 0; i--) {
+        var newpoint = tlog.igcPoint(i);
+        if (point.time - newpoint.time > 5 * 1000)
+            break;
+        prevpoint = newpoint;
+    }
+    set_text('prof-vario', format_ms(point.vario(prevpoint)));
 }
 
 function ctx_setup_usercmd() {
