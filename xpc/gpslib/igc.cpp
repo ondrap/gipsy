@@ -65,7 +65,7 @@ struct tm *my_gmtime(const time_t *timep)
  * to prevent collision with others use our function */
 struct tm *my_gmtime(const time_t *timep)
 {
-    static struct tm mtm;
+    static __thread struct tm mtm;
 
     gmtime_r(timep, &mtm);
 
