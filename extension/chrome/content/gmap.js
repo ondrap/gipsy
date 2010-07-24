@@ -216,6 +216,7 @@ TerrainMap.prototype.make_glider_icon = function() {
     canvas.style.marginLeft = '-10px';
     canvas.style.marginTop = '-34px';
     canvas.style.position = 'absolute';
+    canvas.style.zIndex = 1100;
     canvas.width = 21;
     canvas.height = 34;
     

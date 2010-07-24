@@ -15,7 +15,7 @@ vali: vali.o igc.o
 	$(CXX) $(CXXFLAGS) -static -o $@ vali.o igc.o  -lcrypto++
 	strip $@
 
-igc.o: igcparser.cpp
+igc.o: igcparser.inc
 
 gpstest: gpstest.o phys.o aircotec.o data.o gps.o garmin.o igc.o mlr.o flymaster.o compeo.o
 	$(CXX) $(CXXFLAGS) -static -o $@ gpstest.o phys.o aircotec.o data.o gps.o garmin.o igc.o mlr.o flymaster.o compeo.o -lcrypto++ -lusb

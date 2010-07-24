@@ -44,7 +44,7 @@ GPSGpx.prototype = {
 	var file = dinfo.file.split('/').pop();
 	this.txtel(root, 'name', file);
 
-	var text = tlog.igcGetParamUTF8('site') + ' (' + tlog.igcGetParamUTF8('country') + '), ' + tlog.igcGetParamUTF8('pilot') + ', ' + tlog.igcGetParamUTF8('glider');
+	var text = tlog.igcGetParam('site') + ' (' + tlog.igcGetParam('country') + '), ' + tlog.igcGetParam('pilot') + ', ' + tlog.igcGetParam('glider');
 	this.txtel(root, 'desc', text);
 
 	this.txtel(root, 'src', tlog.igcGetParam('a_record'));
@@ -292,7 +292,7 @@ GPSGpx.prototype = {
 	
 
 	var text = '<table border="0">'+content+'</table>' ;
-	text += tlog.igcGetParamUTF8('comment');
+	text += tlog.igcGetParam('comment');
 
 	return text;
     },
