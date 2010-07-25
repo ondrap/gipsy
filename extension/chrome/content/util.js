@@ -318,7 +318,7 @@ function findPosX(startobj)
     return curleft;
 }
 
-function findPosY(obj)
+function findPosY(startobj)
 {
     var curtop = 0;
     var obj = startobj;

@@ -102,16 +102,20 @@ function TerrainMap(id) {
 
     this.mousedown = function(evt) {
         if (evt.which == 1) {
-            self.dragging = true;
             self.lastx = evt.clientX;
             self.lasty = evt.clientY;
+            self.startx = self.lastx;
+            self.starty = self.lasty;
+            self.dragging = true;
         }
     }
     this.mouseup = function(evt) {
         if (self.dragging && evt.which == 1) {
             self.dragging = false;
             self.show_scale();
-            if (self.degraded_tracklogs)
+            
+            // Reload tracklogs only if we have moved - otherwise this disrupts dblclick
+            if (self.degraded_tracklogs && self.startx != evt.clientX && self.starty != evt.clientY)
                 self.reload_tracklogs();
         }
     }
@@ -144,6 +148,7 @@ function TerrainMap(id) {
         self.load_maps();
     }
     this.dblclick = function(evt) {
+        self.dragging = false;
         // Move center to the place of the doubleclick
         var lx = evt.clientX - findPosX(self.main);
         var ly = evt.clientY - findPosY(self.main);
@@ -164,7 +169,7 @@ function TerrainMap(id) {
             self.lastrightclick = ddate;
     }
     this.main.addEventListener('contextmenu', this.rightclick, false);
-    this.main.addEventListener('mousedown', this.mousedown, true);
+    this.main.addEventListener('mousedown', this.mousedown, false);
     this.main.addEventListener('mousemove', this.mousemove, false);
     this.main.addEventListener('dblclick', this.dblclick, false);
     window.addEventListener('resize', this.resize, false);
@@ -331,7 +336,7 @@ TerrainMap.prototype.focus_tracklogs = function() {
     if (!this.tracklogs.length)
         return;
 
-    tlog = this.tracklogs[0];
+    var tlog = this.tracklogs[0];
     var minlon = get_min_tlogs(this.tracklogs, tlog.STAT_LON_MIN);
     var maxlon = get_max_tlogs(this.tracklogs, tlog.STAT_LON_MAX);
     var minlat = get_min_tlogs(this.tracklogs, tlog.STAT_LAT_MIN);
@@ -452,7 +457,7 @@ TerrainMap.prototype.draw_optimization = function(i) {
         this.optimarea.appendChild(this.make_icon('turnpoint.png', opt.drawPoints[i][0], opt.drawPoints[i][1]));
     
     // Draw results
-    tbl = document.createElementNS(htmlns, 'table');
+    var tbl = document.createElementNS(htmlns, 'table');
     tbl.style.padding = '0';
     tbl.style.borderCollapse = 'collapse';
     tbl.style.borderBottom = 'thin solid lightgrey';

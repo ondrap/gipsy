@@ -62,7 +62,7 @@ TracklogProfile.prototype.add_eventhandler = function(handler) {
 
 // Compute maximum height that will be shown in profile
 TracklogProfile.prototype.max_height = function() {
-    var maxheight = this.tracklog.igcGetStat(tlog.STAT_HEIGHT_MAX);
+    var maxheight = this.tracklog.igcGetStat(this.tracklog.STAT_HEIGHT_MAX);
     var divider = 500;
     if (!get_bool_pref('metric'))
             divider = 457.2;
@@ -71,7 +71,7 @@ TracklogProfile.prototype.max_height = function() {
 
 // Compute minimum height that will be shown in profile
 TracklogProfile.prototype.min_height = function() {
-    var maxheight = this.tracklog.igcGetStat(tlog.STAT_HEIGHT_MIN);
+    var maxheight = this.tracklog.igcGetStat(this.tracklog.STAT_HEIGHT_MIN);
     var divider = 500;
     if (!get_bool_pref('metric'))
             divider = 457.2;
@@ -112,10 +112,10 @@ TracklogProfile.prototype.draw_timelines = function(ctx, starttime, endtime) {
     date.setUTCMilliseconds(0);
     date.setUTCHours(date.getUTCHours() + 1);
     
-    INTERVAL = 300 * 1000;
-    HOURSTICK = 10;
-    MINUTESTICK30 = 7;
-    MINUTESTICK5 = 4;
+    var INTERVAL = 300 * 1000;
+    var HOURSTICK = 10;
+    var MINUTESTICK30 = 7;
+    var MINUTESTICK5 = 4;
     
     var time = date.valueOf();
     // Whole hour
