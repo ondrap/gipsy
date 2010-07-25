@@ -132,7 +132,7 @@
                     </row>
                 </rows>
             </grid>
-            <label>command_path &lt;igc_file&gt; &lt;output file&gt; [additional_parameters]</label>
+            <label value="command_path &lt;igc_file&gt; &lt;output file&gt; [additional_parameters]" />
         </vbox>
     </groupbox>
   </prefpane>

@@ -1,6 +1,6 @@
 // 'GoogleMaps'-like API
 
-htmlns = "http://www.w3.org/1999/xhtml";
+var htmlns = "http://www.w3.org/1999/xhtml";
 
 // Mapping object - give it an identifier of a div element and it will build a complete map
 function TerrainMap(id) {
@@ -202,7 +202,7 @@ TerrainMap.prototype.show_scale = function() {
     empty(this.scalelabel);
     this.scalelabel.appendChild(document.createTextNode(format_km0(distance * 1000)));
     
-    ctx = this.scalecanvas.getContext('2d');
+    var ctx = this.scalecanvas.getContext('2d');
 
     ctx.save();
     ctx.clearRect(0, 0, this.scalecanvas.width, this.scalecanvas.height);
@@ -423,7 +423,7 @@ TerrainMap.prototype.draw_optimization = function(i) {
     canvas.style.zIndex = 1020;
     canvas.style.position = 'absolute';
     
-    ctx = canvas.getContext('2d');
+    var ctx = canvas.getContext('2d');
     
     // Draw lines
     ctx.strokeStyle = 'red';

@@ -20,7 +20,9 @@ var treeView = {
     get rowCount() { return this.rows.length; },    
 
     getCellText : function(row, column) {
-	return this.rows[row][column.id];
+        if (this.rows[row].hasOwnProperty(column.id))
+            return this.rows[row][column.id];
+        return null;
     },
     hasNextSibling: function(row, afterIndex) 
     {
@@ -337,7 +339,7 @@ var treeView = {
             tmpfile.appendRelativePath('gipsy.output');
         }
         
-        args = [ cvt.ConvertFromUnicode(file.path), cvt.ConvertFromUnicode(tmpfile.path) ];
+        var args = [ cvt.ConvertFromUnicode(file.path), cvt.ConvertFromUnicode(tmpfile.path) ];
         
         var params = get_string_pref('usercmd_' + num + '_params');
         params = params.split(' ');
@@ -345,7 +347,7 @@ var treeView = {
             args.push(params[i]);
         
         // Set icon
-        observer = {
+        var observer = {
             observe : function (topic, subject, data) { callback(topic, subject, tmpfile); }
         }
         this.set_running_usercmd(fname, true);

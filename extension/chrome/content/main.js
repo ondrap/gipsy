@@ -121,7 +121,7 @@ function show_point_position(tlog, pidx) {
 function set_text(elname, text) {
     var el = elem(elname);
     empty(el);
-    node = document.createTextNode(text);
+    var node = document.createTextNode(text);
     el.appendChild(node);
 }
 
