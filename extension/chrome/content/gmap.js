@@ -22,6 +22,15 @@ function TerrainMap(id) {
     this.main.appendChild(zoomout);
     zoomout.addEventListener('click', function() { self.zoom_out(); }, false);
     
+    this.google = new Image();
+    this.google.src = 'http://maps.gstatic.com/intl/cs_ALL/mapfiles/poweredby.png';
+    this.google.style.position = 'absolute';
+    this.google.style.left = '2px';
+    this.google.style.bottom = '0px';
+    this.google.style.zIndex = 1000;
+    this.google.style.visibility = 'hidden';
+    this.main.appendChild(this.google);
+    
     // Add scroll area
     this.dragarea = document.createElementNS(htmlns, 'div');
     this.dragarea.style.position = 'absolute';
@@ -30,7 +39,7 @@ function TerrainMap(id) {
     // Add scaling
     this.scalearea = document.createElementNS(htmlns, 'div');
     this.scalearea.style.position = 'absolute';
-    this.scalearea.style.left = '10px';
+    this.scalearea.style.left = '65px';
     this.scalearea.style.bottom = '5px';
     this.scalearea.style.width = '130px';
     this.scalearea.style.height = '15px';
@@ -262,6 +271,11 @@ TerrainMap.prototype.mark_position = function(lat, lon) {
 // (list of strings)
 TerrainMap.prototype.set_layers = function(layers) {
     this.maplayers = layers;
+    if (this.maplayers[0] == 'map_googlemap' || this.maplayers[0] == 'map_terrain' 
+        || this.maplayers[0] == 'map_googlesat')
+        this.google.style.visibility = 'visible';
+    else
+        this.google.style.visibility = 'hidden';
     this.clean_map();
     this.load_maps();
     this.show_scale();
