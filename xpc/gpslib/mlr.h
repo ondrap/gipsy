@@ -8,12 +8,6 @@ class MLRGps : public Gps {
   public:
     MLRGps(SerialDev *pdev) { 
         dev = pdev; 
-	try {
-	    init_gps(); 
-	} catch (Exception e) {
-	    delete dev;
-	    throw e;
-	}
     };
     ~MLRGps() { delete dev; };
 

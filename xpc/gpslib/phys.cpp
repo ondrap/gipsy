@@ -737,9 +737,8 @@ void UnixSerialDev::set_speed(int baudrate)
     // Some devices need some time to adapt
     struct timeval tm;
     tm.tv_sec = 0;
-    tm.tv_usec = 200000;
+    tm.tv_usec = 5000;
     select(0, NULL, NULL, NULL, &tm);
-
 }
 
 /* Write data to serial link, timeout-aware */

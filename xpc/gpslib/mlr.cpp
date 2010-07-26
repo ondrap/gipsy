@@ -56,7 +56,7 @@ static bool compare_time(const Trackpoint &first, const Trackpoint &second)
 
 PointArr MLRGps::download_tracklog(dt_callback cb, void *arg)
 {
-    dev->set_speed(4800);
+    init_gps();
     
     // Download 
     dev->write("$PMLR,24,02,0101,0399\r\n");
@@ -76,8 +76,10 @@ PointArr MLRGps::download_tracklog(dt_callback cb, void *arg)
     PointArr result;
     vector<Data> array;
     unsigned char snum;
+    int counter = 0;
     while (read_sentence(array, snum)) {
-        if (cb) {
+	counter++;
+        if (cb && !(counter % 20)) {
 	    bool rv = cb(arg, snum, 256);
 	    if (!rv)
 		throw Exception("Download cancelled");

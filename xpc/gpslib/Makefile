@@ -1,5 +1,5 @@
 #CXXFLAGS = -Wall -DDEBUG -DUSE_LIBUSB
-CXXFLAGS = -Wall -DVALIDATOR -DHAVE_CRYPTO
+CXXFLAGS = -Wall -DVALIDATOR -DHAVE_CRYPTO -DCRYPTPP -I/Users/martin/devel -DXP_MACOSX -DDEBUG
 OBJS = gps.o phys.o data.o garmin.o igc.o flymaster.o compeo.o
 
 WINLIBS = -lsetupapi
@@ -18,7 +18,7 @@ vali: vali.o igc.o
 igc.o: igcparser.inc
 
 gpstest: gpstest.o phys.o aircotec.o data.o gps.o garmin.o igc.o mlr.o flymaster.o compeo.o
-	$(CXX) $(CXXFLAGS) -static -o $@ gpstest.o phys.o aircotec.o data.o gps.o garmin.o igc.o mlr.o flymaster.o compeo.o -lcrypto++ -lusb
+	$(CXX) $(CXXFLAGS) -o $@ gpstest.o phys.o aircotec.o data.o gps.o garmin.o igc.o mlr.o flymaster.o compeo.o -L/Users/martin/devel/lib /Users/martin/devel/cryptopp/libcryptopp.a /Users/martin/devel/lib/libusb.a
 
 genkey: genkey.o
 	$(CXX) $(CXXFLAGS) -o $@ genkey.o -lcrypto++
