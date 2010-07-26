@@ -206,6 +206,8 @@ GPSStore.prototype = {
             return null;
 
         var file = this.getIGCFile(fname);
+        if (!file.exists())
+            return null;
         try {
             var data = "";  
             var fstream = Components.classes["@mozilla.org/network/file-input-stream;1"].
@@ -220,6 +222,10 @@ GPSStore.prototype = {
                 data = str.value;  
             }
             cstream.close(); // this closes fstream
+            
+            if (JSON)
+                return JSON.parse(data);
+            // Fall back on unsecure eval
             return eval('(' + data + ')');
         } catch (e) {
             dump(e);
