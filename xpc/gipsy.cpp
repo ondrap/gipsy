@@ -782,7 +782,8 @@ void GpsItem::download_tracklog()
         igc->x_params.push_back(pair<string,string>("Xversion", GIPSY_VERSION));
         time_t now = time(NULL);
         char tmptime[31];
-        strftime(tmptime, 30, "%Y-%m-%d %H:%M:%S GMT", my_gmtime(&now));
+        struct tm mnow;
+        strftime(tmptime, 30, "%Y-%m-%d %H:%M:%S GMT", gmtime_r(&now, &mnow));
         igc->x_params.push_back(pair<string,string>("XDownloadtime", tmptime));
         
         igc->gen_g_record(); // Generate g-record on the downloaded tracklog

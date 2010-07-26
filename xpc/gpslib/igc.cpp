@@ -45,34 +45,16 @@ using namespace std;
 #define DAY (24*60*60)
 
 #ifdef WIN32
-
-/* Gmtime is not thread-safe, we are running on our thread, but
- * to prevent collision with others use our function */
-struct tm *my_gmtime(const time_t *timep)
+#ifndef MINGW
+struct tm *gmtime_r(const time_t *timep, struct tm *mtm)
 {
-#ifdef MINGW
-    static __declspec( thread ) struct tm mtm;
     gmtime_s(&mtm, timep);
-    return &mtm;
-#else
-    return gmtime(timep);
-#endif
+    return mtm;
 }
+#endif
+
 # define round(x)       floor((x) + 0.5)
 # define snprintf(...)  _snprintf(__VA_ARGS__)
-
-#else
-
-/* Gmtime is not thread-safe, we are running on our thread, but
- * to prevent collision with others use our function */
-struct tm *my_gmtime(const time_t *timep)
-{
-    static __thread struct tm mtm;
-
-    gmtime_r(timep, &mtm);
-
-    return &mtm;
-}
 
 #endif
 
@@ -83,7 +65,8 @@ time_t make_gmtime(struct tm *tm)
     tm->tm_isdst = 0; // Compulsory, or it does not work
     // Initialize tz_offset to some near-by value
     tz_offset = 50000;
-    tz_offset = tz_offset - mktime(my_gmtime(&tz_offset));
+    struct tm mtm;
+    tz_offset = tz_offset - mktime(gmtime_r(&tz_offset, &mtm));
 
     return mktime(tm) + tz_offset;
 }
@@ -198,9 +181,10 @@ static string igc_time(time_t ttime)
 {
     char result[MAXLINE];
     
-    struct tm *vt = my_gmtime(&ttime);
-    snprintf(result, MAXLINE, "HFDTE%02d%02d%02d\r\n", vt->tm_mday, 
-	     vt->tm_mon + 1, vt->tm_year % 100);
+    struct tm vt;
+    gmtime_r(&ttime, &vt);
+    snprintf(result, MAXLINE, "HFDTE%02d%02d%02d\r\n", vt.tm_mday, 
+	     vt.tm_mon + 1, vt.tm_year % 100);
 
     return result;
 }
@@ -211,9 +195,10 @@ static string b_point(const Trackpoint &point)
     stringstream result;
     char tmp[MAXLINE];
 
-    struct tm *vt = my_gmtime(&point.time);
+    struct tm vt;
+    gmtime_r(&point.time, &vt);
     
-    snprintf(tmp, MAXLINE,"B%02d%02d%02d",vt->tm_hour, vt->tm_min, vt->tm_sec);
+    snprintf(tmp, MAXLINE,"B%02d%02d%02d",vt.tm_hour, vt.tm_min, vt.tm_sec);
     result << tmp;
     result << out_lat(point.lat);
     result << out_lon(point.lon);

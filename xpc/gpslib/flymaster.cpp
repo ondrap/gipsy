@@ -117,7 +117,8 @@ void FlymasterGps::download_strack(size_t selected_track, PointArr &result, dt_c
 {
     char tmptime[31];
     int packetid;
-    strftime(tmptime, 30, "%y%m%d%H%M%S", my_gmtime(&saved_tracks[selected_track].first));
+    struct tm mtm;
+    strftime(tmptime, 30, "%y%m%d%H%M%S", gmtime_r(&saved_tracks[selected_track].first, &mtm));
     
     bool newtrk = true;
     
