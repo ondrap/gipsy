@@ -697,7 +697,7 @@ TerrainMap.prototype.load_maps = function() {
                 var lid = maptype + this.zoom + ' ' + xtile + ' ' + ytile + ' ' + mapsuffix;
                 if (!this.loaded_tiles[lid]) {
                     this.loaded_tiles[lid] = true;
-                    img = document.createElementNS(htmlns, 'img');
+                    var img = document.createElementNS(htmlns, 'img');
                     img.setAttribute('src', link);
                     img.style.left = (xtile * 256 - this.centerx) + 'px';
                     img.style.top = (ytile * 256 - this.centery) + 'px';

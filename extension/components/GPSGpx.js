@@ -15,7 +15,7 @@ function GPSGpx() {
     // Load javascript utilities
     if (!initialized) {
 	initialized = true;
-	loader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
+	var loader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
 	loader.loadSubScript('chrome://gipsy/content/util.js');
     }
 
@@ -25,14 +25,18 @@ function GPSGpx() {
 
 // This is the implementation of your component.
 GPSGpx.prototype = {
+    kmlns : 'http://earth.google.com/kml/2.2',
     /* GPX format functions */
-    makeTime : function(name, date) {
+    makeTime : function(name, date, ns) {
 	var str = sprintf("%4d-%02d-%02dT%02d:%02d:%02dZ", 
 			  1900+date.getYear(), 
 			  date.getUTCMonth()+1, date.getUTCDate(),
 			  date.getUTCHours(), date.getUTCMinutes(),
 			  date.getUTCSeconds());
-	var el = this.doc.createElement(name);
+        if (ns)
+            var el = this.doc.createElementNS(ns, name);
+        else
+            var el = this.doc.createElement(name);
 	el.appendChild(this.doc.createTextNode(str));
 
 	return el;
@@ -229,6 +233,33 @@ GPSGpx.prototype = {
 	this.txtel(lst, 'width', width);
 
 	return st;
+    },
+
+    createKmlGxTrack : function(tlog, name, alttype, color) {
+        var gxns = 'http://www.google.com/kml/ext/2.2';
+        var placemark = this.doc.createElement('Placemark');
+
+        this.txtel(placemark, 'name', name);
+        this.txtel(placemark, 'visibility', '1');
+
+        placemark.appendChild(this.kmlStyle(color));
+        
+        var gxtrack = this.newel(placemark, 'Track', gxns);
+        this.txtel(gxtrack, 'altitudeMode', alttype, this.kmlns);
+        
+        for (var i=0; i < tlog.igcPointCount(); i++) {
+            var point = tlog.igcPoint(i);
+
+            gxtrack.appendChild(this.makeTime('when', new Date(point.time), this.kmlns));
+            var coordtxt = point.lon + ' ' + point.lat + ' ' + point.alt;
+            var coord = this.doc.createElementNS(gxns, 'coord');
+            var txt = this.doc.createTextNode(coordtxt);
+            coord.appendChild(txt);
+            gxtrack.appendChild(coord);
+        }
+
+
+        return placemark;
     },
 
     createKmlTrack : function(tlog, name, alttype, color) {
@@ -433,35 +464,37 @@ GPSGpx.prototype = {
     },
     
     createKmlFolder : function(tlog, dinfo, number) {
-	var folder = this.doc.createElement('Folder');
-	const colors = [ 'ff00a5ff', 'ffa500ff', 'ffa5ff00', 'ffff4040',
-			 'ff00ffa5', 'ffff00a5', 'ffffa500', 'ff4040ff',
-			 'ff40ff40', 'ffa5a500', 'ffa500a5', 'ff00a5a5'];
+        var folder = this.doc.createElement('Folder');
+        const colors = [ 'ff00a5ff', 'ffa500ff', 'ffa5ff00', 'ffff4040',
+                            'ff00ffa5', 'ffff00a5', 'ffffa500', 'ff4040ff',
+                            'ff40ff40', 'ffa5a500', 'ffa500a5', 'ff00a5a5'];
 
-	this.txtel(folder, 'name', dinfo.file.split('/').pop());
-	var des = this.newel(folder, 'description');
-	des.appendChild(this.doc.createCDATASection(this.makeHtmlDescr(tlog, dinfo)));
-	
-	folder.appendChild(this.createKmlTrack(tlog, 'GPS Tracklog', 
-					       'absolute', colors[number % colors.length]));
-	folder.appendChild(this.createKmlTrack(tlog, 'Ground shadow', 
-					       'clampToGround', 'ff101010'));
+        this.txtel(folder, 'name', dinfo.file.split('/').pop());
+        var des = this.newel(folder, 'description');
+        des.appendChild(this.doc.createCDATASection(this.makeHtmlDescr(tlog, dinfo)));
 
-	folder.appendChild(this.createKmlPoint('Launch: ' + dinfo.site, 
-					       'http://www.pgweb.cz/img/maps/start.png', 
-					       tlog.igcPoint(0), 0.5, 0));
+        folder.appendChild(this.createKmlGxTrack(tlog, 'GPS Tracklog', 
+                                                 'absolute', colors[number % colors.length]));
+        folder.appendChild(this.createKmlTrack(tlog, 'GPS Tracklog - line', 
+                                                'absolute', colors[number % colors.length]));
+        folder.appendChild(this.createKmlTrack(tlog, 'Ground shadow', 
+                                                'clampToGround', 'ff101010'));
 
-	var date = new Date(tlog.igcPoint(0).time);
-	date = sprintf('%d.%d.%d', date.getUTCDate(), date.getUTCMonth()+1, 1900+date.getYear());
-	folder.appendChild(this.createKmlPoint(dinfo.pilot + ' ' + date, 
-					       'http://www.pgweb.cz/img/maps/cil.png', 
-					       tlog.igcPoint(tlog.igcPointCount() - 1 ), 0.5, 0));
+        folder.appendChild(this.createKmlPoint('Launch: ' + dinfo.site, 
+                                                'http://www.pgweb.cz/img/maps/start.png', 
+                                                tlog.igcPoint(0), 0.5, 0));
 
-	
-	folder.appendChild(this.createKmlThermals(tlog));
-	folder.appendChild(this.createKmlTimestamps(tlog));
-	
-	return folder;
+        var date = new Date(tlog.igcPoint(0).time);
+        date = sprintf('%d.%d.%d', date.getUTCDate(), date.getUTCMonth()+1, 1900+date.getYear());
+        folder.appendChild(this.createKmlPoint(dinfo.pilot + ' ' + date, 
+                                                'http://www.pgweb.cz/img/maps/cil.png', 
+                                                tlog.igcPoint(tlog.igcPointCount() - 1 ), 0.5, 0));
+
+
+        folder.appendChild(this.createKmlThermals(tlog));
+        folder.appendChild(this.createKmlTimestamps(tlog));
+
+        return folder;
     },
 
     // Filter thermals to get a reasonable subset
@@ -515,14 +548,10 @@ GPSGpx.prototype = {
     },
 
     createKmlDOM : function() {
-	const ns = 'http://earth.google.com/kml/2.1';
-	
-	var root = this.doc.createElementNS(ns, 'kml');
-	root.setAttributeNS('http://www.w3.org/2001/XMLSchema-instance',
-			    'schemaLocation', 
-			    'http://earth.google.com/kml/2.1 http://code.google.com/apis/kml/schema/kml21.xsd');
-
+	var root = this.doc.createElementNS(this.kmlns, 'kml');
 	this.doc.appendChild(root);
+	// We have to declare somehow the namespace, seems to be bug in mozilla
+	root.setAttributeNS('http://www.google.com/kml/ext/2.2', 'avoid', 'mozilla_bug_in_serializing_namespaces');
 
 	if (this.tracklogs.length == 1) {
 	    var flight = this.createKmlFolder(this.tracklogs[0].tracklog, this.tracklogs[0].dinfo, 0);
@@ -842,15 +871,18 @@ GPSGpx.prototype = {
 
     // Generic functions 
 
-    newel : function(parent, elname) {
-	var elem = this.doc.createElement(elname);
+    newel : function(parent, elname, ns) {
+        if (ns)
+            var elem = this.doc.createElementNS(ns, elname);
+        else
+            var elem = this.doc.createElement(elname);
 	parent.appendChild(elem);
 
 	return elem;
     },
     
-    txtel : function(parent, elname, text) {
-	var el = this.newel(parent, elname);
+    txtel : function(parent, elname, text, ns) {
+        var el = this.newel(parent, elname, ns);
 	el.appendChild(this.doc.createTextNode(text));
     },
 
