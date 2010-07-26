@@ -107,7 +107,7 @@ function TerrainMap(id) {
             self.startx = self.lastx;
             self.starty = self.lasty;
             self.dragging = true;
-        }
+        } 
     }
     this.mouseup = function(evt) {
         if (self.dragging && evt.which == 1) {
@@ -168,10 +168,17 @@ function TerrainMap(id) {
         else
             self.lastrightclick = ddate;
     }
+    this.mouseScroll = function(evt) {
+        if (evt.detail < 0)
+            self.dblclick(evt);
+        else
+            self.zoom_out();
+    }
     this.main.addEventListener('contextmenu', this.rightclick, false);
     this.main.addEventListener('mousedown', this.mousedown, false);
     this.main.addEventListener('mousemove', this.mousemove, false);
     this.main.addEventListener('dblclick', this.dblclick, false);
+    this.main.addEventListener('DOMMouseScroll', this.mouseScroll, false);
     window.addEventListener('resize', this.resize, false);
     window.addEventListener('mouseup', this.mouseup, false);
 
