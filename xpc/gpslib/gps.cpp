@@ -274,31 +274,15 @@ void update_from_globs(glob_t &pglob, PortList &result, bool check)
 	if (unix_is_locked(dev))
 	    continue;
 	
-	DPRINT("Not locked, trying to open\n");
-	/* Try to open the port at least to check access */
-	int fd = open(dev, O_RDWR);
-	if (fd != -1) {
-	    close(fd);
-
-	    PortInfo gps(dev, dev);
-	    DPRINT("Open OK, adding to list\n");
+	PortInfo gps(dev, dev);
 	    
-	    if (is_usb_dev(dev)) {
-		gps.usb_vendor = get_vendor(dev);
-		// TODO - read USB device database
-		if (gps.usb_vendor == GARMIN_VENDOR)
-		    gps.devname = string("Garmin USB ") + dev;
-	    }
-
-	    result.push_back(gps);
-	} else if (!check) {
-	    int lasterr = errno;
-	    PortInfo gps(dev, dev);
-	    gps.last_error = strerror(lasterr);
-	    DPRINT("Open failed, adding to list anyway\n");
-	    
-	    result.push_back(gps);
+	if (is_usb_dev(dev)) {
+           gps.usb_vendor = get_vendor(dev);
+	   // TODO - read USB device database
+	   if (gps.usb_vendor == GARMIN_VENDOR)
+	       gps.devname = string("Garmin USB ") + dev;
 	}
+	result.push_back(gps);
     }
 }
 

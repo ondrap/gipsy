@@ -17,11 +17,17 @@ void MLRGps::init_gps()
     dev->set_speed(4800);
     dev->settimeout(2);
     
-    // Stop any previous command
-    dev->write("$PMLR,06,00,02A9\r\n");
-    // Read identification
-    dev->write("$PMLR,26,01,01,0339\r\n");
-    vector<string> result = receive_data("PMLR");
+    // Read identification - try twice as sometimes we lose the starting '$'
+    vector<string> result;
+    try {
+        dev->write("$PMLR,26,01,01,0339\r\n");
+        result = receive_data("PMLR");
+    } catch (TimeoutException e) {
+	// Try again - it sometimes doesn't get on the first time
+        dev->write("$PMLR,26,01,01,0339\r\n");
+        result = receive_data("PMLR");
+    }
+
     gpsname = result[2];
     
     gpsunitid = 0;
@@ -184,8 +190,8 @@ vector<string> MLRGps::receive_data(const string &command)
             
             if (ch == '$' ) {
                 incmd = true;
-                cksum = '$';
                 param = "";
+		cksum = 0;
                 recv_cmd = "";
                 result.clear();
                 continue;
@@ -194,7 +200,7 @@ vector<string> MLRGps::receive_data(const string &command)
                 continue;
             
             if (ch != '*')
-                cksum += ch;
+                cksum ^= ch;
             
             if (ch == ',' || ch == '*') {
                 if (param.size()) {
@@ -205,7 +211,8 @@ vector<string> MLRGps::receive_data(const string &command)
                 }
                 param = "";
                 if (ch == '*') {
-                    string cksum_s = string() + (char)dev->read() + (char)dev->read();
+                    string cksum_s = string() + (char)dev->read();
+                    cksum_s += (char)dev->read();
                     unsigned char cksum_r = (unsigned char) strtol(cksum_s.c_str(), NULL, 16);
                     dev->read();dev->read(); // CR, LF
                     if (cksum_r == cksum && recv_cmd == command)
