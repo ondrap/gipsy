@@ -244,12 +244,14 @@ TerrainMap.prototype.make_glider_icon = function() {
     var ctx = canvas.getContext('2d');
     
     ctx.save();
-    ctx.fillStyle = '#505050';
+    ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.globalCompositeOperation = 'destination-out';
+    ctx.drawImage(this.glider_foreground, 0, 0);
+    ctx.globalCompositeOperation = 'destination-over';
     ctx.drawImage(this.glider_background, 0, 0);
     ctx.restore();
-    ctx.drawImage(this.glider_foreground, 0, 0);
+    
     
     return canvas;
 }
