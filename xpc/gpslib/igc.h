@@ -70,7 +70,7 @@ class OriginalIgc : public Igc {
 time_t make_gmtime(struct tm *tm);
 #ifdef WIN32
 #ifndef MINGW
-struct tm *gmtime_r(const time_t *timep, struct tm *mtm)
+struct tm *gmtime_r(const time_t *timep, struct tm *mtm);
 #endif
 #endif
 

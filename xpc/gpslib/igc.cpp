@@ -48,7 +48,7 @@ using namespace std;
 #ifndef MINGW
 struct tm *gmtime_r(const time_t *timep, struct tm *mtm)
 {
-    gmtime_s(&mtm, timep);
+    gmtime_s(mtm, timep);
     return mtm;
 }
 #endif
