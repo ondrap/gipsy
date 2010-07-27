@@ -14,20 +14,20 @@ function TracklogProfile(id, height) {
     this.canvas.setAttribute('height', height);
     this.main.appendChild(this.canvas);
     
-    this.resize = function(evt) {
-        self.canvas.setAttribute('width', self.main.offsetWidth);
-        self.draw();
-    }
-    this.resize();
-    window.addEventListener('resize', this.resize, false);
-    
-    this.tracklog = null;
+    this.tracklogs = [];
     // List of points given a coordinate inside canvas
     this.tpoints = new Array();
     // Saved image so that we can easily animate
     this.savedimage = null;
     // List of listeners
     this.eventhandlers = [];
+    
+    this.resize = function(evt) {
+        self.canvas.setAttribute('width', self.main.offsetWidth);
+        self.draw();
+    }
+    this.resize();
+    window.addEventListener('resize', this.resize, false);
     
     this.mousemove = function(evt) {
         var x = evt.clientX - findPosX(self.canvas);
@@ -48,8 +48,9 @@ function TracklogProfile(id, height) {
         ctx.stroke();
         
         // Fire events
-        for (var i=0; i < self.eventhandlers.length; i++)
-            self.eventhandlers[i](self.tracklog, self.tpoints[x]);
+        for (var i=0; i < self.eventhandlers.length; i++) {
+            self.eventhandlers[i](self.tpoints[x]);
+        }
     }
     
     this.canvas.addEventListener('mousemove', this.mousemove, false);
@@ -62,7 +63,12 @@ TracklogProfile.prototype.add_eventhandler = function(handler) {
 
 // Compute maximum height that will be shown in profile
 TracklogProfile.prototype.max_height = function() {
-    var maxheight = this.tracklog.igcGetStat(this.tracklog.STAT_HEIGHT_MAX);
+    var maxheight = 0;
+    for (var i=0; i < this.tracklogs.length; i++) {
+        var height = this.tracklogs[i].igcGetStat(this.tracklogs[i].STAT_HEIGHT_MAX);
+        if (height > maxheight)
+            maxheight = height;
+    }
     var divider = 500;
     if (!get_bool_pref('metric'))
             divider = 457.2;
@@ -71,11 +77,16 @@ TracklogProfile.prototype.max_height = function() {
 
 // Compute minimum height that will be shown in profile
 TracklogProfile.prototype.min_height = function() {
-    var maxheight = this.tracklog.igcGetStat(this.tracklog.STAT_HEIGHT_MIN);
+    var minheight = 0;
+    for (var i=0; i < this.tracklogs.length; i++) {
+        var height = this.tracklogs[i].igcGetStat(this.tracklogs[i].STAT_HEIGHT_MIN);
+        if (height < minheight)
+            minheight = height;
+    }
     var divider = 500;
     if (!get_bool_pref('metric'))
             divider = 457.2;
-    return (Math.floor(maxheight / divider)) * divider;
+    return (Math.floor(minheight / divider)) * divider;
 }
 
 // Draw lines every 500m/1500ft
@@ -142,12 +153,45 @@ TracklogProfile.prototype.draw_timelines = function(ctx, starttime, endtime) {
     }
 }
 
+// Return time relative to the base of 1.1.1970
+TracklogProfile.prototype.strip_time = function(t) {
+    t = new Date(t);
+    var hours = t.getUTCHours()
+    var minutes = t.getUTCMinutes();
+    var seconds = t.getUTCSeconds();
+    return (hours * 3600 + minutes * 60 + seconds) * 1000;
+}
+
+// Find smallest starttime, in milliseconds relative to 1.1.1970
+TracklogProfile.prototype.find_starttime = function() {
+    var start = this.strip_time(this.tracklogs[0].igcPoint(0).time);
+    for (var i=1; i < this.tracklogs.length; i++) {
+        var nt = this.strip_time(this.tracklogs[i].igcPoint(0).time);
+        if (nt < start)
+            start = nt;
+    }
+    start = new Date(start);
+    return start;
+}
+
+// Find largest endtime, in milliseconds relative to 1.1.1970
+TracklogProfile.prototype.find_endtime = function() {
+    var icount = this.tracklogs[0].igcPointCount() ;
+    var end = this.strip_time(this.tracklogs[0].igcPoint(icount - 1).time);
+    for (var i=1; i < this.tracklogs.length; i++) {
+        icount = this.tracklogs[i].igcPointCount();
+        var nt = this.strip_time(this.tracklogs[i].igcPoint(icount - 1).time);
+        if (nt > end)
+            end = nt;
+    }
+    return end;
+}
+
 // Completely draw a profile
 TracklogProfile.prototype.draw = function() {
-    if (!this.tracklog)
+    if (!this.tracklogs.length)
         return;
     
-    var tlog = this.tracklog;
     // Recompute this.tpoints on the fly
     this.tpoints = new Array();
     // Clear the saved image data
@@ -163,28 +207,36 @@ TracklogProfile.prototype.draw = function() {
         if (minheight > 0)
             minheight = 0;
     }
+    
+    // Compute starttime, endtime and timescale
+    var starttime = this.find_starttime();
+    var dstarttime = new Date(starttime);
+    var endtime = this.find_endtime(starttime);
+    var timescale = this.canvas.width / (endtime - starttime);
+    
     var ctx = this.canvas.getContext('2d');
     ctx.font = '7pt Arial';
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    ctx.strokeStyle = '#ff7901';
-    ctx.fillStyle = 'lightgrey';
+    for (var i=0; i < this.tracklogs.length; i++) {
+        if (this.tracklogs.length == 1)
+            ctx.fillStyle = 'lightgrey';
+        else
+            ctx.fillStyle = TerrainMap.prototype.track_color(i, 0.1);
 
-    var starttime = tlog.igcPoint(0).time;
-    var endtime = tlog.igcPoint(tlog.igcPointCount() - 1).time;
+        var ttime = this.tracklogs[i].igcPoint(0).time;
+        var dstime = new Date(ttime);
+        // Compute start time for this tracklog - same time as the 'global' starttime
+        
+        dstime.setUTCMinutes(dstarttime.getUTCMinutes());
+        dstime.setUTCSeconds(dstarttime.getUTCSeconds());
+        dstime.setUTCMilliseconds(dstarttime.getUTCMilliseconds());
+        dstime.setUTCHours(dstarttime.getUTCHours());
+        if (dstime.valueOf() > ttime)
+            dstime = new Date(dstime.valueOf() - 3600 * 24 * 1000); // Minus 1 day
+        var mystarttime = dstime.valueOf();
 
-    // Optimized drawing of tracklog on canvas
-    // The callback function sets the indexes in a hash table for later
-    // reference
-    var self = this;
-    var cbset = function(x,i) {self.tpoints[x] = i;};
-    // Callback for filling tpoints with tracklog point indexes
-    try {
-        tlog.drawCanvasProfile(ctx, this.canvas.width, this.canvas.height,
-                            minheight, maxheight, cbset);
-    } catch (e) {
-        // Probably FF 3.5 - fallback to javacript version
-        this.drawCanvasProfile(tlog, ctx, minheight, maxheight, cbset);
+        this.drawTracklog(i, ctx, minheight, maxheight, mystarttime, timescale);
     }
 
     // Draw top and bottom black lines
@@ -192,17 +244,42 @@ TracklogProfile.prototype.draw = function() {
     ctx.beginPath();ctx.moveTo(0, 0.5);ctx.lineTo(this.canvas.width, 0.5); ctx.stroke();
     ctx.beginPath();ctx.moveTo(0, this.canvas.height - 0.5);
     ctx.lineTo(this.canvas.width, this.canvas.height - 0.5); ctx.stroke();
-    
+
     this.draw_heightlines(ctx, minheight, maxheight);
     this.draw_timelines(ctx, starttime, endtime);
 }
 
+TracklogProfile.prototype.drawTracklog = function(idx, ctx, minheight, maxheight, starttime, timescale) {
+    ctx.strokeStyle = TerrainMap.prototype.track_color(idx);
+    var tlog = this.tracklogs[idx];
+
+    // Optimized drawing of tracklog on canvas
+    // The callback function sets the indexes in a hash table for later
+    // reference
+    var self = this;
+    var cbset = function(x,i) {
+        if (self.tpoints[x] == null)
+            self.tpoints[x] = [];
+        self.tpoints[x].push({tlog : tlog, 
+                              point : tlog.igcPoint(i), 
+                              pidx : i,
+                              color : ctx.strokeStyle
+                              });
+    };
+
+    // Callback for filling tpoints with tracklog point indexes
+    try {
+        tlog.drawCanvasProfile(ctx, this.canvas.width, this.canvas.height,
+                               minheight, maxheight, starttime, timescale, cbset);
+    } catch (e) {
+        // Probably FF 3.5 - fallback to javacript version
+        this.drawCanvasProfile(tlog, ctx, minheight, maxheight, starttime, timescale, cbset);
+    }
+}
+
 // Javascript fallback function when ctx API for FF 3.6 is not available
-TracklogProfile.prototype.drawCanvasProfile = function(tlog, ctx, minheight, maxheight, callback)
+TracklogProfile.prototype.drawCanvasProfile = function(tlog, ctx, minheight, maxheight, starttime, timescale, callback)
 {
-    var starttime = tlog.igcPoint(0).time;
-    var endtime = tlog.igcPoint(tlog.igcPointCount() - 1).time;
-    var timescale = this.canvas.width / (endtime - starttime);
     var scale = this.canvas.height / (maxheight - minheight);
     
     var lasttime = 0;
@@ -211,10 +288,10 @@ TracklogProfile.prototype.drawCanvasProfile = function(tlog, ctx, minheight, max
     for (var i=0; i < tlog.igcPointCount(); i++) {
         var point = tlog.igcPoint(i);
         var x = Math.floor((point.time - starttime) * timescale);
-        y = Math.floor(this.canvas.height - (point.alt - minheight) * scale);
+        var y = Math.floor(this.canvas.height - (point.alt - minheight) * scale);
         
         // Detect hole in tracklog
-        if (point.time - lasttime > 60*1000) {
+        if (point.time - lasttime > 60 * 1000) {
             if (lasttime) {
                 ctx.stroke();
                 ctx.lineTo(lastx, this.canvas.height);
@@ -241,7 +318,7 @@ TracklogProfile.prototype.drawCanvasProfile = function(tlog, ctx, minheight, max
 }
 
 // Set new tracklog to a profile
-TracklogProfile.prototype.set_tracklog = function(tracklog) {
-    this.tracklog = tracklog;
+TracklogProfile.prototype.set_tracklogs = function(tracklogs) {
+    this.tracklogs = tracklogs;
     this.draw();
 }

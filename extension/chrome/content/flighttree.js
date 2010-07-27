@@ -564,7 +564,7 @@ var flightmodel = {
         // Limit display to 6 tracklogs
         tlist.splice(6);
         gmap.set_tracklogs(tlist);
-        gprofile.set_tracklog(tlist[0]);
+        gprofile.set_tracklogs(tlist);
         this.update_opts();
     },
     

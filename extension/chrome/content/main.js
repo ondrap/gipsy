@@ -113,9 +113,8 @@ function create_gmap() {
     gprofile.add_eventhandler(show_point_position);
 }
 
-function show_point_position(tlog, pidx) {
-    var point = tlog.igcPoint(pidx);
-    gmap.mark_position(point.lat, point.lon);
+function show_point_position(points) {
+    gmap.mark_positions(points);
 }
 
 function set_text(elname, text) {
@@ -130,15 +129,23 @@ function _fmttime(time) {
                     time.getUTCMinutes(), time.getUTCSeconds());
 }
 
-function show_point_data(tlog, pidx) {
-    if (pidx == 0)
-        return;
+function show_point_data(points) {
+    var tlog = points[0].tlog;
+    var pidx = points[0].pidx;
+
     var point = tlog.igcPoint(pidx);
+    set_text('prof-time',  _fmttime(new Date(point.time)));
+    
+    if (points.length > 1 || pidx == 0) {
+        set_text('prof-alt', '');
+        set_text('prof-speed', '');
+        set_text('prof-vario', '');
+        return;
+    }
+
     var prevpoint = tlog.igcPoint(pidx - 1);
- 
     set_text('prof-alt', format_m(point.alt));
     set_text('prof-speed', format_kmh(point.speed(prevpoint)));
-    set_text('prof-time',  _fmttime(new Date(point.time)));
     
     // Do 5-second averaging - find point 5 seconds ago
     for (var i=pidx - 2; i > 0; i--) {

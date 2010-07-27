@@ -91,7 +91,7 @@ function TerrainMap(id) {
     this.glider_background.src = 'glider-background.png';
     this.glider_foreground = new Image();
     this.glider_foreground.src = 'glider-foreground.png';
-    this.glider_icon = null; // Initialize it later - at least the back/foreground gets loaded first
+    this.glider_icons = new Array(); // Initialize it later - at least the back/foreground gets loaded first
     
     this.dragging = false;
     this.x = 0;
@@ -232,7 +232,7 @@ TerrainMap.prototype.show_scale = function() {
     ctx.restore();
 }
 
-TerrainMap.prototype.make_glider_icon = function() {
+TerrainMap.prototype.make_glider_icon = function(color) {
     var canvas = document.createElementNS(htmlns, 'canvas');
     canvas.style.marginLeft = '-10px';
     canvas.style.marginTop = '-34px';
@@ -244,7 +244,11 @@ TerrainMap.prototype.make_glider_icon = function() {
     var ctx = canvas.getContext('2d');
     
     ctx.save();
-    ctx.fillStyle = 'white';
+    if (!color)
+        ctx.fillStyle = 'white';
+    else
+        ctx.fillStyle = color;
+
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.globalCompositeOperation = 'destination-out';
     ctx.drawImage(this.glider_foreground, 0, 0);
@@ -256,17 +260,28 @@ TerrainMap.prototype.make_glider_icon = function() {
     return canvas;
 }
 
-// Put a glider_icon on a given position
-TerrainMap.prototype.mark_position = function(lat, lon) {
-    if (!this.glider_icon)
-        this.glider_icon = this.make_glider_icon();
-    
-    var x = this.projectlon(lon);
-    var y = this.projectlat(lat);
-    this.glider_icon.style.left = x + 'px';
-    this.glider_icon.style.top = y + 'px';
-    if (this.glider_icon.parentNode == null)
-        this.tracklogarea.appendChild(this.glider_icon);
+// Put glider_icon on given positions
+TerrainMap.prototype.mark_positions = function(plist) {
+    // Hide all glider icons
+    for each (var icon in this.glider_icons)
+        icon.style.visibility = 'hidden';
+
+    for (var i=0; i < plist.length; i++) {
+        pitem = plist[i];
+        if (this.glider_icons[pitem.color] == null)
+            this.glider_icons[pitem.color] = this.make_glider_icon(pitem.color);
+        var icon = this.glider_icons[pitem.color];
+
+        icon.style.visibility = 'visible';
+        var point = plist[i].point;
+
+        var x = this.projectlon(point.lon);
+        var y = this.projectlat(point.lat);
+        icon.style.left = x + 'px';
+        icon.style.top = y + 'px';
+        if (icon.parentNode == null)
+            this.tracklogarea.appendChild(icon);
+    }
 }
 
 // Set map layers
@@ -513,6 +528,7 @@ TerrainMap.prototype.add_tbl_line = function(el, t1, t2) {
 TerrainMap.prototype.reload_tracklogs = function() {
     empty(this.tracklogarea);
     this.degraded_tracklogs = false;
+    this.glider_icons = new Array();
     for (var i=0; i < this.tracklogs.length; i++)
         this.draw_tracklog(i);
     this.reload_optimizations();
@@ -533,8 +549,11 @@ TerrainMap.prototype.make_icon = function(png, lat, lon) {
 }
 
 // Return color of track based on index of track
-TerrainMap.prototype.track_color = function(i) {
-    return sprintf('rgb(%d,%d,%d)', 255 - ((i * 50) % 250), (170 + i * 40) % 250, (60 + i * 30) % 250);
+TerrainMap.prototype.track_color = function(i, op) {
+    if (op)
+        return sprintf('rgba(%d,%d,%d,%f)', 255 - ((i * 50) % 250), (170 + i * 40) % 250, (60 + i * 30) % 250, op);
+    else
+        return sprintf('rgb(%d,%d,%d)', 255 - ((i * 50) % 250), (170 + i * 40) % 250, (60 + i * 30) % 250);
 }
 
 // Create a canvas with a tracklog

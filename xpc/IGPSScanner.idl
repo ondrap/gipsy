@@ -25,7 +25,7 @@ interface IGPSCallback : nsISupports {
 };
 
 /* Tracklog representation */
-[scriptable, uuid(3efe5f54-5b5d-40d2-8093-3e7c179ebe41)]
+[scriptable, uuid(f883ef91-1546-43fd-ba75-8b94b8e71c85)]
 interface IGPSIGC : nsISupports {
     // Save tracklog to .igc file */
     void igcSave(in nsILocalFile file);
@@ -139,6 +139,7 @@ interface IGPSIGC : nsISupports {
     void drawCanvasProfile(in nsIDOMCanvasRenderingContext2D ctx, 
                            in long width, in long height,
                            in long minheight, in long maxheight,
+                           in PRTime starttime, in double timescale,
                            in IGPSCallback callback);
     void drawCanvasTrack(in nsIDOMCanvasRenderingContext2D ctx,
                          in long limit,

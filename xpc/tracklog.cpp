@@ -1299,21 +1299,21 @@ NS_IMETHODIMP Tracklog::KmlTrack(char **_retval)
 /* Draw profile using given canvas context
  * Use callback to return points that were added to the canvas
  */
-/* void drawCanvasProfile (in nsIDOMCanvasRenderingContext2D ctx, in long width, in long height, in long minheight, in long maxheight); */
-NS_IMETHODIMP Tracklog::DrawCanvasProfile(nsIDOMCanvasRenderingContext2D *ctx,
-                                          PRInt32 width, PRInt32 height, 
-                                          PRInt32 minheight, PRInt32 maxheight,
-                                          IGPSCallback *callback)
+NS_IMETHODIMP Tracklog::DrawCanvasProfile(nsIDOMCanvasRenderingContext2D *ctx, 
+                                           PRInt32 width, PRInt32 height, 
+                                           PRInt32 minheight, PRInt32 maxheight, 
+                                           PRTime starttime, double timescale, 
+                                           IGPSCallback *callback)
 {
     double scale = ((double) height) / (maxheight - minheight);
+    // Javascript uses time in milliseconds
+    starttime /= 1000; 
+    timescale *= 1000;
     
     if (!ctx)
         return NS_ERROR_NULL_POINTER;
 
     ctx->BeginPath();
-    PRTime starttime = igc->tracklog[0].time;
-    PRTime endtime = igc->tracklog[igc->tracklog.size() - 1].time; 
-    double timescale = ((double) width) / (endtime - starttime);
 
     PRTime lasttime = 0;
     int startx = 0;
