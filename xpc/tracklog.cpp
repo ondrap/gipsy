@@ -38,7 +38,7 @@ static double round(double x)
 }
 #endif
 
-NS_IMPL_ISUPPORTS1(Tracklog, IGPSIGC);
+NS_IMPL_ISUPPORTS1(Tracklog, IGPSIGC)
 
 /* Maximalni povolena mezera v tracklogu */
 #define MAX_ALLOWED_BREAK (15*60)
@@ -1403,7 +1403,7 @@ NS_IMETHODIMP Tracklog::DrawCanvasTrack(nsIDOMCanvasRenderingContext2D *ctx,
 }
 
 
-NS_IMPL_ISUPPORTS1(GpsPoint, IGPSPoint);
+NS_IMPL_ISUPPORTS1(GpsPoint, IGPSPoint)
 
 GpsPoint::GpsPoint() : lon(0), lat(0), alt(0), time(0)
 {
@@ -1416,7 +1416,7 @@ GpsPoint::GpsPoint(const Trackpoint &pt)
     lat = pt.lat;
     lon = pt.lon;
     alt = pt.alt();
-    time = (long long)pt.time * 1000;
+    time = ((PRTime) pt.time) * 1000;
 }
 
 GpsPoint::~GpsPoint()

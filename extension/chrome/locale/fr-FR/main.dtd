@@ -134,7 +134,7 @@
 <!ENTITY prefs.datadir "Dossier du fichier Gipsy" >
 <!ENTITY prefs.changedir "Changer le dossier du fichier" >
 <!ENTITY prefs.changetohome "Choisir Home/gipsy comme dossier" >
-<!ENTITY prefs.savesubdirs "Sauvegarder les nouveaux vols dans le sous-dossier nom du pilote/année’" >
+<!ENTITY prefs.savesubdirs "Sauvegarder les nouveaux vols dans le sous-dossier nom du pilote/année’" >
 <!-- NEW -->
 <!ENTITY prefs.units "Units">
 <!ENTITY prefs.metricsystem "Metric system">

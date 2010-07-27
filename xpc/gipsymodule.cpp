@@ -3,9 +3,9 @@
 #include "gipsy.h"
 #include "tracklog.h"
 
-NS_GENERIC_FACTORY_CONSTRUCTOR(Gipsy);
-NS_GENERIC_FACTORY_CONSTRUCTOR(Tracklog);
-NS_GENERIC_FACTORY_CONSTRUCTOR(GpsPoint);
+NS_GENERIC_FACTORY_CONSTRUCTOR(Gipsy)
+NS_GENERIC_FACTORY_CONSTRUCTOR(Tracklog)
+NS_GENERIC_FACTORY_CONSTRUCTOR(GpsPoint)
 
 static nsModuleComponentInfo components[] = {
     {
@@ -31,4 +31,4 @@ static nsModuleComponentInfo components[] = {
     }
 };
 
-NS_IMPL_NSGETMODULE("GipsyModule", components);
+NS_IMPL_NSGETMODULE("GipsyModule", components)

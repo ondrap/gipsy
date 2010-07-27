@@ -47,7 +47,7 @@ static void sleep(int time)
 #endif
 
 /* Implementation file */
-NS_IMPL_ISUPPORTS1(Gipsy, IGPSScanner);
+NS_IMPL_ISUPPORTS1(Gipsy, IGPSScanner)
 
 Gipsy::Gipsy() : exit_thread(false), auto_download(true), observer_count(0)
 {
@@ -546,7 +546,7 @@ NS_IMETHODIMP Gipsy::GpsChangeType(PRUint32 pos, PRInt32 gtype)
 }
 
 /**************************/
-NS_IMPL_ISUPPORTS1(GpsItem, IGPSDevInfo);
+NS_IMPL_ISUPPORTS1(GpsItem, IGPSDevInfo)
 
 GpsItem::GpsItem() : last_error(""), scan_enabled(0), gpstype(0), watcher_running(false)
 {
@@ -567,7 +567,7 @@ void GpsItem::reset()
     wstatus = W_DISCONNECT;
     download_now = false;
     saved_tlog = NULL;
-};
+}
 
 /* readonly attribute string last_error; */
 NS_IMETHODIMP GpsItem::GetLast_error(char **aLast_error)

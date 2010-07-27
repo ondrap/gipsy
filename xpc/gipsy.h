@@ -20,8 +20,8 @@
 
 class GpsItem : public IGPSDevInfo {
 public: 
-    NS_DECL_ISUPPORTS;
-    NS_DECL_IGPSDEVINFO;
+    NS_DECL_ISUPPORTS
+    NS_DECL_IGPSDEVINFO
 
     GpsItem();
     virtual ~GpsItem();
@@ -74,7 +74,7 @@ class Gipsy : public IGPSScanner
 {
 public:
     NS_DECL_ISUPPORTS
-    NS_DECL_IGPSSCANNER;
+    NS_DECL_IGPSSCANNER
 
     Gipsy();
     virtual ~Gipsy();
