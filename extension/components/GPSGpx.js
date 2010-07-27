@@ -272,6 +272,8 @@ GPSGpx.prototype = {
 
 	var listr = this.newel(placemark, 'LineString');
 	this.txtel(listr, 'altitudeMode', alttype);
+	if (alttype == 'clampToGround')
+            this.txtel(listr, 'tessellate', '1');
 
 	var ctext = tlog.kmlTrack();
 
@@ -328,7 +330,7 @@ GPSGpx.prototype = {
 	return text;
     },
 
-    createKmlPoint : function(name, icon, point, hsx, hsy) {
+    createKmlPoint : function(name, icon, point, hsx, hsy, mode) {
 	var pl = this.doc.createElement('Placemark');
 	this.txtel(pl, 'name', name);
 	
@@ -347,10 +349,54 @@ GPSGpx.prototype = {
 	}
 
 	var po = this.newel(pl, 'Point');
-	this.txtel(po, 'altitudeMode', 'absolute');
+	if (mode == null)
+            this.txtel(po, 'altitudeMode', 'absolute');
+        else
+            this.txtel(po, 'altitudeMode', mode);
 	this.txtel(po, 'coordinates', point.lon + ',' + point.lat + ',' + point.alt);
 
 	return pl;
+    },
+    
+    drawKmlLine : function(p1, p2, alttype, color) {
+        var placemark = this.doc.createElement('Placemark');
+
+        this.txtel(placemark, 'name', 'Route');
+        this.txtel(placemark, 'visibility', '1');
+
+        placemark.appendChild(this.kmlStyle(color));
+
+        var listr = this.newel(placemark, 'LineString');
+        this.txtel(listr, 'altitudeMode', alttype);
+        if (alttype == 'clampToGround')
+            this.txtel(listr, 'tessellate', '1');
+        
+
+        var ctext = p1.lon + ',' + p1.lat + ',' + p1.alt + '\n';
+        ctext += p2.lon + ',' + p2.lat + ',' + p2.alt + '\n';
+        this.txtel(listr, 'coordinates', ctext);
+        
+        return placemark;
+
+    },
+    
+    optinfoKml : function(opt) {
+        var folder = this.doc.createElement('Folder');
+        this.txtel(folder, 'name', 'Optimal route');
+        this.txtel(folder, 'visibility', '1');
+
+        for (var i=0; i < opt.drawPoints.length; i++) {
+            folder.appendChild(this.createKmlPoint('Turnpoint',
+                                                    'http://www.pgweb.cz/img/maps/turnpoint.png', 
+                                                    { lon : opt.drawPoints[i][1], lat : opt.drawPoints[i][0], alt : 0}, 
+                                                    0.5, 0, 'clampToGround'));
+        }
+        for (var i=0; i < opt.drawLines.length; i++) {
+            var p1 = { lat : opt.drawLines[i][0][0], lon : opt.drawLines[i][0][1], alt: 0 };
+            var p2 = { lat : opt.drawLines[i][1][0], lon : opt.drawLines[i][1][1], alt: 0 };
+            folder.appendChild(this.drawKmlLine(p1, p2, 'clampToGround', 'ff0000ff'));
+        }
+        return folder;
     },
 
     isthermal : function(tlog, st) {
@@ -554,30 +600,30 @@ GPSGpx.prototype = {
 	root.setAttributeNS('http://www.google.com/kml/ext/2.2', 'avoid', 'mozilla_bug_in_serializing_namespaces');
 
 	if (this.tracklogs.length == 1) {
-	    var flight = this.createKmlFolder(this.tracklogs[0].tracklog, this.tracklogs[0].dinfo, 0);
-	    root.appendChild(flight);
-	    var thermals = this.detectThermals(this.tracklogs[0].tracklog);
+            var folder = root;
+        } else {
+            var folder = this.newel(root, 'Folder');
+            this.txtel(folder, 'name', 'GiPSy flights');
+            this.txtel(folder, 'open', '1');
+        }
 
-	    thermals = this.filterThermals(thermals);
-	    if (thermals)
-		flight.appendChild(this.pointKmlThermals(thermals));
-	} else {
-	    var folder = this.newel(root, 'Folder');
-	    this.txtel(folder, 'name', 'GiPSy flights');
-	    this.txtel(folder, 'open', '1');
+        var thermals = [];
+        for (var i=0; i < this.tracklogs.length; i++) {
+            var flight = this.createKmlFolder(this.tracklogs[i].tracklog, this.tracklogs[i].dinfo, i)
+            folder.appendChild(flight);
 
-	    var thermals = [];
-	    for (var i=0; i < this.tracklogs.length; i++) {
-		folder.appendChild(this.createKmlFolder(this.tracklogs[i].tracklog,
-							this.tracklogs[i].dinfo, i));
-		thermals = thermals.concat(this.detectThermals(this.tracklogs[i].tracklog));
-	    }
-	    if (get_bool_pref('extfunc')) {
-		thermals = this.filterThermals(thermals);
-		if (thermals)
-		    folder.appendChild(this.pointKmlThermals(thermals));
-	    }
-	}
+            if (this.tracklogs[i].optinfo)
+                flight.appendChild(this.optinfoKml(this.tracklogs[i].optinfo));
+            thermals = thermals.concat(this.detectThermals(this.tracklogs[i].tracklog));
+        }
+        thermals = this.filterThermals(thermals);
+        if (thermals) {
+            var tpoints = this.pointKmlThermals(thermals);
+            if (folder == root)
+                flight.appendChild(tpoints);
+            else
+                folder.appendChild(tpoints);
+        }
     },
 
     // Svg export
