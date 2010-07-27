@@ -1,16 +1,14 @@
 <!ENTITY gipsy.title "GiPSy Flight Manager">
 
 <!ENTITY menu.sendxc "Sende Flüge an XContest" >
-<!-- NEW -->
-<!ENTITY menu.importgpx "Import GPX file" >
-<!ENTITY menu.googlemapdownload "Download GoogleMaps" >
-<!-- NEW -->
+<!ENTITY menu.importgpx "Importiere GPX-Datei" >
+<!ENTITY menu.googlemapdownload "Aktualisiere GoogleMaps" >
 
 <!ENTITY tab.flights "Flüge" >
 <!ENTITY tab.devices "Verbindung mit GPS" >
 <!ENTITY problem "Problembericht" >
 
-<!ENTITY delete "Läschen" >
+<!ENTITY delete "Löschen" >
 <!ENTITY open "Öffnen" >
 <!ENTITY close "Schliessen" >
 <!ENTITY close.key "S" >
@@ -18,16 +16,14 @@
 <!ENTITY preferences.key "E" >
 <!ENTITY collapse.all "Verkleinern/Auffächern" >
 <!ENTITY show.source "Zeige IGC Quelle" >
-<!-- NEW -->
-<!ENTITY create.logbook "Create flight log" >
-<!-- NEW -->
+<!ENTITY create.logbook "Erstelle Flugaufzeichnung (html)" >
 
 <!ENTITY file "Datei" >
 <!ENTITY file.key "d" >
 
 <!ENTITY help "Hilfe" >
 <!ENTITY help.key "h" >
-<!ENTITY about "Über" >
+<!ENTITY about "über GiPSy" >
 
 <!ENTITY date.utc "Datum (UTC)" >
 <!ENTITY launch "Startplatz" >
@@ -36,7 +32,7 @@
 <!ENTITY pilot "Pilot" >
 <!ENTITY glider "Gleitschirm" >
 <!ENTITY flight.info "Fluginformation" >
-<!ENTITY statistics "Statistiken" >
+<!ENTITY statistics "Statistik" >
 <!ENTITY pilot.info "Piloteninformation" >
 <!ENTITY date "Datum" >
 <!ENTITY enabled "aktiv" >
@@ -45,12 +41,12 @@
 <!ENTITY speed "Geschwindigkeit">
 <!ENTITY advanced "Erweitert.." >
 <!ENTITY basic "Grund" >
-<!ENTITY faicat "FAI Kategorie">
+<!ENTITY faicat "FAI-Kategorie">
 <!ENTITY biplace "Tandem">
 <!ENTITY comment "Kommentar" >
 <!ENTITY properties "Eigenschaften" >
 <!ENTITY upload "Upload" >
-<!ENTITY map.no "No map" >
+<!ENTITY map.no "ohne Karte" >
 <!ENTITY map.googlemap "GoogleMap" >
 <!ENTITY map.googlemaplayer "GoogleMap Layer" >
 <!ENTITY map.airspace "Luftraum" >
@@ -60,29 +56,29 @@
 <!ENTITY map.vario "Vario">
 <!ENTITY map.time "Zeit">
 
-<!ENTITY duration "Dauer" >
+<!ENTITY duration "Flugdauer" >
 
 <!ENTITY stat.sdist "Distanz Start/Landung" >
-<!ENTITY stat.totdist "Totale geflogene Srecke" >
+<!ENTITY stat.totdist "Gesamte geflogene Strecke" >
 <!ENTITY stat.maxheight "Maximale Höhe" >
 <!ENTITY stat.heightdiff "Höhendifferenz (max-min)" >
 <!ENTITY stat.maxspeed "Maximale Geschwindigkeit">
 <!ENTITY stat.maxvario "Bestes Steigen" >
 <!ENTITY stat.minvario "Grösstes Sinken" >
-<!ENTITY stat.totheight "Totaler Höhengewinn" >
+<!ENTITY stat.totheight "Gesamter Höhengewinn" >
 
 <!ENTITY xcontest.login "XContest Anmelde-Name">
-<!ENTITY xcontest.show "Zeige Contest Seite" >
+<!ENTITY xcontest.show "Zeige XContest-Seite" >
 <!ENTITY xcontest.send "Sende an XContest" >
 
 <!ENTITY synchronization "Synchronisation">
-<!ENTITY filename "Datei Name" >
+<!ENTITY filename "Datei-Name" >
 <!ENTITY gps "GPS" >
 
 <!ENTITY gps.help "Sehe mein GPS nicht" >
 <!ENTITY gps.type "GPS Typ" >
 <!ENTITY gps.name "GPS Name" >
-<!ENTITY progress "Transfer Fortschritt" >
+<!ENTITY progress "Transfer-Fortschritt" >
 
 <!ENTITY pilot.filter "Filter von Pilot">
 <!ENTITY pilot.all "Alle Piloten">
@@ -95,23 +91,23 @@
 <!ENTITY seltrk.title "Schritt 1 - Auswahl des Segmentes :: Wähle Segment entsprechend deines Fluges" >
 <!ENTITY seltrk.help "TIP: Um aus mehreren Segmenten einen Flug zu machen, benütze bei der Auswahl die Umschalttaste" >
 
-<!ENTITY selpoint.title "Schritt 2 - Korrektur :: wenn nätig, kannst du den automatisch ermittelten  Beginn/Ende des Fluges korrigieren" >
+<!ENTITY selpoint.title "Schritt 2 - Korrektur :: wenn nötig, kannst du den automatisch ermittelten Beginn/Ende des Fluges korrigieren" >
 <!ENTITY selpoint.advanced "Zeige Tool für detaillierte Auswahl" >
 <!ENTITY selpoint.restore "Auswahl zurücksetzen" >
-<!ENTITY selpoint.helprange "Um Beginn/Ende zu korrigieren, rote Kreise mit Maus ziehen">
+<!ENTITY selpoint.helprange "Um Beginn/Ende zu korrigieren, ziehe die roten Kreise mit der Maus">
 <!ENTITY selpoint.helpdrag "Um den vergrösserten Bereich zu bewegen, ziehe mit der Maus in dem rot hervorgehobenen Bereich">
 <!ENTITY selpoint.helpsel "Wähle Punkte oder entferne unerwünschte Teile via Maus-Klick" >
 <!ENTITY tracklog.invalid "Ungültiger Tracklog" >
 
 <!ENTITY finfo.title "Schritt 3 :: Fluginformation angeben">
-<!ENTITY finfo.fileid "ID für IGC Dateiname (3-Buchstaben)" >
+<!ENTITY finfo.fileid "ID für IGC Dateiname (3 Buchstaben)" >
 <!ENTITY finfo.longname "Langes IGC Dateinamen Format" >
 <!ENTITY finfo.shortname "Kurzes IGC Dateinamen Format" >
-<!ENTITY finfo.longsite "Dateinamen Format: YYYY-MM-DD-launch.igc" >
+<!ENTITY finfo.longsite "Datum-Startplatz-Format: YYYY-MM-DD-launch.igc" >
 
 <!ENTITY filinfo.title "IGC Datei Information" >
 <!ENTITY filinfo.savepath "Dein Tracklog wurde gespeichert unter" >
-<!ENTITY filinfo.noxc "Dein Tracklog wurde nicht an das XContest system gesendet">
+<!ENTITY filinfo.noxc "Dein Tracklog wurde nicht an XContest gesendet">
 <!ENTITY filinfo.done "Flugbearbeitung erledigt">
 <!ENTITY filinfo.otherproc "Weitere Flüge von diesem GPS bearbeiten" >
 <!ENTITY filinfo.xcnow "Tracklog jetzt an XContest senden">
@@ -129,16 +125,16 @@
 <!ENTITY prefs.gpsaccess "GPS Zugriffsoptionen" >
 <!ENTITY prefs.autodownload "Lade Tracklog automatisch vom GPS" >
 <!ENTITY prefs.needsrestart "wird nach Neustart von Firefox wirksam" >
-<!ENTITY prefs.datadir "Gipsy Datenverzeichnis" >
+<!ENTITY prefs.datadir "GiPSy Datenverzeichnis" >
 <!ENTITY prefs.changedir "Wechsle Ordnerverzeichnis" >
 <!ENTITY prefs.changetohome "Einstellungen zurücksetzen Home/gipsy" >
-<!ENTITY prefs.savesubdirs "Speichere neue Flüge in 'Pilotenname/Jahr' Unterverzeichnis" >
+<!ENTITY prefs.savesubdirs "Speichere neue Flüge im Unterverzeichnis 'Pilotenname/Jahr'" >
 <!ENTITY prefs.units "Einheiten">
 <!ENTITY prefs.metricsystem "Metrisches System">
-<!ENTITY prefs.autoselect "wähle automatisch den Trank des aktuellen Tages">
-<!ENTITY prefs.usercommands "Benutzerspezifische Befehle">
+<!ENTITY prefs.autoselect "wähle automatisch den Flug des aktuellen Tages">
+<!ENTITY prefs.usercommands "Benutzerspezifische Flug-Auswertung">
 <!ENTITY prefs.usertitle "Titel">
-<!ENTITY prefs.usercmd "Programm Pfad">
+<!ENTITY prefs.usercmd "Programm-Pfad">
 <!ENTITY prefs.userparams "Zusätzliche Parameter">
 
 <!-- Properties -->
