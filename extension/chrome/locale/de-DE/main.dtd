@@ -3,14 +3,14 @@
 <!ENTITY menu.sendxc "Sende Flüge an XContest" >
 <!-- NEW -->
 <!ENTITY menu.importgpx "Import GPX file" >
-<!ENTITY menu.googlemapdownload "Download GoogleMap definitions" >
+<!ENTITY menu.googlemapdownload "Download GoogleMaps" >
 <!-- NEW -->
 
 <!ENTITY tab.flights "Flüge" >
 <!ENTITY tab.devices "Verbindung mit GPS" >
 <!ENTITY problem "Problembericht" >
 
-<!ENTITY delete "Löschen" >
+<!ENTITY delete "Läschen" >
 <!ENTITY open "Öffnen" >
 <!ENTITY close "Schliessen" >
 <!ENTITY close.key "S" >
@@ -54,13 +54,11 @@
 <!ENTITY map.googlemap "GoogleMap" >
 <!ENTITY map.googlemaplayer "GoogleMap Layer" >
 <!ENTITY map.airspace "Luftraum" >
-<!-- NEW -->
-<!ENTITY map.optimization "Route calculation" >
-<!ENTITY map.speed "speed">
-<!ENTITY map.altitude "altitude">
-<!ENTITY map.vario "vario">
-<!ENTITY map.time "time">
-<!-- NEW -->
+<!ENTITY map.optimization "Routenoptimierung" >
+<!ENTITY map.speed "Geschwindigkeit">
+<!ENTITY map.altitude "Höhe">
+<!ENTITY map.vario "Vario">
+<!ENTITY map.time "Zeit">
 
 <!ENTITY duration "Dauer" >
 
@@ -70,7 +68,7 @@
 <!ENTITY stat.heightdiff "Höhendifferenz (max-min)" >
 <!ENTITY stat.maxspeed "Maximale Geschwindigkeit">
 <!ENTITY stat.maxvario "Bestes Steigen" >
-<!ENTITY stat.minvario "Größtes Sinken" >
+<!ENTITY stat.minvario "Grösstes Sinken" >
 <!ENTITY stat.totheight "Totaler Höhengewinn" >
 
 <!ENTITY xcontest.login "XContest Anmelde-Name">
@@ -97,16 +95,16 @@
 <!ENTITY seltrk.title "Schritt 1 - Auswahl des Segmentes :: Wähle Segment entsprechend deines Fluges" >
 <!ENTITY seltrk.help "TIP: Um aus mehreren Segmenten einen Flug zu machen, benütze bei der Auswahl die Umschalttaste" >
 
-<!ENTITY selpoint.title "Schritt 2 - Korrektur :: wenn nötig, kannst du den automatisch ermittelten  Beginn/Ende des Fluges korrigieren" >
+<!ENTITY selpoint.title "Schritt 2 - Korrektur :: wenn nätig, kannst du den automatisch ermittelten  Beginn/Ende des Fluges korrigieren" >
 <!ENTITY selpoint.advanced "Zeige Tool für detaillierte Auswahl" >
 <!ENTITY selpoint.restore "Auswahl zurücksetzen" >
 <!ENTITY selpoint.helprange "Um Beginn/Ende zu korrigieren, rote Kreise mit Maus ziehen">
-<!ENTITY selpoint.helpdrag "Um den vergrößerten Bereich zu bewegen, ziehe mit der Maus in dem rot hervorgehobenen Bereich">
+<!ENTITY selpoint.helpdrag "Um den vergrösserten Bereich zu bewegen, ziehe mit der Maus in dem rot hervorgehobenen Bereich">
 <!ENTITY selpoint.helpsel "Wähle Punkte oder entferne unerwünschte Teile via Maus-Klick" >
 <!ENTITY tracklog.invalid "Ungültiger Tracklog" >
 
 <!ENTITY finfo.title "Schritt 3 :: Fluginformation angeben">
-<!ENTITY finfo.fileid "3-Buchstaben ID für IGC Dateiname" >
+<!ENTITY finfo.fileid "ID für IGC Dateiname (3-Buchstaben)" >
 <!ENTITY finfo.longname "Langes IGC Dateinamen Format" >
 <!ENTITY finfo.shortname "Kurzes IGC Dateinamen Format" >
 <!ENTITY finfo.longsite "Dateinamen Format: YYYY-MM-DD-launch.igc" >
@@ -135,15 +133,13 @@
 <!ENTITY prefs.changedir "Wechsle Ordnerverzeichnis" >
 <!ENTITY prefs.changetohome "Einstellungen zurücksetzen Home/gipsy" >
 <!ENTITY prefs.savesubdirs "Speichere neue Flüge in 'Pilotenname/Jahr' Unterverzeichnis" >
-<!-- NEW -->
-<!ENTITY prefs.units "Units">
-<!ENTITY prefs.metricsystem "Metric system">
-<!ENTITY prefs.autoselect "Automatically select today's tracks">
-<!ENTITY prefs.usercommands "User commands">
-<!ENTITY prefs.usertitle "Title">
-<!ENTITY prefs.usercmd "Program path">
-<!ENTITY prefs.userparams "Additional parameters">
-<!-- NEW -->
+<!ENTITY prefs.units "Einheiten">
+<!ENTITY prefs.metricsystem "Metrisches System">
+<!ENTITY prefs.autoselect "wähle automatisch den Trank des aktuellen Tages">
+<!ENTITY prefs.usercommands "Benutzerspezifische Befehle">
+<!ENTITY prefs.usertitle "Titel">
+<!ENTITY prefs.usercmd "Programm Pfad">
+<!ENTITY prefs.userparams "Zusätzliche Parameter">
 
 <!-- Properties -->
 <!ENTITY prop.dontsend "Nicht an XContest senden" >
@@ -151,6 +147,6 @@
 <!ENTITY prop.uploaded "Der Flug wurde an XContest gesendet" >
 
 <!-- Password dialog -->
-<!ENTITY passwd.title "Enter password">
-<!ENTITY passwd.xcontestid "Login name">
-<!ENTITY passwd.password "Password">
+<!ENTITY passwd.title "Passwort eingeben">
+<!ENTITY passwd.xcontestid "Login Name">
+<!ENTITY passwd.password "Passwort">
