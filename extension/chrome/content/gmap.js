@@ -233,11 +233,14 @@ TerrainMap.prototype.show_scale = function() {
 }
 
 TerrainMap.prototype.make_glider_icon = function(color) {
+    var folder = document.createElementNS(htmlns, 'div');
+    folder.style.marginLeft = '-10px';
+    folder.style.marginTop = '-34px';
+    folder.style.position = 'absolute';
+    folder.style.zIndex = 1100;
+    
     var canvas = document.createElementNS(htmlns, 'canvas');
-    canvas.style.marginLeft = '-10px';
-    canvas.style.marginTop = '-34px';
-    canvas.style.position = 'absolute';
-    canvas.style.zIndex = 1100;
+    canvas.style.position = 'relative';
     canvas.width = 21;
     canvas.height = 34;
     
@@ -256,8 +259,21 @@ TerrainMap.prototype.make_glider_icon = function(color) {
     ctx.drawImage(this.glider_background, 0, 0);
     ctx.restore();
     
+    folder.appendChild(canvas);
     
-    return canvas;
+    var txt = document.createElementNS(htmlns, 'div');
+    txt.style.position = 'relative';
+    txt.style.whiteSpace = 'nowrap';
+    if (!this.maplayers.length || this.maplayers[0] == 'map_googlemap')
+        txt.style.color = 'black';
+    else
+        txt.style.color = 'white';
+    txt.style.font = '7pt Arial';
+    txt.style.top = '-20px';
+    txt.style.left = '15px';
+    folder.appendChild(txt);
+    
+    return folder;
 }
 
 // Put glider_icon on given positions
@@ -279,6 +295,11 @@ TerrainMap.prototype.mark_positions = function(plist) {
         var y = this.projectlat(point.lat);
         icon.style.left = x + 'px';
         icon.style.top = y + 'px';
+        
+        // Set text
+        empty(icon.children[1]);
+        icon.children[1].appendChild(document.createTextNode(format_m(point.alt)));
+        
         if (icon.parentNode == null)
             this.tracklogarea.appendChild(icon);
     }
@@ -296,6 +317,14 @@ TerrainMap.prototype.set_layers = function(layers) {
     this.clean_map();
     this.load_maps();
     this.show_scale();
+    // Set colors for glider icon texts
+    var color = 'white';
+    if (!this.maplayers.length || this.maplayers[0] == 'map_googlemap')
+        color = 'black';
+    for each (var icon in this.glider_icons) {
+        icon.children[1].style.color = color;
+    }
+    
 }
 
 // Generate an image of control button
@@ -526,9 +555,10 @@ TerrainMap.prototype.add_tbl_line = function(el, t1, t2) {
 
 // Redraw tracklogs (e.g. because of changed zoom level)
 TerrainMap.prototype.reload_tracklogs = function() {
-    empty(this.tracklogarea);
-    this.degraded_tracklogs = false;
     this.glider_icons = new Array();
+    empty(this.tracklogarea); // This will clear the icons too
+    this.degraded_tracklogs = false;
+
     for (var i=0; i < this.tracklogs.length; i++)
         this.draw_tracklog(i);
     this.reload_optimizations();
