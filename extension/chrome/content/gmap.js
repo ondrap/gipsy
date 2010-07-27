@@ -267,7 +267,7 @@ TerrainMap.prototype.mark_positions = function(plist) {
         icon.style.visibility = 'hidden';
 
     for (var i=0; i < plist.length; i++) {
-        pitem = plist[i];
+        var pitem = plist[i];
         if (this.glider_icons[pitem.color] == null)
             this.glider_icons[pitem.color] = this.make_glider_icon(pitem.color);
         var icon = this.glider_icons[pitem.color];
