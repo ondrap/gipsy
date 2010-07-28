@@ -264,10 +264,13 @@ TerrainMap.prototype.make_glider_icon = function(color) {
     var txt = document.createElementNS(htmlns, 'div');
     txt.style.position = 'relative';
     txt.style.whiteSpace = 'nowrap';
-    if (!this.maplayers.length || this.maplayers[0] == 'map_googlemap')
+    if (!this.maplayers.length || this.maplayers[0] == 'map_googlemap') {
         txt.style.color = 'black';
-    else
+        txt.style.textShadow = '#ababAB -2px -2px 1px';
+    } else {
         txt.style.color = 'white';
+        txt.style.textShadow = '#6374AB -1px -1px 1px';
+    }
     txt.style.font = '7pt Arial';
     txt.style.top = '-20px';
     txt.style.left = '15px';
@@ -297,8 +300,15 @@ TerrainMap.prototype.mark_positions = function(plist) {
         icon.style.top = y + 'px';
         
         // Set text
-        empty(icon.children[1]);
-        icon.children[1].appendChild(document.createTextNode(format_m(point.alt)));
+        var txtlist = icon.children[1];
+        empty(txtlist);
+        txtlist.appendChild(document.createTextNode(format_m(point.alt)));
+        txtlist.appendChild(document.createElementNS(htmlns, 'br'));
+        
+        var vtext = format_ms(plist[i].vario);
+        if (plist[i].vario > 0)
+            vtext = '+' + vtext;
+        txtlist.appendChild(document.createTextNode(vtext));
         
         if (icon.parentNode == null)
             this.tracklogarea.appendChild(icon);

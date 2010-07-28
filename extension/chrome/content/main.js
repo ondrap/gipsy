@@ -122,12 +122,7 @@ var gprofile;
 function create_gmap() {
     gmap = new TerrainMap('gmap');
     gprofile = new TracklogProfile('gprofile', 100);
-    gprofile.add_eventhandler(show_point_data);
-    gprofile.add_eventhandler(show_point_position);
-}
-
-function show_point_position(points) {
-    gmap.mark_positions(points);
+    gprofile.add_eventhandler(show_point);
 }
 
 function set_text(elname, text) {
@@ -142,6 +137,32 @@ function _fmttime(time) {
                     time.getUTCMinutes(), time.getUTCSeconds());
 }
 
+function show_point(points) {
+    // Update speed + vario in points structures
+    for (var i=0; i < points.length; i++) {
+        var tlog = points[i].tlog;
+        var pidx = points[i].pidx;
+        var point = tlog.igcPoint(pidx);
+        
+        if (pidx > 0) {
+            var prevpoint = tlog.igcPoint(pidx - 1);
+            points[i].speed = point.speed(prevpoint);
+            
+            // Do 5-second averaging - find point 5 seconds ago
+            for (var j=pidx - 2; j > 0; j--) {
+                var newpoint = tlog.igcPoint(j);
+                if (point.time - newpoint.time > 5 * 1000)
+                    break;
+                prevpoint = newpoint;
+            }
+            points[i].vario = point.vario(prevpoint);
+        }
+    }
+    
+    show_point_data(points);
+    gmap.mark_positions(points);
+}
+
 function show_point_data(points) {
     var tlog = points[0].tlog;
     var pidx = points[0].pidx;
@@ -149,25 +170,16 @@ function show_point_data(points) {
     var point = tlog.igcPoint(pidx);
     set_text('prof-time',  _fmttime(new Date(point.time)));
     
-    if (points.length > 1 || pidx == 0) {
+    if (points.length > 1 || pidx == 0 || points[0].speed == null) {
         set_text('prof-alt', '');
         set_text('prof-speed', '');
         set_text('prof-vario', '');
         return;
     }
 
-    var prevpoint = tlog.igcPoint(pidx - 1);
     set_text('prof-alt', format_m(point.alt));
-    set_text('prof-speed', format_kmh(point.speed(prevpoint)));
-    
-    // Do 5-second averaging - find point 5 seconds ago
-    for (var i=pidx - 2; i > 0; i--) {
-        var newpoint = tlog.igcPoint(i);
-        if (point.time - newpoint.time > 5 * 1000)
-            break;
-        prevpoint = newpoint;
-    }
-    set_text('prof-vario', format_ms(point.vario(prevpoint)));
+    set_text('prof-speed', format_kmh(points[0].speed));
+    set_text('prof-vario', format_ms(points[0].vario));
 }
 
 function ctx_setup_usercmd() {
