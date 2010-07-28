@@ -222,7 +222,7 @@ TracklogProfile.prototype.draw = function() {
         if (this.tracklogs.length == 1)
             ctx.fillStyle = 'lightgrey';
         else
-            ctx.fillStyle = TerrainMap.prototype.track_color(i, 0.1);
+            ctx.fillStyle = track_color(i, 0.1);
 
         var ttime = this.tracklogs[i].igcPoint(0).time;
         var dstime = new Date(ttime);
@@ -250,7 +250,7 @@ TracklogProfile.prototype.draw = function() {
 }
 
 TracklogProfile.prototype.drawTracklog = function(idx, ctx, minheight, maxheight, starttime, timescale) {
-    ctx.strokeStyle = TerrainMap.prototype.track_color(idx);
+    ctx.strokeStyle = track_color(idx);
     var tlog = this.tracklogs[idx];
 
     // Optimized drawing of tracklog on canvas

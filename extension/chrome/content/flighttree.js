@@ -170,11 +170,20 @@ var treeView = {
     },
 
     getRowProperties: function(row, props) {
+        var aserv;
 	if (this.rows[row].synchro == gstore.SYNCHRO_ENABLED) {
-	    var aserv = Components.classes["@mozilla.org/atom-service;1"]
-	            .createInstance(Components.interfaces.nsIAtomService);
+            aserv = Components.classes["@mozilla.org/atom-service;1"]
+                        .createInstance(Components.interfaces.nsIAtomService);
 	    props.AppendElement(aserv.getAtom('scheduled'));
 	}
+	var rows = this.get_selected_rows();
+	var rindex = rows.indexOf(row);
+	if (rindex != -1) {
+            if (!aserv)
+                aserv = Components.classes["@mozilla.org/atom-service;1"]
+                                .createInstance(Components.interfaces.nsIAtomService);
+            props.AppendElement(aserv.getAtom('flight_' + rindex));
+        }
     },
     getCellProperties: function(row,col,props){},
     getColumnProperties: function(colid,col,props){},

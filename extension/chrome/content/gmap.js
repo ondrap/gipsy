@@ -578,14 +578,6 @@ TerrainMap.prototype.make_icon = function(png, lat, lon) {
     return icon;
 }
 
-// Return color of track based on index of track
-TerrainMap.prototype.track_color = function(i, op) {
-    if (op)
-        return sprintf('rgba(%d,%d,%d,%f)', 255 - ((i * 50) % 250), (170 + i * 40) % 250, (60 + i * 30) % 250, op);
-    else
-        return sprintf('rgb(%d,%d,%d)', 255 - ((i * 50) % 250), (170 + i * 40) % 250, (60 + i * 30) % 250);
-}
-
 // Create a canvas with a tracklog
 TerrainMap.prototype.make_canvas = function(tlog, i) {
     var canvas = document.createElementNS(htmlns, 'canvas');
@@ -622,7 +614,7 @@ TerrainMap.prototype.make_canvas = function(tlog, i) {
     canvas.style.position = 'absolute';
     
     var ctx = canvas.getContext('2d');
-    ctx.strokeStyle = this.track_color(i);
+    ctx.strokeStyle = track_color(i);
 
     try {
         tlog.drawCanvasTrack(ctx, this.limit(), startx + this.centerx, starty + this.centery);

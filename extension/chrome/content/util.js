@@ -365,3 +365,14 @@ function ctxFillText(ctx, text, x, y)
         ctx.restore();
     }
 }
+
+// Return color of track based on index of track
+function track_color(i, op) {
+    var r = 255 - ((i * 50) % 128);
+    var g = 120 + ((50 + i * 40) % 120);
+    var b = (60 + i * 30) % 250;
+    if (op)
+        return sprintf('rgba(%d,%d,%d,%f)', r, g, b, op);
+    else
+        return sprintf('rgb(%d,%d,%d)', r, g, b);
+}

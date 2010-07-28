@@ -102,6 +102,19 @@ function OnLoad() {
     if (gstore.OS == 'WINNT')
 	elem('popup_launch').style.display = '-moz-box';
     ctx_setup_usercmd();
+    
+    add_trackcolors_to_css();
+}
+
+// Add background for flighttree into CSS so we have correct backgrounds
+function add_trackcolors_to_css() {
+    var sheet = document.styleSheets[0];
+    var totalrules = sheet.cssRules.length;
+    for (var i=0; i < 6; i++) {
+        var selector = sprintf("treechildren::-moz-tree-row(selected, flight_%d)", i);
+        var rule = sprintf("{ background-color: %s;}", track_color(i));
+        sheet.insertRule(selector + rule, totalrules - 1);
+    }
 }
 
 var gmap;
