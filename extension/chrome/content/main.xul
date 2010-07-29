@@ -101,7 +101,7 @@
 	      </menulist>
 	    </hbox>
 
-	    <tree flex="1" id="flight_tree" onselect="tree_flight_select()">
+	    <tree flex="1" id="flight_tree" onselect="tree_flight_select()" >
 	      <treecols>
 		<treecol id="col_date" flex="1" label="&date.utc;"  
 			 primary="true" persist="width"/>
@@ -312,7 +312,8 @@
 		    oncommand="window.open('chrome://gipsy/content/gps_linux.html')" />
 	  </hbox>
 	  <tree flex="1" hidecolumnpicker="true" id="gps_tree" 
-		editable="true" >
+		editable="true" onclick="gps_tree_clicked(event)"
+		seltype="single" >
 	    <treecols>
 	      <treecol label="&enabled;" type="checkbox" editable="true" 
 		       id="gps_enabled" />

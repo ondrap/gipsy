@@ -33,6 +33,24 @@ function unload_gpstree() {
 
 const GPS_TYPES = [ "Garmin", "Aircotec", "50x0/Compe*", "MLR/Digifly", "Flymaster" ];
 
+// Show context menu for selecting gps type
+function gps_tree_clicked(event) {
+    var tree = document.getElementById("gps_tree");
+    var tbo = tree.treeBoxObject;
+
+    // get the row, col and child element at the point
+    var row = { }, col = { }, child = { };
+    tbo.getCellAt(event.clientX, event.clientY, row, col, child);
+    col = col.value;
+    row = row.value;
+    if (col.id == 'gps_type') {
+        var popup = document.getElementById('gps_popup');
+        var x = event.clientX - tree.boxObject.x;
+        var y = event.clientY - tree.boxObject.y;
+        popup.openPopup(tree, 'overlap', x + 3, y + 3, true, false);
+    }
+}
+
 var gpsView = {
     setTree: function(treebox){ this.treebox = treebox; },
     treebox : null,
@@ -114,7 +132,13 @@ var gpsView = {
 
     getImageSrc: function(row,col){ return null; },
     getRowProperties: function(row,props) {},
-    getCellProperties: function(row,col,props){},
+    getCellProperties: function(row, col, props) {
+        if (col.id == 'gps_enabled' || col.id == 'gps_type') {
+            aserv = Components.classes["@mozilla.org/atom-service;1"]
+                        .createInstance(Components.interfaces.nsIAtomService);
+            props.AppendElement(aserv.getAtom(col.id));
+        }
+    },
     getColumnProperties: function(colid,col,props){},
 
     init : function() {

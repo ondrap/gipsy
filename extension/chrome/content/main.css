@@ -43,6 +43,11 @@ treechildren::-moz-tree-row(scheduled, selected, focus) {
   background-color: Highlight;
 }
 
+/* Gpstree - change cursor on clickable element */
+treechildren::-moz-tree-cell(gps_enabled), treechildren::-moz-tree-cell(gps_type) {
+    cursor: pointer;
+}
+
 #map-status {
     background: #ebf0f4;
     color: #346b8f;

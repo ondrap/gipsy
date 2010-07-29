@@ -17,8 +17,8 @@ var treeView = {
     pilot_filter_names : null,
 
     rows : [],
-    get rowCount() { return this.rows.length; },    
-
+    get rowCount() { return this.rows.length; },
+    
     getCellText : function(row, column) {
         if (this.rows[row].hasOwnProperty(column.id))
             return this.rows[row][column.id];
