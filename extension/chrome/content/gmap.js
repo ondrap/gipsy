@@ -70,6 +70,10 @@ function TerrainMap(id) {
     // Add tracklog
     this.tracklogarea = document.createElementNS(htmlns, 'div');
     this.dragarea.appendChild(this.tracklogarea);
+    // Add overlay area
+    this.overlayarea = document.createElementNS(htmlns, 'div');
+    this.dragarea.appendChild(this.overlayarea);
+    this.overlay = null;
     // Add optimization area
     this.optimarea = document.createElementNS(htmlns, 'div');
     this.dragarea.appendChild(this.optimarea);
@@ -572,6 +576,7 @@ TerrainMap.prototype.reload_tracklogs = function() {
     for (var i=0; i < this.tracklogs.length; i++)
         this.draw_tracklog(i);
     this.reload_optimizations();
+    this.load_overlay();
 }
 
 // Create an icon that should be shown on the map
@@ -682,6 +687,8 @@ TerrainMap.prototype.clean_map = function() {
     this.dragging = false;
     this.loaded_tiles = Array();
     empty(this.maparea);
+    
+    this.load_overlay();
 }
 
 // Zoom out, leave the center of the map in place
@@ -760,6 +767,73 @@ TerrainMap.prototype.load_maps = function() {
                 }
             }
         }
+};
+
+TerrainMap.prototype.set_overlay = function(overlay) {
+    if (overlay && this.overlay && overlay.link == this.overlay.link)
+        return;
+    this.overlay = overlay;
+    this.load_overlay();
+}
+
+TerrainMap.prototype.load_overlay = function() {
+    if (!this.overlay) {
+        empty(this.overlayarea);
+        return;
+    }
+    
+    var ov = this.overlay;
+    
+    var x = this.projectlon(ov.topleftlon);
+    var y = this.projectlat(ov.topleftlat);
+    var width = this.projectlon(ov.bottomrightlon) - x;
+    var height = this.projectlat(ov.bottomrightlat) - y;
+    
+    if (width < 10 || height < 10) // Too small - ignore
+        return;
+        
+    // overlaps current view
+    if (x + width < this.x || y + height < this.y || x > this.x + this.main.offsetWidth || y > this.y + this.main.offsetHeight) {
+        empty(this.overlayarea);
+        return;
+    }
+        
+    var origwidth = width; 
+    var origheight = height;
+        
+    var translatex = 0;
+    var translatey = 0;
+    if (width > this.main.offsetWidth * 3 || height > this.main.offsetHeight * 3) {
+        width = this.main.offsetWidth * 3;
+        height = this.main.offsetHeight * 3;
+
+        translatex = x - (this.x + this.main.offsetWidth / 2 - width / 2);
+        translatey = y - (this.y + this.main.offsetHeight / 2 - height / 2);
+        x -= translatex;
+        y -= translatey;
+    }
+    
+    var canvas = document.createElementNS(htmlns, 'canvas');
+    canvas.width = width;
+    canvas.height = height;
+    canvas.style.zIndex = 500;
+    canvas.style.position = 'absolute';
+    canvas.style.left = x + 'px';
+    canvas.style.top = y + 'px';
+    canvas.style.opacity = 0.5;
+    
+    var ctx = canvas.getContext('2d');
+    ctx.translate(translatex, translatey);
+    
+    var meteomap = new Image();
+    meteomap.src = ov.link;
+    var self = this;
+    meteomap.onload = function() {
+        ctx.scale(origwidth / meteomap.width, origheight / meteomap.height);
+        ctx.drawImage(meteomap, 0, 0);
+        empty(self.overlayarea);
+        self.overlayarea.appendChild(canvas);
+    };
 };
 
 // Return a link for a given map

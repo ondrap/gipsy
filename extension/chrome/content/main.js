@@ -161,6 +161,28 @@ function show_point(points) {
     
     show_point_data(points);
     gmap.mark_positions(points);
+    
+    update_czech_weather(points[0].tlog.igcPoint(points[0].pidx).time);
+}
+
+// Update czech weather images
+function update_czech_weather(time) {
+    // Weather link
+    time = new Date(time);
+    // link : 'http://xcontest.fedra.cz/igconmsg/msgs/msgcz.vis-ir.20100728.0945.0.jpg',
+    var date = sprintf('%d%02d%02d', time.getUTCFullYear(), time.getUTCMonth() + 1, time.getUTCDate());
+    var minute = Math.floor(time.getUTCMinutes() / 15) * 15;
+    var timepart = sprintf('%02d%02d', time.getUTCHours(), minute);
+    
+    var weather = {
+        //link :  'http://xcontest.fedra.cz/igconmsg/msg.png', // Calibration
+        link : 'http://xcontest.fedra.cz/igconmsg/msgs/msgcz.vis-ir.' + date + '.' + timepart + '.0.jpg',
+        topleftlat : 52.6,
+        topleftlon : 9.34,
+        bottomrightlat : 47.1,
+        bottomrightlon : 20.3
+        };
+    gmap.set_overlay(weather);
 }
 
 function show_point_data(points) {

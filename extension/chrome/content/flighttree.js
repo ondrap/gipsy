@@ -573,6 +573,7 @@ var flightmodel = {
         // Limit display to 6 tracklogs
         tlist.splice(6);
         gmap.set_tracklogs(tlist);
+        gmap.set_overlay(null);
         gprofile.set_tracklogs(tlist);
         this.update_opts();
     },
