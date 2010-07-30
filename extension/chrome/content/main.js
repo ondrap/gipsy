@@ -189,6 +189,16 @@ function update_weather(time) {
         bottomrightlon : 20.3
         };
     gmap.set_overlay(weather);
+    /*
+    var noaa = {
+        link :  'file:///tmp/rgb.jpg', // Calibration
+        topleftlat : 51.5,
+        topleftlon : 11.93,
+        bottomrightlat : 48.05,
+        bottomrightlon : 19.05
+        };
+    gmap.set_overlay(noaa);
+    */
 }
 
 function show_point_data(points) {
