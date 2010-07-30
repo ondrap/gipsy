@@ -286,6 +286,8 @@
 			label="&map.airspace;" oncommand="update_maptype()" />
               <checkbox id="map_optimization" persist="checked"
                         label="&map.optimization;" oncommand="gmap.set_showopt(elem('map_optimization').checked)" />
+              <checkbox id="map_weather" persist="checked" style="display:none"
+                        label="Weather" />
 	    </hbox>
             
             <html:div flex="1" id="gmap" />

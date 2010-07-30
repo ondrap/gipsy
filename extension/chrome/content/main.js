@@ -97,8 +97,10 @@ function OnLoad() {
     // initalize GPS device tree
     init_gpstree();
 
-    if (get_bool_pref('extfunc'))
+    if (get_bool_pref('extfunc')) {
 	elem('gpxthermals').style.display = '-moz-box';
+	elem('map_weather').style.display = '-moz-box';
+    }
     if (gstore.OS == 'WINNT')
 	elem('popup_launch').style.display = '-moz-box';
     ctx_setup_usercmd();
@@ -161,12 +163,16 @@ function show_point(points) {
     
     show_point_data(points);
     gmap.mark_positions(points);
-    
-    update_czech_weather(points[0].tlog.igcPoint(points[0].pidx).time);
+    update_weather(points[0].tlog.igcPoint(points[0].pidx).time);
 }
 
-// Update czech weather images
-function update_czech_weather(time) {
+// Update weather images
+function update_weather(time) {
+    if (!elem('map_weather').checked) {
+        gmap.set_overlay(null);
+        return;
+    }
+        
     // Weather link
     time = new Date(time);
     // link : 'http://xcontest.fedra.cz/igconmsg/msgs/msgcz.vis-ir.20100728.0945.0.jpg',
