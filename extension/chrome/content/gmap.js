@@ -781,7 +781,6 @@ TerrainMap.prototype.load_overlay = function() {
         empty(this.overlayarea);
         return;
     }
-    
     var ov = this.overlay;
     
     var x = this.projectlon(ov.topleftlon);

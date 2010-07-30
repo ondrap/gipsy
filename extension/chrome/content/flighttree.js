@@ -572,8 +572,9 @@ var flightmodel = {
     	}
         // Limit display to 6 tracklogs
         tlist.splice(6);
+        gmap.set_overlay(null); 
+        // First remove overlay, otherwise it gets redrawn on set_Tracklogs several times
         gmap.set_tracklogs(tlist);
-        gmap.set_overlay(null);
         gprofile.set_tracklogs(tlist);
         this.update_opts();
     },
