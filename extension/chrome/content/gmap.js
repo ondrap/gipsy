@@ -130,6 +130,7 @@ function TerrainMap(id) {
             // Reload tracklogs only if we have moved - otherwise this disrupts dblclick
             if (self.degraded_tracklogs && self.startx != evt.clientX && self.starty != evt.clientY)
                 self.reload_tracklogs();
+            self.load_overlay();
         }
     }
     this.mousemove = function(evt) {
@@ -803,8 +804,8 @@ TerrainMap.prototype.load_overlay = function() {
     var translatex = 0;
     var translatey = 0;
     if (width > this.main.offsetWidth * 3 || height > this.main.offsetHeight * 3) {
-        width = this.main.offsetWidth * 3;
-        height = this.main.offsetHeight * 3;
+        width = this.main.offsetWidth;
+        height = this.main.offsetHeight;
 
         translatex = x - (this.x + this.main.offsetWidth / 2 - width / 2);
         translatey = y - (this.y + this.main.offsetHeight / 2 - height / 2);
