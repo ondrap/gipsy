@@ -287,7 +287,7 @@
               <checkbox id="map_optimization" persist="checked"
                         label="&map.optimization;" oncommand="gmap.set_showopt(elem('map_optimization').checked)" />
               <checkbox id="map_weather" persist="checked" style="display:none"
-                        label="Weather" />
+                        label="Weather" oncommand="if (!elem('map_weather').checked) gmap.set_overlay(null);" />
 	    </hbox>
             
             <html:div flex="1" id="gmap" />
