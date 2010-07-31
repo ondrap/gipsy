@@ -178,7 +178,8 @@ GPSGpx.prototype = {
 	for (var i=0;i < 5; i++)
             this.newel(row, 'td');
         var duration = new Date(totduration);
-        duration = sprintf("%02d:%02d:%02d", duration.getUTCHours(), duration.getUTCMinutes(), 
+        var hours = Math.floor(duration.getTime() / (1000 * 3600));
+        duration = sprintf("%02d:%02d:%02d", hours, duration.getUTCMinutes(), 
                             duration.getUTCSeconds());
         this.txtel(row, 'td', duration);
         // Skip 2
