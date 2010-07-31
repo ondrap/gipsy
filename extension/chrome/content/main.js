@@ -166,16 +166,45 @@ function show_point(points) {
     update_weather(points[0].tlog.igcPoint(points[0].pidx).time);
 }
 
+var cached_weather = new Array();
+var active_weather_link = null;
+
+function reset_weather() {
+    cached_weather = new Array();
+    active_weather_link = null;
+    gmap.set_overlay(null);
+}
+
 // Update weather images
 function update_weather(time) {
     if (!elem('map_weather').checked) {
         gmap.set_overlay(null);
         return;
     }
-        
+    
+    var weather = create_weather_link(time);
+    active_weather_link = weather.link;
+
+    if (cached_weather[weather.link] != null) {
+        gmap.set_overlay(cached_weather[weather.link]);
+        return;
+    }
+    // Load image
+    var image = new Image();
+    image.src = weather.link;
+    weather.image = image;
+    image.onload = function() {
+        // Add image to cached images
+        cached_weather[weather.link] = weather;
+        // set overlay only if still active
+        if (weather.link == active_weather_link)
+            gmap.set_overlay(weather);
+    }
+}
+
+function create_weather_link(time) {
     // Weather link
     time = new Date(time);
-    // link : 'http://xcontest.fedra.cz/igconmsg/msgs/msgcz.vis-ir.20100728.0945.0.jpg',
     var date = sprintf('%d%02d%02d', time.getUTCFullYear(), time.getUTCMonth() + 1, time.getUTCDate());
     var minute = Math.floor(time.getUTCMinutes() / 15) * 15;
     var timepart = sprintf('%02d%02d', time.getUTCHours(), minute);
@@ -188,7 +217,9 @@ function update_weather(time) {
         bottomrightlat : 47.1,
         bottomrightlon : 20.3
         };
-    gmap.set_overlay(weather);
+    return weather;
+    
+    
     /*
     var noaa = {
         link :  'file:///tmp/rgb.jpg', // Calibration

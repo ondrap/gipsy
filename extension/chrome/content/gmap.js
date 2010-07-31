@@ -825,15 +825,12 @@ TerrainMap.prototype.load_overlay = function() {
     var ctx = canvas.getContext('2d');
     ctx.translate(translatex, translatey);
     
-    var meteomap = new Image();
-    meteomap.src = ov.link;
-    var self = this;
-    meteomap.onload = function() {
-        ctx.scale(origwidth / meteomap.width, origheight / meteomap.height);
-        ctx.drawImage(meteomap, 0, 0);
-        empty(self.overlayarea);
-        self.overlayarea.appendChild(canvas);
-    };
+    var image = ov.image;
+    
+    ctx.scale(origwidth / image.width, origheight / image.height);
+    ctx.drawImage(image, 0, 0);
+    empty(this.overlayarea);
+    this.overlayarea.appendChild(canvas);
 };
 
 // Return a link for a given map

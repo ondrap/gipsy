@@ -572,7 +572,7 @@ var flightmodel = {
     	}
         // Limit display to 6 tracklogs
         tlist.splice(6);
-        gmap.set_overlay(null); 
+        reset_weather();
         // First remove overlay, otherwise it gets redrawn on set_Tracklogs several times
         gmap.set_tracklogs(tlist);
         gprofile.set_tracklogs(tlist);
