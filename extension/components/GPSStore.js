@@ -10,7 +10,7 @@ const CONTRACT_ID = "@pgweb.cz/Gipsy/GPSstore;1";
 
 const GipsyDirectory = 'gipsy';
 
-const DBVERSION = 4;
+const DBVERSION = 5;
 
 var loader;
 var citydb;
@@ -102,9 +102,16 @@ GPSStore.prototype = {
 	    this.db.executeSimpleSQL("ALTER TABLE history ADD COLUMN xcontest_claim integer");
 	    this.db.executeSimpleSQL("UPDATE history SET xcontest_claim=1");
 	    this.db.executeSimpleSQL("UPDATE version SET version=4");
-
-	    return true;
 	}
+	if (this.getDBVersion() == 4) {
+            this.db.executeSimpleSQL("ALTER TABLE flights ADD COLUMN optleague string")
+            this.db.executeSimpleSQL("ALTER TABLE flights ADD COLUMN opttype string")
+            this.db.executeSimpleSQL("ALTER TABLE flights ADD COLUMN optdistance real")
+            this.db.executeSimpleSQL("ALTER TABLE flights ADD COLUMN optpoints real")
+            this.db.executeSimpleSQL("UPDATE version SET version=5");
+            
+            return true;
+        }
 	return false;
     },
 
@@ -145,7 +152,10 @@ GPSStore.prototype = {
     // Create tables in the database
     createTables : function() {
 	// Table of flights
-	this.db.executeSimpleSQL('CREATE TABLE flights (file text primary key, pilot text, date integer, glider text, biplace integer, country text, site text, xcontestid text, synchro integer, landing text)');
+	this.db.executeSimpleSQL('CREATE TABLE flights (file text primary key, pilot text, date integer, \
+                                  glider text, biplace integer, country text, \
+                                  site text, xcontestid text, synchro integer, landing text,\
+                                  optleague string, opttype string, optdistance real, optpoints real)');
 	// Table of sites
 	this.db.executeSimpleSQL('CREATE TABLE sites (country text, site text, lat real, lon real, alt real)');
 
@@ -167,8 +177,7 @@ GPSStore.prototype = {
 	this.db.executeSimpleSQL('CREATE TABLE version (version integer)');
 	this.db.executeSimpleSQL('INSERT INTO version VALUES(' + DBVERSION + ')');
 	// Configuration table
-	this.db.executeSimpleSQL("CREATE TABLE config (key text, value text)");
-
+	this.db.executeSimpleSQL('CREATE TABLE config (key text, value text)');
     },
 
     getIGCFile : function(fname) {
@@ -205,7 +214,7 @@ GPSStore.prototype = {
         if (!fname)
             return null;
 
-        var file = this.getIGCFile(fname);
+        var file = this.getIGCFile(fname + '.opt');
         if (!file.exists())
             return null;
         try {
@@ -276,46 +285,70 @@ GPSStore.prototype = {
 	if (filelist.length) {
 	    var fname = filelist[0];
 
-	    // If file does not exist in db, add it
-	    if (this.getFlightFile(fname) == null) {
-		try {
-		    var tlog = this.loadTracklog(fname);
-		    if (tlog == null)
-			throw "Error loading IGC tracklog" + fname
+            // If file does not exist in db, add it
+            var flightinfo = this.getFlightFile(fname); 
+            if (flightinfo == null) {
+                try {
+                    var tlog = this.loadTracklog(fname);
+                    if (tlog == null)
+                        throw "Error loading IGC tracklog" + fname
 
-		    var dinfo = {
-			synchro: this.SYNCHRO_NONE,
-			site : tlog.igcGetParam('site'),
-			country : tlog.igcGetParam('country'),
-			biplace : tlog.igcGetParam('biplace') ? true : false
-		    };
-		    if (tlog.igcGetParam('xcontestid')) {
-			dinfo.xcontestid = tlog.igcGetParam('xcontestid');
-			dinfo.synchro = this.SYNCHRO_DONE;
-		    }
-		    // Try to guess country
-		    if (dinfo.country == '--') {
-			var start = citydb.query_point(tlog.igcPoint(0));
-			if (start)
-			    dinfo.country = start.country;
-		    }
-		    // Save to database
-		    this.addNewIgc(tlog, fname, dinfo, false);
+                    var dinfo = {
+                        synchro: this.SYNCHRO_NONE,
+                        site : tlog.igcGetParam('site'),
+                        country : tlog.igcGetParam('country'),
+                        biplace : tlog.igcGetParam('biplace') ? true : false
+                    };
+                    if (tlog.igcGetParam('xcontestid')) {
+                        dinfo.xcontestid = tlog.igcGetParam('xcontestid');
+                        dinfo.synchro = this.SYNCHRO_DONE;
+                    }
+                    // Try to guess country
+                    if (dinfo.country == '--') {
+                        var start = citydb.query_point(tlog.igcPoint(0));
+                        if (start)
+                            dinfo.country = start.country;
+                    }
+                    // Save to database
+                    this.addNewIgc(tlog, fname, dinfo, false);
 
-		    // Add link to xcontest
-		    if (dinfo.synchro == this.SYNCHRO_DONE)
-			this.markFlightContest(fname, 1);
-		} catch (e) { 
-		    Components.utils.reportError('Failed import of IGC file: ' + fname);
-		    Components.utils.reportError(e);
-		} // Ignore invalid IGC files
-	    }
+                    // Add link to xcontest
+                    if (dinfo.synchro == this.SYNCHRO_DONE)
+                        this.markFlightContest(fname, 1);
+                    
+                    this.updateFlightOptimization(fname);
+                } catch (e) { 
+                    Components.utils.reportError('Failed import of IGC file: ' + fname);
+                    Components.utils.reportError(e);
+                } // Ignore invalid IGC files
+            } else if (!flightinfo.optleague) {
+                // Try to load optimization if it isn't already loaded
+                this.updateFlightOptimization(fname);
+            }
+            
 	    filelist.splice(0, 1);
 	    if (filelist.length)
 		return filelist;
 	}
 	return null;
     } ,
+    
+    // Update database information regarding flight optimization
+    updateFlightOptimization : function(fname) {
+        try {
+            var score  = this.loadOptimization(fname)['drawScore'];
+        } catch (e) {
+            return;
+        };
+        var query = 'UPDATE flights SET optleague=?2, opttype=?3, optdistance=?4, optpoints=?5 WHERE file=?1';
+        var statement = this.db.createStatement(query);
+        statement.bindStringParameter(0, fname);
+        statement.bindStringParameter(1, score.scoreLeague);
+        statement.bindStringParameter(2, score.scoreShape);
+        statement.bindDoubleParameter(3, score.scoreDistance);
+        statement.bindDoubleParameter(4, score.scorePoints);
+        statement.execute();
+    },
     
     // Mark flight as being part of a contest
     markFlightContest : function(fname, id) {
@@ -568,24 +601,14 @@ GPSStore.prototype = {
     // Fetch flight information from database given the igc filename
     getFlightFile : function(fname)
     {
-	var statement = this.db.createStatement("SELECT file,pilot,date,glider,site,country,xcontestid,landing,synchro,biplace FROM flights WHERE file=?1");
+	var statement = this.db.createStatement("SELECT file, date, pilot, glider, country, site, xcontestid,\
+                                                 landing, synchro, biplace, optleague, opttype, optdistance, optpoints \
+                                                 FROM flights WHERE file=?1");
 	statement.bindStringParameter(0, fname);
 
 	var result = null;
 	try {
-	    if (statement.executeStep())
-		result = {
-		    file : statement.getString(0),
-		    pilot : statement.getString(1), 
-		    date : statement.getInt64(2),
-		    glider : statement.getString(3),
-		    site : statement.getString(4),
-		    country : statement.getString(5),
-		    xcontestid : statement.getString(6),
-		    landing : statement.getString(7),
-		    synchro: statement.getInt32(8),
-		    biplace: statement.getInt32(9) ? true : false
-		}
+            result = this.createFlightQueryResult(statement)[0];
 	} finally {
 	    statement.reset();
 	}
@@ -617,9 +640,40 @@ GPSStore.prototype = {
 	return result;
     } ,
 
+    createFlightQueryResult : function (statement) {
+        var result = [];
+        try {
+            while (statement.executeStep()) {
+                result.push({
+                        file : statement.getString(0),
+                        date : statement.getInt64(1) * 1000,
+                        pilot : statement.getString(2),
+                        glider : statement.getString(3),
+                        country : statement.getString(4),
+                        site : statement.getString(5),
+                        xcontestid : statement.getString(6),
+                        landing : statement.getString(7),
+                        synchro : statement.getInt32(8),
+                        biplace: statement.getInt32(9) ? true : false,
+                        optleague : statement.getString(10),
+                        opttype : statement.getString(11),
+                        optdistance : statement.getDouble(12),
+                        optpoints : statement.getDouble(13)
+                });
+            }
+        } finally {
+            statement.reset();
+        }
+        return result;
+    },
+
     // Get flights in given month
     getFlightsInMonth : function(month, pilot) {
-	var query = 'SELECT file, date, pilot, glider, country, site, landing, synchro FROM flights WHERE strftime("%Y-%m", date, "unixepoch", "localtime")=?1 XXX ORDER BY strftime("%Y-%m-%d", date, "unixepoch", "localtime") DESC, ltrim(lower(pilot),\'aüöäÜÖÄbcčČdďĎeéěÉĚfghiíÍjklmnňňoóÓpqrřŘsšŠtťŤuúůÚvwxyýÝzžŽ\'), date DESC';
+	var query = 'SELECT file, date, pilot, glider, country, site, xcontestid, \
+                            landing, synchro, biplace, optleague, opttype, optdistance, optpoints \
+                     FROM flights \
+                     WHERE strftime("%Y-%m", date, "unixepoch", "localtime")=?1 XXX \
+                     ORDER BY strftime("%Y-%m-%d", date, "unixepoch", "localtime") DESC, ltrim(lower(pilot),\'aüöäÜÖÄbcčČdďĎeéěÉĚfghiíÍjklmnňňoóÓpqrřŘsšŠtťŤuúůÚvwxyýÝzžŽ\'), date DESC';
 
 	var filter = '';var bfunc = function() {};
 	if (pilot != null) {
@@ -631,30 +685,16 @@ GPSStore.prototype = {
 	var statement = this.db.createStatement(query);
 	bfunc(statement);
 	statement.bindStringParameter(0, month);
-
-	var result = [];
-	try {
-	    while (statement.executeStep()) {
-		result.push({
-		        file : statement.getString(0),
-			date : statement.getInt64(1) * 1000,
-			pilot : statement.getString(2),
-			glider : statement.getString(3),
-			country : statement.getString(4),
-			site : statement.getString(5),
-			landing : statement.getString(6),
-			synchro : statement.getInt32(7)
-		});
-	    }
-	} finally {
-	    statement.reset();
-	}
-	return result;
+        
+        return this.createFlightQueryResult(statement);
     }, 
 
     // Get flights on given site
     getFlightsOnSite : function(country, site, pilot) {
-	var query = 'SELECT file, date, pilot, glider, country, site, landing, synchro FROM flights WHERE country=?1 AND site=?2 XXX ORDER BY date DESC';
+	var query = 'SELECT file, date, pilot, glider, country, site, xcontestid, \
+                    landing, synchro, biplace, optleague, opttype, optdistance, optpoints \
+                    FROM flights \
+                    WHERE country=?1 AND site=?2 XXX ORDER BY date DESC';
 
 	var filter = ''; var bfunc = function() {};
 	if (pilot != null) {
@@ -669,24 +709,7 @@ GPSStore.prototype = {
 	statement.bindStringParameter(0, country);
 	statement.bindStringParameter(1, site);
 
-	var result = [];
-	try {
-	    while (statement.executeStep()) {
-		result.push({
-		        file : statement.getString(0),
-			date : statement.getInt64(1) * 1000,
-			pilot : statement.getString(2),
-			glider : statement.getString(3),
-			country : statement.getString(4),
-			site : statement.getString(5),
-			landing : statement.getString(6),
-			synchro : statement.getInt32(7)
-		});
-	    }
-	} finally {
-	    statement.reset();
-	}
-	return result;
+        return this.createFlightQueryResult(statement);
     }, 
 
     getDistinctPilots : function() {

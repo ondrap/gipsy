@@ -118,8 +118,20 @@
 		<treecol id="col_glider" flex="1" hidden="true" 
 			 label="&glider;" persist="hidden width"/>
 		<splitter class="tree-splitter"/>
-		<treecol id="col_fname" flex="1" hidden="true" 
+		<treecol id="col_file" flex="1" hidden="true" 
 			 label="&filename;" persist="hidden width"/>
+                <splitter class="tree-splitter"/>
+                <treecol id="col_optleague" flex="1" hidden="true" 
+                         label="Contest" persist="hidden width"/>
+                <splitter class="tree-splitter"/>
+                <treecol id="col_opttype" flex="1" hidden="true" 
+                         label="Route type" persist="hidden width"/>
+                <splitter class="tree-splitter"/>
+                <treecol id="col_optdistance" flex="1" hidden="true" 
+                         label="Route Distance" persist="hidden width"/>
+                <splitter class="tree-splitter"/>
+                <treecol id="col_optpoints" flex="1" hidden="true" 
+                         label="Route Points" persist="hidden width"/>
 	      </treecols>
 	      <treechildren contextmenu="tree_popup" />
 	    </tree>

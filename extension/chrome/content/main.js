@@ -74,7 +74,7 @@ function OnLoad() {
 
     // Check db version
     if (!gstore.checkDBVersion()) {
-	if (confirm('Wrong version of flight database found! Upgrade database?'))
+	if (confirm('Old version of flight database found! Upgrade database?'))
 	    if (!gstore.updateDB())
 		alert('Upgrade failed. Remove flights.db and restart firefox.');
     }

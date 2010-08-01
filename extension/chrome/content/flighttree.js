@@ -1,6 +1,4 @@
 
-var citydb = Components.classes["@pgweb.cz/Gipsy/GPSCities;1"].getService().wrappedJSObject;
-
 // Initialize tree of flights
 function init_flight_tree()
 {
@@ -20,8 +18,18 @@ var treeView = {
     get rowCount() { return this.rows.length; },
     
     getCellText : function(row, column) {
-        if (this.rows[row].hasOwnProperty(column.id))
-            return this.rows[row][column.id];
+        if (this.rows[row].hasOwnProperty(column.id)) {
+            var text = this.rows[row][column.id];
+            if (column.id == 'col_optpoints' || column.id == 'col_optdistance') {
+                if (text == 0)
+                    return '';
+                if (column.id == 'col_optpoints')
+                    text = sprintf('%.2f', text);
+                else
+                    text = format_km(text * 1000);
+            }
+            return text;
+        }
         return null;
     },
     hasNextSibling: function(row, afterIndex) 
@@ -93,59 +101,67 @@ var treeView = {
 	    var sites = gstore.getDistinctSites(this.rows[row].value, 
 						this.pilot_filter);
 	    for (var i=0; i < sites.length; i++)
-		this.rows.splice(row+i+1, 0, {
-		    level : 1,
-		    col_date_nm : sites[i][0],
-		    count : sites[i][1],
-		    separator : false,
-		    value : [this.rows[row].value, sites[i][0] ],
-		    get col_date() { 
-			return this.col_date_nm + ' (' + this.count + ')';
-		    }
+                this.rows.splice(row+i+1, 0, {
+                    level : 1,
+                    col_date_nm : sites[i][0],
+                    count : sites[i][1],
+                    separator : false,
+                    value : [this.rows[row].value, sites[i][0] ],
+                    get col_date() { 
+                        return this.col_date_nm + ' (' + this.count + ')';
+                    }
 
 		});
 	    this.treebox.rowCountChanged(row + 1, sites.length);
 	} else {
-	    if (this.primaryType == 'date') {
-	        var newitems = gstore.getFlightsInMonth(this.rows[row].value,
-							this.pilot_filter);
-		var newlevel = 1;
-	    } else {
-	        var newitems = gstore.getFlightsOnSite(this.rows[row].value[0], this.rows[row].value[1],
-						       this.pilot_filter);
-		var newlevel = 2;
-	    }
-	    for (var i=0; i < newitems.length; i++) {
-		var date = new Date(newitems[i].date);
-		date = sprintf("%d.%d.%d %02d:%02d", date.getUTCDate(),
-			       date.getUTCMonth()+1, date.getUTCFullYear(), 
-			       date.getUTCHours(), date.getUTCMinutes(),
-			       date.getUTCSeconds());
-		var site = newitems[i].site;
-		if (newitems[i].country != '--')
-		    site += ' (' + newitems[i].country + ')';
-		this.rows.splice(row+i+1, 0, {
-		        level : newlevel,
-			col_date : date,
-			col_site : site,
-		        col_glider : newitems[i].glider,
-		        col_pilot : newitems[i].pilot,
-			col_landing : newitems[i].landing,
-			col_fname : newitems[i].file,
-			synchro : newitems[i].synchro,
-			value : newitems[i].file,
-			separator : false,
-			flight : true,
-			running_usercmd : false
-		});
-	    }
-	    this.treebox.rowCountChanged(row + 1, newitems.length);
-	}
+            if (this.primaryType == 'date')
+                var newitems = gstore.getFlightsInMonth(this.rows[row].value,
+                                                        this.pilot_filter);
+            else
+                var newitems = gstore.getFlightsOnSite(this.rows[row].value[0], this.rows[row].value[1],
+                                                        this.pilot_filter);
+            for (var i=0; i < newitems.length; i++) {
+                var newrow = this.make_flight_row(newitems[i]);
+                this.rows.splice(row + i + 1, 0, newrow);
+            }
+            this.treebox.rowCountChanged(row + 1, newitems.length);
+        }
+    },
+    
+    make_flight_row : function(data) {
+        if (this.primaryType == 'date')
+            var newlevel = 1;
+        else
+            var newlevel = 2;
+
+        var date = new Date(data.date);
+        date = sprintf("%d.%d.%d %02d:%02d", date.getUTCDate(),
+                        date.getUTCMonth()+1, date.getUTCFullYear(), 
+                        date.getUTCHours(), date.getUTCMinutes(),
+                        date.getUTCSeconds());
+        var site = data.site;
+        if (data.country != '--')
+            site += ' (' + data.country + ')';
+
+        var newrow = {
+                level : newlevel,
+                synchro : data.synchro,
+                value : data.file,
+                separator : false,
+                flight : true,
+                running_usercmd : false,
+                col_date : date,
+                col_site : site
+        };
+        for (var key in data)
+            if (newrow['col_' + key] == null)
+                newrow['col_' + key] = data[key];
+        return newrow;
     },
 
     set_running_usercmd : function(fname, val) {
         for (var i=0; i < this.rows.length; i++)
-            if (this.rows[i].value == fname) {
+            if (this.rows[i].hasOwnProperty('value') && this.rows[i].value == fname) {
                 this.rows[i].running_usercmd = val;
                 this.treebox.invalidateRow(i);
                 break;
@@ -304,16 +320,30 @@ var treeView = {
 	file.launch();
     },
 
+    // Invalidate row that contains the IGC named fname
+    reread_fname_row : function(fname) {
+        for (var i=0; i < this.rows.length; i++) {
+            if (this.rows[i].hasOwnProperty('value') && this.rows[i].value == fname) {
+                var info = gstore.getFlightFile(fname);
+                this.rows[i] = this.make_flight_row(info);
+                this.treebox.invalidateRow(i);
+                break;
+            }
+        }
+    },
+
     // Start user command
     user_command : function(num) {
         var flist = this.get_selected_fnames();
         var self = this;
         var callback = function(subject, topic, tmpfile) {
             subject = subject.QueryInterface(Components.interfaces.nsIProcess);
-            self.set_running_usercmd(flist[0], false);
             if (subject.exitValue == 0 && topic == 'process-finished') {
+                self.set_running_usercmd(flist[0], false);
                 if (get_string_pref('usercmd_' + num + '_type') == 'hspoints') {
                     flightmodel.update_opts();
+                    gstore.updateFlightOptimization(flist[0]);
+                    self.reread_fname_row(flist[0]);
                 } else 
                     window.openDialog('file:///' + tmpfile.path, 'user_output' + flist[0], 'dialog=no, chrome, modal=no');
 
@@ -398,7 +428,7 @@ var treeView = {
 	for (var i=0; i < flist.length; i++) {
 	    var tlog = gstore.loadTracklog(flist[i]);
 	    var dinfo = gstore.getFlightFile(flist[i]);
-            var opt = gstore.loadOptimization(flist[i] + '.opt');
+            var opt = gstore.loadOptimization(flist[i]);
 	    gpx.addTracklog(tlog, dinfo, opt);
 	}
 
@@ -583,7 +613,7 @@ var flightmodel = {
         var flist = treeView.get_selected_fnames();
         var optlist = [];
         for (var i=0; i < flist.length; i++) {
-            var opt = gstore.loadOptimization(flist[i] + '.opt');
+            var opt = gstore.loadOptimization(flist[i]);
             if (opt)
                 optlist.push(opt);
         }
