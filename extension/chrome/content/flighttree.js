@@ -338,8 +338,8 @@ var treeView = {
         var self = this;
         var callback = function(subject, topic, tmpfile) {
             subject = subject.QueryInterface(Components.interfaces.nsIProcess);
+            self.set_running_usercmd(flist[0], false);
             if (subject.exitValue == 0 && topic == 'process-finished') {
-                self.set_running_usercmd(flist[0], false);
                 if (get_string_pref('usercmd_' + num + '_type') == 'hspoints') {
                     flightmodel.update_opts();
                     gstore.updateFlightOptimization(flist[0]);
