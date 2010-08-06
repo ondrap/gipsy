@@ -646,7 +646,7 @@ NS_IMETHODIMP GpsItem::TrackStartTime(PRUint32 pos, PRTime *_retval)
     if (pos >= saved_tracks.size())
         return NS_ERROR_UNEXPECTED;
     
-    *_retval = saved_tracks[pos].first * 1000;
+    *_retval = ((PRTime)saved_tracks[pos].first) * 1000;
     return NS_OK;
 }
 
@@ -656,7 +656,7 @@ NS_IMETHODIMP GpsItem::TrackStopTime(PRUint32 pos, PRTime *_retval)
     if (pos >= saved_tracks.size())
         return NS_ERROR_UNEXPECTED;
     
-    *_retval = saved_tracks[pos].second * 1000;
+    *_retval = ((PRTime)saved_tracks[pos].second) * 1000;
     return NS_OK;
 }
 
