@@ -42,6 +42,7 @@ $(TARGET): $(OBJECTS)
 	$(CXX) -Wall -Os -o $(TARGET) $(SHARED) $(OBJECTS) $(CRYPTO_LIB) $(USB_LIB) $(GECKO_LDFLAGS)
 	chmod +x $(TARGET)
 ifeq "$(SHARED)" "-shared"
+	./purify.py $(TARGET)
 	strip $(TARGET)
 endif
 
