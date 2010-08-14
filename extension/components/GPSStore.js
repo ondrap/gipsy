@@ -234,10 +234,11 @@ GPSStore.prototype = {
             
             if (JSON)
                 return JSON.parse(data);
-            // Fall back on unsecure eval
-            return eval('(' + data + ')');
+            // Fall back on old nsIJSON
+            var nativeJSON = Components.classes["@mozilla.org/dom/json;1"].createInstance(Components.interfaces.nsIJSON);
+            return nativeJSON.decode(data);
         } catch (e) {
-            dump(e);
+            Components.utils.reportError(e);
             return null;
         }
     },
