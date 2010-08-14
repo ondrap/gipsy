@@ -122,16 +122,16 @@
 			 label="&filename;" persist="hidden width"/>
                 <splitter class="tree-splitter"/>
                 <treecol id="col_optleague" flex="1" hidden="true" 
-                         label="Contest" persist="hidden width"/>
+                         label="&contest;" persist="hidden width"/>
                 <splitter class="tree-splitter"/>
                 <treecol id="col_opttype" flex="1" hidden="true" 
-                         label="Route type" persist="hidden width"/>
+                         label="&route;" persist="hidden width"/>
                 <splitter class="tree-splitter"/>
                 <treecol id="col_optdistance" flex="1" hidden="true" 
-                         label="Route Distance" persist="hidden width"/>
+                         label="&distance;" persist="hidden width"/>
                 <splitter class="tree-splitter"/>
                 <treecol id="col_optpoints" flex="1" hidden="true" 
-                         label="Route Points" persist="hidden width"/>
+                         label="&points;" persist="hidden width"/>
 	      </treecols>
 	      <treechildren contextmenu="tree_popup" />
 	    </tree>

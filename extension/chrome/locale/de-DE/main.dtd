@@ -146,3 +146,8 @@
 <!ENTITY passwd.title "Passwort eingeben">
 <!ENTITY passwd.xcontestid "Login Name">
 <!ENTITY passwd.password "Passwort">
+
+<!ENTITY contest "Wettbewerb" >
+<!ENTITY route "Route" >
+<!ENTITY distance "Entfernung" >
+<!ENTITY points "Punkte" >

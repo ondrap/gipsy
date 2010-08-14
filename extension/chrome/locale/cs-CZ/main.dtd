@@ -149,3 +149,8 @@
 <!ENTITY passwd.title "Zadejte heslo">
 <!ENTITY passwd.xcontestid "Přihlašovací jméno">
 <!ENTITY passwd.password "Heslo">
+
+<!ENTITY contest "Soutěž" >
+<!ENTITY route "Trasa" >
+<!ENTITY distance "Vzdálenost" >
+<!ENTITY points "Body" >
