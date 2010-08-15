@@ -1292,6 +1292,8 @@
 	var pcount = this.getAttribute('width') / 2;
 	var height = this.getAttribute('height');
 	var y = this.getAttribute('y');
+	if (!y)
+            y = 0;
 	for (var i=0; i < pcount; i++) {
 	   var elem = document.createElementNS(svgns, 'flzpoint');
 	   elem.setAttribute('x', i*2);
