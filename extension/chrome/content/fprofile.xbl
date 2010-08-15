@@ -1,5 +1,4 @@
 <?xml version="1.0"?>
-<!-- $Id: fprofile.xbl 326 2007-05-11 12:20:25Z ondra $ -->
 
 <!DOCTYPE window SYSTEM "chrome://gipsy/locale/main.dtd">
 
@@ -696,21 +695,20 @@
 	  <parameter name="event"/>
 	  <body>
 	    <![CDATA[
-		     var me = document.draggedItem;
-		     var proc = me.getAttribute('process');
-		     if (proc) {
-		          var point = me._point;
-			  var tracklog = me._tracklog;
-			  point = eval(proc);
-			  me.FLparent.set_property(me.pointname, point);
-		     }
+                    var me = document.draggedItem;
+                    var proc = me.getAttribute('process');
+                    if (proc) {
+                        proc = new Function('tracklog', 'point', proc);
+                        var point = proc(me._tracklog, me._point);
+                        me.FLparent.set_property(me.pointname, point);
+                    }
 
-		     document.removeEventListener("mousemove", document.draggedItem._mm,true);
-		     document.removeEventListener("mouseup", document.draggedItem._mu,true);
-		     document.draggedItem = null;
-	    ]]>
-	  </body>
-	</method>
+                    document.removeEventListener("mousemove", document.draggedItem._mm, true);
+                    document.removeEventListener("mouseup", document.draggedItem._mu, true);
+                    document.draggedItem = null;
+            ]]>
+            </body>
+        </method>
       </methods>
     </implementation>
     <handlers>

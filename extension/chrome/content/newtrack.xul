@@ -90,13 +90,13 @@
 	    <svg:text x="10" y="-20" font-size="small" >&selpoint.helprange;</svg:text>
 	    <svg:flselection height="100" /> 
 	    <svg:fldragsel pointname="startpoint" smallerthen="endpoint" 
-			   y="105" process="tracklog.igcAdjustPoint(point, true)" />
+			   y="105" process="return tracklog.igcAdjustPoint(point, true)" />
 	    <svg:fldragsel pointname="endpoint" greaterthen="startpoint" 
-			   y="105" process="tracklog.igcAdjustPoint(point, false)" />
+			   y="105" process="return tracklog.igcAdjustPoint(point, false)" />
 	    <svg:fldragsel pointname="startpoint" smallerthen="endpoint" 
-			   y="5" process="tracklog.igcAdjustPoint(point, true)" />
+			   y="5" process="return tracklog.igcAdjustPoint(point, true)" />
 	    <svg:fldragsel pointname="endpoint" greaterthen="startpoint" 
-			   y="5" process="tracklog.igcAdjustPoint(point, false)"/>
+			   y="5" process="return tracklog.igcAdjustPoint(point, false)"/>
 
 	    <svg:flrangecontrol y="-5" height="205"/>
 	    <svg:flpointdata pointname="startpoint"

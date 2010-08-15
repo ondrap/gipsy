@@ -127,11 +127,6 @@ interface IGPSIGC : nsISupports {
     double svgProjectX(in double x);
     double svgProjectY(in double y);
 
-    /* Track 2D data. Keeps aspect ratio, so only maxlongitude wanted */
-    string svgPathTrack(in long width, in long height,
-			in double minlat, in double minlon, 
-			in double maxlon, in boolean doint);
-
     /* Create a KML track */
     string kmlTrack();
     
