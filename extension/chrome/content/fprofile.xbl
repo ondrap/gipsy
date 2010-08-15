@@ -1202,9 +1202,9 @@
 
 	    // Go from lastpos to newpos and call undo/action according to direction
 	    if (newpoint > lastpoint)
-	        incf = function(x) { return x+1 }
+	        var incf = function(x) { return x+1 }
 	    else
-	        incf = function(x) { return x-1 }
+	        var incf = function(x) { return x-1 }
 	    
 	    for (var pos = incf(lastpoint); pos != newpoint; pos=incf(pos)) {
 	        var pdiff = pos - point;

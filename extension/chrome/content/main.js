@@ -20,7 +20,7 @@ var tlog_observer = {
         }
 	
 	if (topic == "gps_dbnewigc") {
-	    tlog = subject.QueryInterface(Components.interfaces.IGPSIGC);
+	    var tlog = subject.QueryInterface(Components.interfaces.IGPSIGC);
 	    // TODO: Selective invalidation and insertion of
 	    // correct flight into the tree
 	    treeView.init();
