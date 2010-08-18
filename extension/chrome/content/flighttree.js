@@ -361,6 +361,10 @@ var treeView = {
     user_command_fname : function (num, fname, callback) {
         var file = gstore.getIGCFile(fname);
         var process = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+        // Firefox 3.5 compatibility
+        if (!process.runAsync)
+            process = process.QueryInterface(Components.interfaces.nsIProcess2);
+
         var procname = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
         try {
             procname.initWithPath(get_string_pref('usercmd_' + num + '_cmd'));
