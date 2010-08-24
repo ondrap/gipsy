@@ -6,35 +6,6 @@
 **
 */
 
-/*  make sure the ECMAScript 3.0 Number.toFixed() method is available  */
-if (typeof Number.prototype.toFixed != "undefined") {
-    (function(){
-        /*  see http://www.jibbering.com/faq/#FAQ4_6 for details  */
-        function Stretch(Q, L, c) {
-            var S = Q
-            if (c.length > 0)
-                while (S.length < L)
-                    S = c+S;
-            return S;
-        }
-        function StrU(X, M, N) { /* X >= 0.0 */
-            var T, S;
-            S = new String(Math.round(X * Number("1e"+N)));
-            if (S.search && S.search(/\D/) != -1)
-                return ''+X;
-            with (new String(Stretch(S, M+N, '0')))
-                return substring(0, T=(length-N)) + '.' + substring(T);
-        }
-        function Sign(X) {
-            return X < 0 ? '-' : '';
-        }
-        function StrS(X, M, N) {
-            return Sign(X)+StrU(Math.abs(X), M, N);
-        }
-        Number.prototype.toFixed = function (n) { return StrS(this, 1, n) };
-    })();
-}
-
 /*  the sprintf() function  */
 function sprintf() {
     /*  argument sanity checking  */
