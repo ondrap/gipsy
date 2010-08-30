@@ -23,6 +23,6 @@ CXX   = g++
 
 CPPFLAGS += -DUSE_LIBUSB
 USB_LIB = -lusb
-#CPPFLAGS += -fPIC
+CPPFLAGS += -fPIC
 
 include rules.makefile
