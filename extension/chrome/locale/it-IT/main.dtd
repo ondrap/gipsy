@@ -1,10 +1,8 @@
 <!ENTITY gipsy.title "GiPSy Flight Manager">
 
 <!ENTITY menu.sendxc "Invia Voli a XContest" >
-<!-- NEW -->
-<!ENTITY menu.importgpx "Import GPX file" >
-<!ENTITY menu.googlemapdownload "Download GoogleMap definitions" >
-<!-- NEW -->
+<!ENTITY menu.importgpx "Importa file GPX" >
+<!ENTITY menu.googlemapdownload "Scarica definizioni GoogleMap" >
 
 <!ENTITY tab.flights "Voli" >
 <!ENTITY tab.devices "Connessione al GPS" >
@@ -52,13 +50,11 @@
 <!ENTITY map.googlemap "GoogleMap" >
 <!ENTITY map.googlemaplayer "GoogleMap Layer" >
 <!ENTITY map.airspace "Airspace" >
-<!-- NEW -->
-<!ENTITY map.optimization "Route calculation" >
-<!ENTITY map.speed "speed">
-<!ENTITY map.altitude "altitude">
-<!ENTITY map.vario "vario">
-<!ENTITY map.time "time">
-<!-- NEW -->
+<!ENTITY map.optimization "Calcolo Rotta" >
+<!ENTITY map.speed "Velocità">
+<!ENTITY map.altitude "Altitudine">
+<!ENTITY map.vario "Variometro">
+<!ENTITY map.time "Orario">
 
 <!ENTITY duration "Durata" >
 
@@ -80,8 +76,8 @@
 <!ENTITY gps "GPS" >
 
 <!ENTITY gps.help "Non vedo il mio GPS" >
-<!ENTITY gps.type "modello GPS" >
-<!ENTITY gps.name "nome GPS" >
+<!ENTITY gps.type "Modello GPS" >
+<!ENTITY gps.name "Nome GPS" >
 <!ENTITY progress "Trasferimento in corso" >
 
 <!ENTITY pilot.filter "Ordina per pilota">
@@ -92,26 +88,26 @@
 
 <!-- nuova traccia -->
 <!ENTITY newtrk.title "Elaborazione del registro di traccia" >
-<!ENTITY seltrk.title "1° passo - selezione del segmento:: seleziona il segmento, in accordo al tuo volo" >
-<!ENTITY seltrk.help "Suggerimento: per unire più segmenti in un’ unico volo, usa il tasto Shift durante la selezione" >
+<!ENTITY seltrk.title "1° passo - selezione del segmento: seleziona il segmento, in accordo al tuo volo" >
+<!ENTITY seltrk.help "Suggerimento: per unire più segmenti in un'unico volo, usa il tasto Shift durante la selezione" >
 
-<!ENTITY selpoint.title "2° passo - correzione :: se necessario, puoi correggere manualmente l’inizio/fine del volo, altrimenti sono proposti in automatico dal programma" >
+<!ENTITY selpoint.title "2° passo - correzione : se necessario, puoi correggere manualmente l'inizio/fine del volo, altrimenti sono proposti in automatico dal programma" >
 <!ENTITY selpoint.advanced "Mostra strumento per selezione del dettaglio" >
 <!ENTITY selpoint.restore "Ripristina selezione iniziale" >
 <!ENTITY selpoint.helprange "Puoi correggere inizio/fine selezionando e trascinando i cerchi rossi col puntatore">
-<!ENTITY selpoint.helpdrag "Muovi l’area ingrandita, trascinando il mouse nell’area evidenziata in rosso.">
+<!ENTITY selpoint.helpdrag "Muovi l'area ingrandita, trascinando il mouse nell'area evidenziata in rosso.">
 <!ENTITY selpoint.helpsel "Seleziona punti, o deseleziona parti omesse, selezionandole con il mouse" >
 <!ENTITY tracklog.invalid "Registrazione di traccia non valida" >
 
-<!ENTITY finfo.title "3° passo:: aggiungi informazioni di volo">
+<!ENTITY finfo.title "3° passo: aggiungi informazioni di volo">
 <!ENTITY finfo.fileid "ID a 3 lettere per il nome del file IGC" >
 <!ENTITY finfo.longname "Formato lungo del nome del file IGC" >
 <!ENTITY finfo.shortname "Formato corto del nome del file IGC" >
 <!ENTITY finfo.longsite "Formato del nome del file: YYYY-MM-DD-launch.igc" >
 
 <!ENTITY filinfo.title "Informazioni del file IGC" >
-<!ENTITY filinfo.savepath "Il tuo registro di volo è stato salvato come" >
-<!ENTITY filinfo.noxc "Il tuo registro di volo NON è stato inviato al sistema XContest">
+<!ENTITY filinfo.savepath "Il tuo registro di volo é stato salvato come" >
+<!ENTITY filinfo.noxc "Il tuo registro di volo NON é stato inviato al sistema XContest">
 <!ENTITY filinfo.done "Elaborazione del volo completata">
 <!ENTITY filinfo.otherproc "Elabora altri voli dal GPS" >
 <!ENTITY filinfo.xcnow "Invia ora il registro di volo a XContest ">
@@ -135,26 +131,23 @@
 <!ENTITY prefs.savesubdirs "Salva i nuovi voli nella subdirectory 'pilot name/year'" >
 <!ENTITY prefs.units "Unità">
 <!ENTITY prefs.metricsystem "Sistema metrico">
-<!-- NEW -->
-<!ENTITY prefs.autoselect "Automatically select today's tracks">
-<!ENTITY prefs.usercommands "User commands">
-<!ENTITY prefs.usertitle "Title">
+<!ENTITY prefs.autoselect "Selezione automaticamente le tracce di oggi">
+<!ENTITY prefs.usercommands "Comandi dell'Utente">
+<!ENTITY prefs.usertitle "Nome">
 <!ENTITY prefs.usercmd "Program path">
-<!ENTITY prefs.userparams "Additional parameters">
-<!-- NEW -->
+<!ENTITY prefs.userparams "Parametri addizionali">
 
 <!-- Proprietà -->
 <!ENTITY prop.dontsend "Non inviare a XContest" >
 <!ENTITY prop.prepare "Verrà inviato a XContest" >
-<!ENTITY prop.uploaded "Il volo è stato inviato a XCcontest" >
+<!ENTITY prop.uploaded "Il volo é stato inviato a XCcontest" >
 
 <!-- Inserimento password -->
 <!ENTITY passwd.title "Inserire password">
 <!ENTITY passwd.xcontestid "Login name">
 <!ENTITY passwd.password "Password">
 
-<!-- NEW -->
 <!ENTITY contest "Contest" >
-<!ENTITY route "Route" >
-<!ENTITY distance "Distance" >
-<!ENTITY points "Points" >
+<!ENTITY route "Rotta" >
+<!ENTITY distance "Distanza" >
+<!ENTITY points "Punti" >
