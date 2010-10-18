@@ -681,8 +681,8 @@ var flightmodel = {
 	us('site', site);
 	us('xcontestid', dinfo.xcontestid);
 
-	us('date', new Date(dinfo.date * 1000).toLocaleString());
-	us('utc_date', new Date(dinfo.date * 1000).toUTCString());
+	us('date', new Date(dinfo.date).toLocaleString());
+	us('utc_date', new Date(dinfo.date).toUTCString());
     
 	us('dist_startland', format_km(tlog.igcGetStat(tlog.STAT_DIST_STARTLAND)));
 	us('dist_flown', format_km(tlog.igcGetStat(tlog.STAT_DIST_FLOWN)));
