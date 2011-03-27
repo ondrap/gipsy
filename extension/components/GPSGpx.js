@@ -1,9 +1,7 @@
 /* Module for exporting tracklogs to XML files */
-
-const nsISupports = Components.interfaces.nsISupports;
+Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 
 // You can change these if you like
-const CLASS_ID = Components.ID("b60dfd97-ad5f-4959-a572-801935b02317");
 const CLASS_NAME = "GPX support class";
 const CONTRACT_ID = "@pgweb.cz/Gipsy/GPSGpx;1";
 
@@ -970,10 +968,11 @@ GPSGpx.prototype = {
     // for nsISupports
     QueryInterface: function(aIID) {
 	// add any other interfaces you support here
-	if (!aIID.equals(nsISupports))
+	if (!aIID.equals(Components.interfaces.nsISupports))
 	    throw Components.results.NS_ERROR_NO_INTERFACE;
 	return this;
-    }
+    },
+    classID : Components.ID("b60dfd97-ad5f-4959-a572-801935b02317")
 }
 
 //=================================================

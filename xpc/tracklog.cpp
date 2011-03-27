@@ -6,6 +6,7 @@
 
 using namespace std;
 
+#include "mozilla-config.h"
 #include "prio.h"
 #include "prmem.h"
 #include "nsStringAPI.h"

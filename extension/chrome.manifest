@@ -9,3 +9,15 @@ locale gipsy pl chrome/locale/pl-PL/
 locale gipsy it chrome/locale/it-IT/
 
 overlay chrome://browser/content/browser.xul chrome://gipsy/content/overlays-ff.xul
+
+interfaces components/IGPSScanner.xpt
+binary-component platforms/WINNT_x86-msvc/components/gipsy.dll ABI=WINNT_x86-msvc
+
+component {1391ed51-deb3-4be6-a157-4d774deaa990} components/GPSStore.js
+contract @pgweb.cz/Gipsy/GPSstore;1 {1391ed51-deb3-4be6-a157-4d774deaa990}
+
+component {bfb101f6-3ed2-42a4-9616-c1f8e983ee03} components/GPSCity.js
+contract @pgweb.cz/Gipsy/GPSCities;1 {bfb101f6-3ed2-42a4-9616-c1f8e983ee03}
+
+component {b60dfd97-ad5f-4959-a572-801935b02317} components/GPSGpx.js
+contract @pgweb.cz/Gipsy/GPSGpx;1 {b60dfd97-ad5f-4959-a572-801935b02317}

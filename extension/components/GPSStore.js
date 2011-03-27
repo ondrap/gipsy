@@ -1,10 +1,8 @@
 /* Module for storing and retrieving IGC files from local repository */
 
-
-const nsISupports = Components.interfaces.nsISupports;
+Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 
 // You can change these if you like
-const CLASS_ID = Components.ID("1391ed51-deb3-4be6-a157-4d774deaa990");
 const CLASS_NAME = "Store of IGC flights";
 const CONTRACT_ID = "@pgweb.cz/Gipsy/GPSstore;1";
 
@@ -82,11 +80,12 @@ GPSStore.prototype = {
 
     sqfile : null, // Database filename
 	
+    classID : Components.ID("1391ed51-deb3-4be6-a157-4d774deaa990"),    
     // for nsISupports
     QueryInterface : function(aIID)
     {
 	// add any other interfaces you support here
-	if (!aIID.equals(nsISupports)) {
+	if (!aIID.equals(Components.interfaces.nsISupports)) {
 	    throw Components.results.NS_ERROR_NO_INTERFACE;
 	}
 	return this;
@@ -1022,33 +1021,8 @@ var GPSStoreFactory = {
   }
 };
 
-// Module
-var GPSStoreModule = {
-  registerSelf: function(aCompMgr, aFileSpec, aLocation, aType)
-  {
-    aCompMgr = aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
-    aCompMgr.registerFactoryLocation(CLASS_ID, CLASS_NAME, CONTRACT_ID, aFileSpec, aLocation, aType);
-  },
 
-  unregisterSelf: function(aCompMgr, aLocation, aType)
-  {
-    aCompMgr = aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
-    aCompMgr.unregisterFactoryLocation(CLASS_ID, aLocation);        
-  },
-  
-  getClassObject: function(aCompMgr, aCID, aIID)
-  {
-    if (!aIID.equals(Components.interfaces.nsIFactory))
-      throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
-
-    if (aCID.equals(CLASS_ID))
-      return GPSStoreFactory;
-
-    throw Components.results.NS_ERROR_NO_INTERFACE;
-  },
-
-  canUnload: function(aCompMgr) { return true; }
-};
-
-//module initialization
-function NSGetModule(aCompMgr, aFileSpec) { return GPSStoreModule; }
+if (XPCOMUtils.generateNSGetFactory)
+    var NSGetFactory = XPCOMUtils.generateNSGetFactory([GPSStore]);
+else
+    var NSGetModule = XPCOMUtils.generateNSGetModule([GPSStore]);

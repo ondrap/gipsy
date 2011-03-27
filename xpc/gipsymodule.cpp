@@ -1,34 +1,44 @@
-#include "xpcom-config.h"
-#include "nsIGenericFactory.h"
+#include "mozilla-config.h"
+#include "mozilla/ModuleUtils.h"
+#include "nsIClassInfoImpl.h"
+
 #include "gipsy.h"
 #include "tracklog.h"
 
 NS_GENERIC_FACTORY_CONSTRUCTOR(Gipsy)
-NS_GENERIC_FACTORY_CONSTRUCTOR(Tracklog)
-NS_GENERIC_FACTORY_CONSTRUCTOR(GpsPoint)
+NS_DEFINE_NAMED_CID(NS_GIPSY_CID);
 
-static nsModuleComponentInfo components[] = {
-    {
-	"Gipsy GPS component",
-	{ 0x0d9a0cf4, 0x42d4, 0x4bef, { 0xa1, 0xef, 0x9c, 0x8a, 
-					0x66, 0x29, 0x5f, 0x2d}},
-	"@pgweb.cz/Gipsy/GPSsight;1",
-	GipsyConstructor
-    } ,
-    {
-	"IGC tracklog representation",
-	{ 0x45b35860, 0x648b, 0x4b7f, { 0x91, 0xfb, 0x86, 0x84,
-					0x63, 0x66, 0xfa, 0x50}},
-	"@pgweb.cz/Gipsy/GPSIGC;1",
-	TracklogConstructor
-    } ,
-    {
-	"IGC point representation",
-	{ 0x1b0548e3, 0xae3a, 0x456a, { 0xb5, 0x74, 0x33, 0x8c,
-					0xd0, 0x8b, 0xf0, 0x2f}},
-	"@pgweb.cz/Gipsy/GPSPoint;1",
-	GpsPointConstructor
-    }
+NS_GENERIC_FACTORY_CONSTRUCTOR(Tracklog)
+NS_DEFINE_NAMED_CID(NS_TRACKLOG_CID);
+
+NS_GENERIC_FACTORY_CONSTRUCTOR(GpsPoint)
+NS_DEFINE_NAMED_CID(NS_IGCPOINT_CID);
+
+static const mozilla::Module::CIDEntry kGipsyCIDs[] = {
+ { &kNS_GIPSY_CID, false, NULL, GipsyConstructor },
+ { &kNS_TRACKLOG_CID, false, NULL, TracklogConstructor },
+ { &kNS_IGCPOINT_CID, false, NULL, GpsPointConstructor },
+ { NULL }
 };
 
-NS_IMPL_NSGETMODULE("GipsyModule", components)
+static const mozilla::Module::ContractIDEntry kGipsyContracts[] = {
+  { NS_GIPSY_CONTRACTID, &kNS_GIPSY_CID },
+  { NS_TRACKLOG_CONTRACTID, &kNS_TRACKLOG_CID },
+  { NS_IGCPOINT_CONTRACTID, &kNS_IGCPOINT_CID },
+  { NULL }
+};
+
+static const mozilla::Module::CategoryEntry kGipsyCategories[] = {
+    { NULL }
+};
+
+static const mozilla::Module kGipsyModule = {
+    mozilla::Module::kVersion,
+    kGipsyCIDs,
+    kGipsyContracts,
+    kGipsyCategories
+};
+
+NSMODULE_DEFN(nsGipsyMOdule) = &kGipsyModule;
+
+NS_IMPL_MOZILLA192_NSGETMODULE(&kGipsyModule)

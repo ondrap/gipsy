@@ -22,7 +22,7 @@
   <script src="flighttree.js" />
   <script src="gpstree.js" />
 
-  <popup id="tree_popup" onpopupshowing="ctx_setup_usercmd()" >
+  <menupopup id="tree_popup" onpopupshowing="ctx_setup_usercmd()" >
     <menuitem label="&open;..." oncommand="treeView.launch_file()" 
 	      id="popup_launch" style="display:none" />
     <menuitem label="&show.source;" oncommand="treeView.show_file()" />
@@ -39,15 +39,15 @@
     <menuitem label="User command 1" oncommand="treeView.user_command(1)" id="ctx_usercmd1" />
     <menuitem label="User command 2" oncommand="treeView.user_command(2)" id="ctx_usercmd2" />
     <menuitem label="User command 3" oncommand="treeView.user_command(3)" id="ctx_usercmd3" />
-  </popup>
+  </menupopup>
 
-  <popup id="gps_popup">
+  <menupopup id="gps_popup">
     <menuitem label="Garmin GPS" oncommand="gpsView.set_gps_type('garmin')" />
     <menuitem label="Aircotec - MXP 57600" oncommand="gpsView.set_gps_type('aircotec')" />
     <menuitem label="5020/5030/Compeo/Competino" oncommand="gpsView.set_gps_type('compeo')" />
     <menuitem label="MLR/Digifly" oncommand="gpsView.set_gps_type('mlr')"  id="mlr_gps" />
     <menuitem label="Flymaster" oncommand="gpsView.set_gps_type('flymaster')" id="flymaster_gps" />
-  </popup>
+  </menupopup>
 
   <menubar>
     <menu label="&file;" accesskey="&file.key;">

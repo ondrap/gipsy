@@ -1,5 +1,6 @@
 #include <string>
 
+#include "mozilla-config.h"
 #include "gipsy.h"
 
 using namespace std;

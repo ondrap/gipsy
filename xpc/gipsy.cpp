@@ -1,3 +1,4 @@
+#include "mozilla-config.h"
 #include "xpcom-config.h"
 #include "nscore.h"
 #include "nsCRT.h"

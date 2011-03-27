@@ -1,8 +1,7 @@
 /* Module for finding city near a point */
 
-const nsISupports = Components.interfaces.nsISupports;
+Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 
-const CLASS_ID = Components.ID("bfb101f6-3ed2-42a4-9616-c1f8e983ee03");
 const CLASS_NAME = "City database";
 const CONTRACT_ID = "@pgweb.cz/Gipsy/GPSCities;1";
 
@@ -138,10 +137,12 @@ GPSCities.prototype = {
     QueryInterface: function(aIID)
 	{
 	    // add any other interfaces you support here
-	    if (!aIID.equals(nsISupports))
+	    if (!aIID.equals(Components.interfaces.nsISupports))
 		throw Components.results.NS_ERROR_NO_INTERFACE;
 	    return this;
-	}
+	},
+        
+    classID: Components.ID("bfb101f6-3ed2-42a4-9616-c1f8e983ee03")
 }
 
 //=================================================
@@ -161,33 +162,8 @@ var GPSCitiesFactory = {
   }
 };
 
-// Module
-var GPSCitiesModule = {
-  registerSelf: function(aCompMgr, aFileSpec, aLocation, aType)
-  {
-    aCompMgr = aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
-    aCompMgr.registerFactoryLocation(CLASS_ID, CLASS_NAME, CONTRACT_ID, aFileSpec, aLocation, aType);
-  },
-
-  unregisterSelf: function(aCompMgr, aLocation, aType)
-  {
-    aCompMgr = aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
-    aCompMgr.unregisterFactoryLocation(CLASS_ID, aLocation);        
-  },
-  
-  getClassObject: function(aCompMgr, aCID, aIID)
-  {
-    if (!aIID.equals(Components.interfaces.nsIFactory))
-      throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
-
-    if (aCID.equals(CLASS_ID))
-      return GPSCitiesFactory;
-
-    throw Components.results.NS_ERROR_NO_INTERFACE;
-  },
-
-  canUnload: function(aCompMgr) { return true; }
-};
-
 //module initialization
-function NSGetModule(aCompMgr, aFileSpec) { return GPSCitiesModule; }
+if (XPCOMUtils.generateNSGetFactory)
+    var NSGetFactory = XPCOMUtils.generateNSGetFactory([GPSCities]);
+else
+    var NSGetModule = XPCOMUtils.generateNSGetModule([GPSCities]);
