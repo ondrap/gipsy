@@ -5,7 +5,7 @@ GECKO_SDK_PATH = /root/devel/xulrunner-sdk/sdk
 #GECKO_DEFINES = -fPIC -Wall -Wconversion -Wpointer-arith -Woverloaded-virtual -Wsynth -Wno-ctor-dtor-privacy -Wno-non-virtual-dtor -Wcast-align -Wno-long-long -fno-strict-aliasing -fshort-wchar -pthread 
 GECKO_DEFINES = -Wall -Wconversion -Wpointer-arith -Woverloaded-virtual -Wsynth -Wno-ctor-dtor-privacy -Wno-non-virtual-dtor -Wcast-align -Wno-long-long -fno-strict-aliasing -pthread -fshort-wchar
 GECKO_INCLUDES := -I/root/devel/xulrunner-sdk/include -I/root/devel/xulrunner-sdk/include/nspr
-GECKO_LDFLAGS := -L/root/devel/xulrunner-sdk/lib -lxpcomglue_s -lxul -lxpcom -lplds4 -lplc4 -lnspr4 -lpthread -ldl
+GECKO_LDFLAGS := -L/root/devel/xulrunner-sdk/lib -lxpcomglue_s_nomozalloc -lxul -lxpcom -lplds4 -lplc4 -lnspr4 -lpthread -ldl
 SHARED = -shared
 TARGET = gipsy.so
 
