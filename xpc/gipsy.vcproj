@@ -114,7 +114,7 @@
 				Name="VCCLCompilerTool"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="..\..\gecko-sdk\include;..\..\gecko-sdk\include\xpcom;..\..\;$(SolutionDir);..\..\gecko-sdk\include\content;..\..\gecko-sdk\include\necko;C:\WinDDK\7600.16385.1\inc\atl71"
-				PreprocessorDefinitions="HAVE_CRYPTO;WIN32;_WINDOWS;_USRDLL;XP_WIN;XP_WIN32;_X86_;_CRT_SECURE_NO_DEPRECATE;XPCOM_GLUE_USE_NSPR"
+				PreprocessorDefinitions="HAVE_CRYPTO;WIN32;_WINDOWS;_USRDLL;XP_WIN;XP_WIN32;_X86_;_CRT_SECURE_NO_DEPRECATE;XPCOM_GLUE_USE_NSPR;MOZ_NO_MOZALLOC"
 				RuntimeLibrary="2"
 				TreatWChar_tAsBuiltInType="false"
 				WarningLevel="3"
@@ -130,7 +130,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="mozalloc.lib plc4.lib nspr4.lib xpcom.lib xpcomglue_s.lib cryptlib.lib setupapi.lib"
+				AdditionalDependencies="plc4.lib nspr4.lib xpcomglue_s_nomozalloc.lib xpcom.lib cryptlib.lib setupapi.lib"
 				OutputFile="$(OutDir)\$(ProjectName).dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\gecko-sdk\lib;..\..\crypto++\win32\output\release;C:\WinDDK\7600.16385.1\lib\ATL\i386"
