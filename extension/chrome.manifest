@@ -11,7 +11,7 @@ locale gipsy it chrome/locale/it-IT/
 overlay chrome://browser/content/browser.xul chrome://gipsy/content/overlays-ff.xul
 
 interfaces components/IGPSScanner.xpt
-binary-component platforms/WINNT_x86-msvc/components/gipsy.dll ABI=WINNT_x86-msvc
+binary-component platform/WINNT_x86-msvc/components/gipsy.dll ABI=WINNT_x86-msvc
 
 component {1391ed51-deb3-4be6-a157-4d774deaa990} components/GPSStore.js
 contract @pgweb.cz/Gipsy/GPSstore;1 {1391ed51-deb3-4be6-a157-4d774deaa990}

@@ -8,6 +8,7 @@
                    em:maxVersion="4.0.*" />
   <RDF:Description RDF:about="urn:mozilla:install-manifest"
                    em:id="gipsy@pgweb.cz"
+		   em:unpack="true"
                    em:name="GiPSy Flight Manager"
                    em:version="1.6.5"
                    em:homepageURL="http://www.xcontest.org/gipsy/"
@@ -15,7 +16,6 @@
                    em:contributor="Jakub Havel &lt;scorpi@pgweb.cz&gt;"
                    em:optionsURL="chrome://gipsy/content/preferences.xul"
                    em:description="Flight track downloader and analyzer">
-    <em:unpack>True</em:unpack>
     <em:targetApplication RDF:resource="rdf:#$7c5kD"/>
     <em:targetPlatform>Linux_x86-gcc3</em:targetPlatform>
     <em:targetPlatform>Darwin_x86-gcc3</em:targetPlatform>
