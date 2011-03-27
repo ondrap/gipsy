@@ -12,6 +12,8 @@ overlay chrome://browser/content/browser.xul chrome://gipsy/content/overlays-ff.
 
 interfaces components/IGPSScanner.xpt
 binary-component platform/WINNT_x86-msvc/components/gipsy.dll ABI=WINNT_x86-msvc
+binary-component platform/Linux_x86-gcc3/components/gipsy.so ABI=Linux_x86-gcc3
+binary-component platform/Linux_x86_64-gcc3/components/gipsy.so ABI=Linux_x86_64-gcc3
 
 component {1391ed51-deb3-4be6-a157-4d774deaa990} components/GPSStore.js
 contract @pgweb.cz/Gipsy/GPSstore;1 {1391ed51-deb3-4be6-a157-4d774deaa990}

@@ -1,4 +1,4 @@
-XULVERSION=1.9.0.15
+XULVERSION=2.0
 XPIDL = /root/devel/xulrunner-sdk/bin/xpidl
 XULIDLPATH = /root/devel/xulrunner-sdk/idl
 GECKO_SDK_PATH = /root/devel/xulrunner-sdk/sdk

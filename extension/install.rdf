@@ -18,9 +18,8 @@
                    em:description="Flight track downloader and analyzer">
     <em:targetApplication RDF:resource="rdf:#$7c5kD"/>
     <em:targetPlatform>Linux_x86-gcc3</em:targetPlatform>
-    <em:targetPlatform>Darwin_x86-gcc3</em:targetPlatform>
-    <em:targetPlatform>Darwin_ppc-gcc3</em:targetPlatform>
-    <em:targetPlatform>WINNT_x86-msvc</em:targetPlatform>
     <em:targetPlatform>Linux_x86_64-gcc3</em:targetPlatform>
+    <em:targetPlatform>Darwin_x86-gcc3</em:targetPlatform>
+    <em:targetPlatform>WINNT_x86-msvc</em:targetPlatform>
   </RDF:Description>
 </RDF:RDF>

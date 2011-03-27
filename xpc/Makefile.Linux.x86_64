@@ -1,10 +1,10 @@
-XULVERSION=1.9.2.8
-XPIDL = /usr/lib64/xulrunner-$(XULVERSION)/xpidl
-XULIDLPATH = /usr/share/idl/xulrunner-$(XULVERSION)/
-GECKO_SDK_PATH = /usr/lib/xulrunner-devel-$(XULVERSION)/sdk/
-GECKO_DEFINES = -DCRYPTPP
-GECKO_INCLUDES := `pkg-config --cflags  /usr/lib64/pkgconfig/libxul.pc`  -I/usr/include/xulrunner-$(XULVERSION)/unstable
-GECKO_LDFLAGS :=  `pkg-config --libs  /usr/lib64/pkgconfig/libxul.pc`
+GECKO_SDK_PATH = ../../xulrunner-sdk
+
+XPIDL = $(GECKO_SDK_PATH)/bin/xpidl
+XULIDLPATH = $(GECKO_SDK_PATH)/idl
+GECKO_DEFINES = -DCRYPTPP -fshort-wchar
+GECKO_INCLUDES := -I$(GECKO_SDK_PATH)/include
+GECKO_LDFLAGS :=  -L$(GECKO_SDK_PATH)/lib -lxpcomglue_s_nomozalloc -lxul -lxpcom -lplds4 -lplc4 -lnspr4 -lpthread -ldl
 CRYPTO_LIB = ../libs/libcryptopp.a
 SHARED = -shared
 TARGET = gipsy.so
