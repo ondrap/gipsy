@@ -1,10 +1,6 @@
 /* Module for exporting tracklogs to XML files */
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 
-// You can change these if you like
-const CLASS_NAME = "GPX support class";
-const CONTRACT_ID = "@pgweb.cz/Gipsy/GPSGpx;1";
-
 var initialized = null;
 
 // This is your constructor.
@@ -972,50 +968,12 @@ GPSGpx.prototype = {
 	    throw Components.results.NS_ERROR_NO_INTERFACE;
 	return this;
     },
-    classID : Components.ID("b60dfd97-ad5f-4959-a572-801935b02317")
+    classID : Components.ID("b60dfd97-ad5f-4959-a572-801935b02317"),
+    classDescription : "GPX support class",
+    contractID : "@pgweb.cz/Gipsy/GPSGpx;1"
 }
 
-//=================================================
-// Note: You probably don't want to edit anything
-// below this unless you know what you're doing.
-//
-// Factory
-var GPSGpxFactory = {
-  createInstance: function (aOuter, aIID)
-  {
-    if (aOuter != null)
-      throw Components.results.NS_ERROR_NO_AGGREGATION;
-    return (new GPSGpx()).QueryInterface(aIID);
-  }
-};
-
-// Module
-var GPSGpxModule = {
-  registerSelf: function(aCompMgr, aFileSpec, aLocation, aType)
-  {
-    aCompMgr = aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
-    aCompMgr.registerFactoryLocation(CLASS_ID, CLASS_NAME, CONTRACT_ID, aFileSpec, aLocation, aType);
-  },
-
-  unregisterSelf: function(aCompMgr, aLocation, aType)
-  {
-    aCompMgr = aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
-    aCompMgr.unregisterFactoryLocation(CLASS_ID, aLocation);        
-  },
-  
-  getClassObject: function(aCompMgr, aCID, aIID)
-  {
-    if (!aIID.equals(Components.interfaces.nsIFactory))
-      throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
-
-    if (aCID.equals(CLASS_ID))
-      return GPSGpxFactory;
-
-    throw Components.results.NS_ERROR_NO_INTERFACE;
-  },
-
-  canUnload: function(aCompMgr) { return true; }
-};
-
-//module initialization
-function NSGetModule(aCompMgr, aFileSpec) { return GPSGpxModule; }
+if (XPCOMUtils.generateNSGetFactory)
+    var NSGetFactory = XPCOMUtils.generateNSGetFactory([GPSGpx]);
+else
+    var NSGetModule = XPCOMUtils.generateNSGetModule([GPSGpx]);

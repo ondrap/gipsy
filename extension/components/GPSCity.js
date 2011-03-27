@@ -2,9 +2,6 @@
 
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 
-const CLASS_NAME = "City database";
-const CONTRACT_ID = "@pgweb.cz/Gipsy/GPSCities;1";
-
 var citydb;
 
 // GPSPoint initialization
@@ -142,25 +139,20 @@ GPSCities.prototype = {
 	    return this;
 	},
         
-    classID: Components.ID("bfb101f6-3ed2-42a4-9616-c1f8e983ee03")
+    classID: Components.ID("bfb101f6-3ed2-42a4-9616-c1f8e983ee03"),
+    classDescription : "City database",
+    contractID : "@pgweb.cz/Gipsy/GPSCities;1",
+    _xpcom_factory : {
+        singleton: null,
+        createInstance: function (aOuter, aIID) {
+            if (aOuter != null)
+                throw Components.results.NS_ERROR_NO_AGGREGATION;
+            if (this.singleton == null)
+                this.singleton = new GPSCities();
+            return this.singleton.QueryInterface(aIID);
+        }
+    }
 }
-
-//=================================================
-// Note: You probably don't want to edit anything
-// below this unless you know what you're doing.
-//
-// Factory
-var GPSCitiesFactory = {
-  singleton: null,
-  createInstance: function (aOuter, aIID)
-  {
-    if (aOuter != null)
-      throw Components.results.NS_ERROR_NO_AGGREGATION;
-    if (this.singleton == null)
-      this.singleton = new GPSCities();
-    return this.singleton.QueryInterface(aIID);
-  }
-};
 
 //module initialization
 if (XPCOMUtils.generateNSGetFactory)

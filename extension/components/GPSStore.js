@@ -2,10 +2,6 @@
 
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 
-// You can change these if you like
-const CLASS_NAME = "Store of IGC flights";
-const CONTRACT_ID = "@pgweb.cz/Gipsy/GPSstore;1";
-
 const GipsyDirectory = 'gipsy';
 
 const DBVERSION = 5;
@@ -80,7 +76,20 @@ GPSStore.prototype = {
 
     sqfile : null, // Database filename
 	
-    classID : Components.ID("1391ed51-deb3-4be6-a157-4d774deaa990"),    
+    classDescription : "Store of IGC flights",
+    contractID : "@pgweb.cz/Gipsy/GPSstore;1",
+    classID : Components.ID("1391ed51-deb3-4be6-a157-4d774deaa990"),
+    _xpcom_factory : {
+        singleton: null,
+        createInstance: function (aOuter, aIID) {
+            if (aOuter != null)
+                throw Components.results.NS_ERROR_NO_AGGREGATION;
+            if (this.singleton == null)
+                this.singleton = new GPSStore();
+            return this.singleton.QueryInterface(aIID);
+        }
+    },
+
     // for nsISupports
     QueryInterface : function(aIID)
     {
@@ -1001,26 +1010,6 @@ GPSStore.prototype = {
 	return value;
     }
 }
-
-
-
-//=================================================
-// Note: You probably don't want to edit anything
-// below this unless you know what you're doing.
-//
-// Factory
-var GPSStoreFactory = {
-  singleton: null,
-  createInstance: function (aOuter, aIID)
-  {
-    if (aOuter != null)
-      throw Components.results.NS_ERROR_NO_AGGREGATION;
-    if (this.singleton == null)
-      this.singleton = new GPSStore();
-    return this.singleton.QueryInterface(aIID);
-  }
-};
-
 
 if (XPCOMUtils.generateNSGetFactory)
     var NSGetFactory = XPCOMUtils.generateNSGetFactory([GPSStore]);
