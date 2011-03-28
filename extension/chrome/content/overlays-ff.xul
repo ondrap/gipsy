@@ -18,8 +18,9 @@
   <toolbarpalette id="BrowserToolbarPalette">
           <toolbarbutton id="gipsy-button" 
             label="&gipsy.title;"
+            tooltiptext="GiPSy"
             oncommand="window.openDialog('chrome://gipsy/content/main.xul', 'gipsy_main', 'dialog=no, chrome, modal=no');">
-                <label>GiPSy</label>
+                <image src="chrome://gipsy/content/xcontest.png" />
             </toolbarbutton>
   </toolbarpalette>  
 </overlay>

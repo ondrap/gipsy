@@ -1,4 +1,3 @@
-
 // Tracklog download event
 function open_tlog(tracklog)
 {

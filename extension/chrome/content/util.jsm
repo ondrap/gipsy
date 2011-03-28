@@ -1,3 +1,14 @@
+var EXPORTED_SYMBOLS = ["sprintf", "chr", "ord", 
+                        "get_bool_pref", "set_bool_pref", 
+                        "get_string_pref", "set_string_pref", 
+                        "elem", "empty", "_",
+                        "format_km", "format_km0", "format_km2", "format_kmh",
+                        "format_m", "format_ms",
+                        "findPosX", "findPosY",
+                        "fire_resize_event", "sinh",
+                        "ctxFillText", "track_color"
+                       ];
+
 /*
 **  sprintf.js -- POSIX sprintf(3) style formatting function for JavaScript
 **  Copyright (c) 2006-2007 Ralf S. Engelschall <rse@engelschall.com>
@@ -198,6 +209,13 @@ function get_bool_pref(pref) {
 	prefs = prefs.getBranch("extensions.gipsy.");	
 	return prefs.getBoolPref(pref);
 }
+
+function set_bool_pref(pref, value) {
+        var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService);
+        prefs = prefs.getBranch("extensions.gipsy.");   
+        return prefs.setBoolPref(pref, value);
+}
+
 
 var cvt = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"].createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
 cvt.charset = 'utf8';

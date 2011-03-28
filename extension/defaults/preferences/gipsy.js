@@ -24,3 +24,4 @@ pref("extensions.gipsy.usercmd_1_type", "text");
 pref("extensions.gipsy.usercmd_2_type", "text");
 pref("extensions.gipsy.usercmd_3_type", "text");
 pref("extensions.gipsy.autoselecttoday", false);
+pref("extensions.gipsy.btn_toolbar_added", false);

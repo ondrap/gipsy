@@ -1,18 +1,12 @@
 /* Module for exporting tracklogs to XML files */
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+Components.utils.import("resource://gipsy/util.jsm");
 
 var initialized = null;
 
 // This is your constructor.
 // You can do stuff here.
 function GPSGpx() {
-    // Load javascript utilities
-    if (!initialized) {
-	initialized = true;
-	var loader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
-	loader.loadSubScript('chrome://gipsy/content/util.js');
-    }
-
     this.tracklogs = [];
     this.wrappedJSObject = this;
 }

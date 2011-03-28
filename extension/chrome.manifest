@@ -1,4 +1,5 @@
 content	gipsy	chrome/content/
+resource gipsy chrome/content/
 
 locale gipsy en chrome/locale/en-US/
 locale gipsy cs chrome/locale/cs-CZ/
@@ -23,3 +24,4 @@ contract @pgweb.cz/Gipsy/GPSCities;1 {bfb101f6-3ed2-42a4-9616-c1f8e983ee03}
 
 component {b60dfd97-ad5f-4959-a572-801935b02317} components/GPSGpx.js
 contract @pgweb.cz/Gipsy/GPSGpx;1 {b60dfd97-ad5f-4959-a572-801935b02317}
+

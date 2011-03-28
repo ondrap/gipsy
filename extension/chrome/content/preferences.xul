@@ -7,7 +7,7 @@
             xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	    title="&prefs.title;" >
 
-  <script src="util.js" />
+  <script src="util.jsm" />
   <script src="preferences.js" />
   <stringbundle id="bundle" src="chrome://gipsy/locale/main.properties"/>
 

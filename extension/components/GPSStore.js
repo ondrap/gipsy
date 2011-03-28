@@ -1,6 +1,7 @@
 /* Module for storing and retrieving IGC files from local repository */
 
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+Components.utils.import("resource://gipsy/util.jsm");
 
 const GipsyDirectory = 'gipsy';
 
@@ -20,10 +21,6 @@ function GPSPoint(lat, lon, alt)
 // Constructor
 function GPSStore() 
 {
-    // Load sprintf
-    loader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
-    loader.loadSubScript('chrome://gipsy/content/util.js');
-
     // City databas
     citydb = Components.classes["@pgweb.cz/Gipsy/GPSCities;1"].getService();
     if (citydb == null) {

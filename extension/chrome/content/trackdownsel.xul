@@ -8,7 +8,7 @@
     xmlns:html="http://www.w3.org/1999/xhtml"
     width="700" height="500" >
     
-    <script src="util.js" />
+    <script src="util.jsm" />
     <script src="trackdownsel.js" />
     
     <vbox flex="1">
