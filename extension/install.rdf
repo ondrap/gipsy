@@ -10,7 +10,7 @@
                    em:id="gipsy@pgweb.cz"
 		   em:unpack="true"
                    em:name="GiPSy Flight Manager"
-                   em:version="1.6.6"
+                   em:version="1.6.7"
                    em:homepageURL="http://www.xcontest.org/gipsy/"
                    em:creator="Ondrej Palkovsky &lt;ondrap@penguin.cz&gt;"
                    em:contributor="Jakub Havel &lt;scorpi@pgweb.cz&gt;"
