@@ -3,9 +3,9 @@ XULIDLPATH = /Users/martin/devel/xulrunner-sdk/idl/
 GECKO_SDK_PATH = /Users/martin/devel/xulrunner-sdk/
 GECKO_DEFINES = -DXP_UNIX -DXP_MACOSX
 GECKO_INCLUDES := -I/Users/martin/devel/xulrunner-sdk/sdk/include -I/Users/martin/devel/xulrunner-sdk/include -I/Users/martin/devel/xulrunner-sdk/include/xpcom
-GECKO_LDFLAGS := -L/Applications/Firefox.app/Contents/MacOS/ -L/Users/martin/devel/xulrunner-sdk/lib -lxpcomglue_s -lxpcom -lnspr4 -lplc4 -Wl,-executable_path,/Applications/Firefox.app/Contents/MacOS/ 
+GECKO_LDFLAGS := -L/Applications/Firefox.app/Contents/MacOS/ -L/Users/martin/devel/xulrunner-sdk/lib -lxpcomglue_s_nomozalloc -lxpcom -lnspr4 -lplc4 -Wl,-executable_path,/Applications/Firefox.app/Contents/MacOS/ 
 
-CPPFLAGS += -DCRYPTPP -I/Users/martin/devel
+CPPFLAGS += -DCRYPTPP -I/Users/martin/devel -I/Developer/SDKs/MacOSX10.4u.sdk/usr/include/ -I/Developer/SDKs/MacOSX10.4u.sdk/usr/include/c++/4.0.0/
 CRYPTO_LIB = /Users/martin/devel/cryptopp/libcryptopp.a
 SHARED = -dynamiclib
 TARGET = gipsy.dylib
