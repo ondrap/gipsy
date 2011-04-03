@@ -35,7 +35,7 @@ function fill_sync_flights() {
 	item.appendChild(cell3);
 	slist.appendChild(item);
 
-	if (noncount[i] == window.arguments[0])
+        if (window.arguments && noncount[i] == window.arguments[0])
 	    selindex = i;
     }
 

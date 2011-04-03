@@ -45,7 +45,7 @@
 	      label="&xcclaim.title;" 
 	      pageid="browser_page" 
 	      next="final_page" 
-	      onpageadvanced="onsyncnext()" 
+	      onpageadvanced="onsyncnext()"
 	      id="browser_page" >
     <deck flex="1" id="browser_vbox" >
       <vbox flex="1"><!-- Progress box -->

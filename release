@@ -28,5 +28,7 @@ git tag release_$VERSION
 
 # Publish
 make clean
-echo "Upload gipsy.xpi, gipsy_lite.xpi, index.html and update.rdf, update_lite.rdf" 
+find extension -name "*~" | xargs rm
+make
+echo "Upload gipsy.xpi"
 

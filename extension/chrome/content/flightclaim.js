@@ -50,6 +50,10 @@ var flightclaim = {
 		bfield('login').submit();
 		return { step: 'goto_claim', descr : 'claim_login' };
 	    } 
+	    // Check if logged in username == wanted username
+	    if (bfield('login').childNodes[1].childNodes[2].childNodes[0].textContent == dinfo.xcontestid) {
+                return this.goto_claim();
+            }
 	    this.logout();
 	    return { step: 'login', descr: 'claim_logout' };
 	}
@@ -74,9 +78,16 @@ var flightclaim = {
 
     fill_first_form : function() {
 	if (!bfield('step1')) {
-	    alert('Error');
-	    this.wizard.canRewind = true;
-	    return null;
+            // We may have forgotten some half-uploaded igc, resolve by logout
+            if (this.uploaderror) {
+                alert('Error');
+                this.wizard.canRewind = true;
+                return null;
+            } else {
+                this.logout();
+                this.uploaderror = true; // Set so that we have at most 1 retry
+                return { step: 'login', descr: 'claim_logout' };
+            }
 	}
 	browser.contentDocument.forms[1].elements[1].value = gstore.getFullIGCPath(this.fname);
 	browser.contentDocument.forms[1].submit();
@@ -87,8 +98,8 @@ var flightclaim = {
 	var dinfo = this.dinfo;
 
 	if (bfield('flight-comment') == null) {
-	    alert('IGC claim - step1 failed');
-	    return null;
+            alert('IGC claim - step1 failed');
+            return null;
 	}
 
 	bfield('flight-comment').value = dinfo.comment;
@@ -116,11 +127,18 @@ var flightclaim = {
 	this.select_option(bfield('flight-glider'), dinfo.glider);
 
 	bfield('flight-tandem').checked = dinfo.biplace;
+        
+        // Allow submit upon pressing the 'next' button
+        flightclaim.wizard.canAdvance = true;
+        flightclaim.wizard.setAttribute('onwizardnext', "document.getElementById('claim_browser').contentDocument.forms[1].submit();return false;" );
 
 	return { step: 'finalize', show: true, descr : 'claim_final'};
     },
 
     finalize: function() {
+        // Discard autosubmit for form2
+        flightclaim.wizard.setAttribute('onwizardnext', null);
+        
 	// TODO: Check, that the flight was claimed OK
 
 	// TODO: Add to proper contests
@@ -243,6 +261,9 @@ function claim_start() {
     }
     window.addEventListener('unload', unclaim_ticket, false);
 
+    // Reset error on Igc upload
+    flightclaim.uploaderror = false;
+    
     flightclaim.wizard.canRewind = false;
     flightclaim.wizard.canAdvance = false;
 
