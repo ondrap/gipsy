@@ -71,6 +71,9 @@ time_t make_gmtime(struct tm *tm)
     return mktime(tm) + tz_offset;
 }
 
+#define min(a,b) ((a) > (b) ? (b) : (a))
+
+
 /* Format lattitude as part of B record */
 static string out_lat(double lat)
 {
@@ -151,9 +154,16 @@ string Igc::make_l()
 
     vector<string> lines = parse_lines(l_record, false);
 
-    for (unsigned int i=0; i < lines.size(); i++)
-	    result << "LPLT " << lines[i] << "\r\n";
-    
+    for (unsigned int i=0; i < lines.size(); i++) {
+        string tmp = lines[i];
+        /* The line is maximum 76 characters */
+        while(tmp.size()) {
+            int pos_mv = min(IGCLINE-5, tmp.size());
+            result << string("LPLT ") + tmp.substr(0, pos_mv) + "\r\n";
+            tmp = tmp.substr(pos_mv);
+        }
+    }
+
     return result.str();
 }
 
@@ -499,8 +509,6 @@ bool Igc::validate()
     return false;
 #endif
 }
-
-#define min(a,b) ((a) > (b) ? (b) : (a))
 
 /* Export IGC file */
 string Igc::as_str()
