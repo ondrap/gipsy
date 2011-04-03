@@ -81,7 +81,7 @@
     <groupbox>
         <hbox>
             <caption label="&prefs.usercommands;" />
-            <label value="( &help; )" onclick="window.openDialog('preferences.html', 'phelp', 'dialog=yes')" style="color:blue;text-decoration:underline;cursor:pointer" />
+            <label value="( &help; )" onclick="window.openDialog('preferences.html', 'phelp', 'dialog=yes,height=700,width=700')" style="color:blue;text-decoration:underline;cursor:pointer" />
         </hbox>
         <vbox>
             <grid>
