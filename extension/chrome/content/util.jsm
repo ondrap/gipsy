@@ -6,7 +6,8 @@ var EXPORTED_SYMBOLS = ["sprintf", "chr", "ord",
                         "format_m", "format_ms",
                         "findPosX", "findPosY",
                         "fire_resize_event", "sinh",
-                        "ctxFillText", "track_color"
+                        "ctxFillText", "track_color",
+			"cvt"
                        ];
 
 /*

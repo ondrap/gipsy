@@ -100,6 +100,10 @@ GPSGpx.prototype = {
                 thead *, tfoot * { font-weight: normal; text-align: left;background: lightgrey; } \
         ');
         style.appendChild(st);
+        
+        var meta = this.newel(head, 'meta');
+        meta.setAttribute('http-equiv', 'Content-type');
+        meta.setAttribute('content', 'text/html; charset=utf-8');
 
 	var body = this.newel(root, 'body');
 	var table = this.newel(body, 'table');
