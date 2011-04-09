@@ -10,7 +10,7 @@ pref("extensions.gipsy.metric", true);
 pref("extensions.gipsy.map_googlemap", "vt/lyrs=m@146&hl=en");
 pref("extensions.gipsy.map_googleoverlay", "vt/lyrs=h@146&hl=en");
 pref("extensions.gipsy.map_terrain", "vt/lyrs=t@126,r@146&hl=en");
-pref("extensions.gipsy.map_googlesat", "kh/v=80");
+pref("extensions.gipsy.map_googlesat", "kh/v=83");
 pref("extensions.gipsy.usercmd_1_title", "");
 pref("extensions.gipsy.usercmd_2_title", "");
 pref("extensions.gipsy.usercmd_3_title", "");
