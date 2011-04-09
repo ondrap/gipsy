@@ -1237,6 +1237,39 @@ NS_IMETHODIMP Tracklog::SvgPointData(PRInt16 property, PRInt16 objtype, PRInt32 
     return *_retval ? NS_OK : NS_ERROR_OUT_OF_MEMORY;
 }
 
+NS_IMETHODIMP Tracklog::SvgPathTrack(PRInt32 width, PRInt32 height, double minlat, 
+                                     double minlon, double maxlon, PRBool doint,
+                                     char **_retval)
+{
+    double scale = width / (maxlon - minlon);
+    double (*dr)(double) = doint ? round : nop;
+    
+    stringstream result;
+
+    /* Do not add points that wouldn't move to the line */
+    double oldx = -1;
+    double oldy = -1;
+    for (unsigned int i=0; i < igc->tracklog.size(); i++) {
+        double lon,lat;
+
+        SvgProjectLon(igc->tracklog[i].lon, &lon);
+        SvgProjectLat(igc->tracklog[i].lat, &lat);
+        double newx = dr(scale * (lon - minlon));
+        double newy = dr(height - scale * (lat - minlat));
+        if (newx != oldx || newy != oldy) {
+            result << (i ? 'L' : 'M');
+            result << newx << ' ' << newy;
+        }
+        oldx = newx;
+        oldy = newy;
+    }
+
+    result << '\0';
+
+    *_retval = PL_strdup(result.str().c_str());
+    return *_retval ? NS_OK : NS_ERROR_OUT_OF_MEMORY;
+}
+
 
 /* Return KML compatibile point export */
 NS_IMETHODIMP Tracklog::KmlTrack(char **_retval)

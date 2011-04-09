@@ -119,6 +119,10 @@ interface IGPSIGC : nsISupports {
     string svgPointData(in short property, in short objtype,
 			in long startpoint, in long width, in long height, 
 			in double maxval);
+    string svgPathTrack(in long width, in long height,
+                       in double minlat, in double minlon, 
+                       in double maxlon, in boolean doint);
+
     
     // Projection functions on flat surface
     // TODO: Make special object 'projection'
