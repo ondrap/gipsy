@@ -1,1 +1,1 @@
-#define GIPSY_VERSION "1.6.7"
+#define GIPSY_VERSION "1.6.8"
