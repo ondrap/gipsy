@@ -154,11 +154,6 @@ string Igc::make_l()
 
     vector<string> lines = parse_lines(l_record, false);
 
-#ifdef VALIDATOR
-    // Allow validating old gipsy IGC files, where we didn't limit the line length
-    for (unsigned int i=0; i < lines.size(); i++)
-           result << "LPLT " << lines[i] << "\r\n";
-#else
     for (unsigned int i=0; i < lines.size(); i++) {
         string tmp = lines[i];
         /* The line is maximum 76 characters */
@@ -168,7 +163,6 @@ string Igc::make_l()
             tmp = tmp.substr(pos_mv);
         }
     }
-#endif
 
     return result.str();
 }
