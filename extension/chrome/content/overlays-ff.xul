@@ -19,6 +19,7 @@
           <toolbarbutton id="gipsy-button" 
             label="&gipsy.title;"
             tooltiptext="GiPSy"
+            class="chromeclass-toolbar-additional"
             oncommand="window.openDialog('chrome://gipsy/content/main.xul', 'gipsy_main', 'dialog=no, chrome, modal=no');">
                 <image src="chrome://gipsy/content/xcontest.png" />
             </toolbarbutton>
