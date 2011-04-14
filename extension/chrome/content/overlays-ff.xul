@@ -6,7 +6,7 @@
 <overlay id="eXpcomViewerBrowserOverlay"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-  <script src="overlays-ff.js" />
+  <script type="application/javascript;version=1.7" src="overlays-ff.js" />
 
   <!-- Menu tools -->
   <menupopup id="menu_ToolsPopup">
