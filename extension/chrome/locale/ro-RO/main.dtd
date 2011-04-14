@@ -1,0 +1,155 @@
+<!ENTITY gipsy.title "GiPSy Flight Manager">
+
+<!ENTITY menu.sendxc "Trimite zborurile la XContest" >
+<!ENTITY menu.importgpx "Importa fisierul GPX" >
+<!ENTITY menu.googlemapdownload "Descarca definitiile GoogleMap" >
+
+<!ENTITY tab.flights "Zboruri" >
+<!ENTITY tab.devices "Conectare cu GPS-ul" >
+<!ENTITY problem "Raporteaza problema" >
+
+<!ENTITY delete "Sterge" >
+<!ENTITY open "Deschide" >
+<!ENTITY close "Inchide" >
+<!ENTITY close.key "C" >
+<!ENTITY preferences "Preferinte" >
+<!ENTITY preferences.key "p" >
+<!ENTITY collapse.all "Inchide/Deschide tot" >
+<!ENTITY show.source "Arata sursa IGC" >
+<!ENTITY create.logbook "Creaza carnet de zboruri" >
+
+<!ENTITY file "Fisier" >
+<!ENTITY file.key "f" >
+
+<!ENTITY help "Ajutor" >
+<!ENTITY help.key "A" >
+<!ENTITY about "Despre" >
+
+<!ENTITY date.utc "Data (UTC)" >
+<!ENTITY launch "Decolare" >
+<!ENTITY launch.long "Decolare" >
+<!ENTITY landing "Aterizare" >
+<!ENTITY pilot "Pilot" >
+<!ENTITY glider "Aripa" >
+<!ENTITY flight.info "Informatii zbor" >
+<!ENTITY statistics "Statistici" >
+<!ENTITY pilot.info "Informatii pilot" >
+<!ENTITY date "Data" >
+<!ENTITY enabled "Activat" >
+<!ENTITY device "Dispozitiv" >
+<!ENTITY altitude "Altitudine">
+<!ENTITY speed "Viteza">
+<!ENTITY advanced "Avansat" >
+<!ENTITY basic "Simplu" >
+<!ENTITY faicat "Categorie FAI">
+<!ENTITY biplace "Tandem">
+<!ENTITY comment "Comentariu" >
+<!ENTITY properties "Proprietati" >
+<!ENTITY upload "Incarca" >
+<!ENTITY map.no "Fara harta" >
+<!ENTITY map.googlemap "GoogleMap" >
+<!ENTITY map.googlemaplayer "GoogleMap Layer" >
+<!ENTITY map.airspace "Spatiu aerian" >
+<!ENTITY map.optimization "Calculator ruta" >
+
+<!ENTITY map.speed "viteza">
+<!ENTITY map.altitude "altitudine">
+<!ENTITY map.vario "vario">
+<!ENTITY map.time "timp">
+
+<!ENTITY duration "Durata" >
+
+<!ENTITY stat.sdist "Distanta decolare-aterizare" >
+<!ENTITY stat.totdist "Distanta zburata totala" >
+<!ENTITY stat.maxheight "Altitudine maxima" >
+<!ENTITY stat.heightdiff "Diferenta de altitudine (max-min)" >
+<!ENTITY stat.maxspeed "Viteza maxima">
+<!ENTITY stat.maxvario "Cea mai mare termica" >
+<!ENTITY stat.minvario "Cea maimare infundare" >
+<!ENTITY stat.totheight "Inaltime totala castigata" >
+
+<!ENTITY xcontest.login "Nume autentificareXContest">
+<!ENTITY xcontest.show "Arata pagina xContest" >
+<!ENTITY xcontest.send "Trimite la XContest" >
+
+<!ENTITY synchronization "Sincronizare">
+<!ENTITY filename "Nume fisier" >
+<!ENTITY gps "GPS" >
+
+<!ENTITY gps.help "Nu vad GPS-ul meu" >
+<!ENTITY gps.type "Tipul GPS-ului" >
+<!ENTITY gps.name "Numele GPS-ului" >
+<!ENTITY progress "Transfer in progres" >
+
+<!ENTITY pilot.filter "Sortare dupa pilot">
+<!ENTITY pilot.all "Toti pilots">
+<!ENTITY gpx.save "Exporta GPX">
+<!ENTITY kml.save "Export KML">
+<!ENTITY svg.save "Export SVG">
+
+<!-- New track -->
+<!ENTITY newtrk.title "Zbor in procesare" >
+<!ENTITY seltrk.title "Pasul 1 - selectarea segmentului :: selectati in functie de segmentul de zbor" >
+<!ENTITY seltrk.help "TIP: Pentru a face un zbor din mai multe segmente, folositi tasta Shift in timp ce selectati" >
+
+<!ENTITY selpoint.title "Pasul 2 - corectie :: daca este necesar, puteti corecta manual startul/sfarsitul zborului care au fost detectate automat" >
+<!ENTITY selpoint.advanced "Arata instrumentul pentru selectarea detaliata" >
+<!ENTITY selpoint.restore "Refacere selectie initiala" >
+<!ENTITY selpoint.helprange "Puteti corecta startul/sfarsitul tragand cu mouse-ul de cerculetele rosii">
+<!ENTITY selpoint.helpdrag "Mutati selectia targand cu mouse-ul in zona colorata in rosu">
+<!ENTITY selpoint.helpsel "Selectati punctele sau deselectati partile omise dand click cu mouse-ul" >
+<!ENTITY tracklog.invalid "Zbor invalid" >
+
+<!ENTITY finfo.title "Pasul 3 :: adauga informatii despre zbor">
+<!ENTITY finfo.fileid "ID de 3 litere pentru numele fisierul IGC" >
+<!ENTITY finfo.longname "Formatul lung pentru numele fisierul IGC" >
+<!ENTITY finfo.shortname "Formatul scurt pentru numele fisierul IGC" >
+<!ENTITY finfo.longsite "Formatul pentru numele fisierul: YYYY-MM-DD-decolare.igc" >
+
+<!ENTITY filinfo.title "Informatii fisier IGC" >
+<!ENTITY filinfo.savepath "Zborul tau a fost salvat ca" >
+<!ENTITY filinfo.noxc "Zborul tau NU a fost trimis la XContest">
+<!ENTITY filinfo.done "Procesarea zborului terminata">
+<!ENTITY filinfo.otherproc "Procesare alte zboruri din acest GPS" >
+<!ENTITY filinfo.xcnow "Trimitere zbor la XContest acum">
+<!ENTITY filinfo.xclater "Trimite mai tarziu">
+<!ENTITY xcclaim.title "Trimitere la serverul XContest" >
+
+<!-- Synchro -->
+<!ENTITY synchro.title "Incarca la XContest">
+<!ENTITY synchro.done "Incarcare completa">
+<!ENTITY synchro.select "Selectati zbor" >
+
+<!-- Preferences -->
+<!ENTITY prefs.title "Preferinte GiPSy" >
+<!ENTITY prefs.main "Preferences generale" >
+<!ENTITY prefs.gpsaccess "Optiuni de acces la GPS" >
+<!ENTITY prefs.autodownload "Descarcare automata a zborului din GPS" >
+<!ENTITY prefs.needsrestart "are efect dupa restartarea firefox" >
+<!ENTITY prefs.datadir "Directorul de date Gipsy" >
+<!ENTITY prefs.changedir "Modifica directorul de date" >
+<!ENTITY prefs.changetohome "Seteaza directorul la Home/gipsy" >
+<!ENTITY prefs.savesubdirs "Salveaza noile zboruri in subdirectorul 'nume pilot/an'" >
+<!ENTITY prefs.units "Unitati">
+<!ENTITY prefs.metricsystem "Sistem metric">
+<!ENTITY prefs.autoselect "Selectarea zilei automat">
+<!ENTITY prefs.usercommands "Comenzi utilizator">
+<!ENTITY prefs.usertitle "Titlu">
+<!ENTITY prefs.usercmd "Cale program">
+<!ENTITY prefs.userparams "Parametrii aditionali">
+
+
+<!-- Properties -->
+<!ENTITY prop.dontsend "Nu trimite la xcontest" >
+<!ENTITY prop.prepare "va fi trimis la xcontest" >
+<!ENTITY prop.uploaded "Zborul a fost trimis la xcontest" >
+
+<!-- Password dialog -->
+<!ENTITY passwd.title "Introdu parola">
+<!ENTITY passwd.xcontestid "Nume">
+<!ENTITY passwd.password "Parola">
+
+<!ENTITY contest "Concurs" >
+<!ENTITY route "Ruta" >
+<!ENTITY distance "Distanta" >
+<!ENTITY points "Puncte" >

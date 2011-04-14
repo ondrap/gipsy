@@ -8,6 +8,7 @@ locale gipsy de chrome/locale/de-DE/
 locale gipsy fr chrome/locale/fr-FR/
 locale gipsy pl chrome/locale/pl-PL/
 locale gipsy it chrome/locale/it-IT/
+locale gipsy ro chrome/locale/ro-RO/
 
 overlay chrome://browser/content/browser.xul chrome://gipsy/content/overlays-ff.xul
 
