@@ -15,7 +15,7 @@
   
   <stringbundle id="bundle" src="chrome://gipsy/locale/main.properties"/>
 
-  <script src="util.jsm" />
+  <script src="xutil.js" />
   <script src="countries.js" />
   <script src="gliders.js" />
   <script src="newtrack.js" />

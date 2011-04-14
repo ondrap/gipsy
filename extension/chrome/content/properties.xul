@@ -15,7 +15,7 @@
     width="520" height="300"
     persist="width height" >
 
-  <script src="util.jsm" />
+  <script src="xutil.js" />
   <script src="gliders.js" />
   <script src="countries.js" />
   <script src="properties.js" />

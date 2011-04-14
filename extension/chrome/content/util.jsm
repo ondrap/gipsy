@@ -1,11 +1,11 @@
 var EXPORTED_SYMBOLS = ["sprintf", "chr", "ord", 
                         "get_bool_pref", "set_bool_pref", 
                         "get_string_pref", "set_string_pref", 
-                        "elem", "empty", "_",
+                        "empty",
                         "format_km", "format_km0", "format_km2", "format_kmh",
                         "format_m", "format_ms",
                         "findPosX", "findPosY",
-                        "fire_resize_event", "sinh",
+                        "sinh",
                         "ctxFillText", "track_color",
 			"cvt"
                        ];
@@ -233,19 +233,10 @@ function set_string_pref(pref, value) {
 	return prefs.setCharPref(pref, cvt.ConvertFromUnicode(value));
 }
 
-
-function elem(id) {
-    return document.getElementById(id);
-}
-
 // Remove all children form na element
 function empty(el) {
     while ( el.childNodes.length >= 1 )
         el.removeChild(el.firstChild);
-}
-
-function _(str) {
-    return elem('bundle').getString(str);
 }
 
 function format_km(dist) {
@@ -326,13 +317,6 @@ function findPosY(startobj)
         obj = obj.parentNode;
     }
     return curtop;
-}
-
-function fire_resize_event()
-{
-    var evobj = document.createEvent('HTMLEvents');
-    evobj.initEvent('resize', false, false);
-    window.dispatchEvent(evobj);
 }
 
 function sinh(arg) 
