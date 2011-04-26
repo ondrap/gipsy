@@ -1,6 +1,5 @@
 /* Module for exporting tracklogs to XML files */
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
-Components.utils.import("resource://gipsy/util.jsm");
 
 var initialized = null;
 
@@ -9,6 +8,8 @@ var initialized = null;
 function GPSGpx() {
     this.tracklogs = [];
     this.wrappedJSObject = this;
+    // Load it here, loading it in top-level fails for older firefox
+    Components.utils.import("resource://gipsy/util.jsm");
 }
 
 // This is the implementation of your component.

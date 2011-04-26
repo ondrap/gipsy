@@ -1,7 +1,6 @@
 /* Module for storing and retrieving IGC files from local repository */
 
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
-Components.utils.import("resource://gipsy/util.jsm");
 
 const GipsyDirectory = 'gipsy';
 
@@ -81,8 +80,13 @@ GPSStore.prototype = {
         createInstance: function (aOuter, aIID) {
             if (aOuter != null)
                 throw Components.results.NS_ERROR_NO_AGGREGATION;
-            if (this.singleton == null)
+            if (this.singleton == null) {
+                // Load here, because on older firefox the resource://
+                // doesn't seem to be initialized in top-level
+                Components.utils.import("resource://gipsy/util.jsm");
+
                 this.singleton = new GPSStore();
+            }
             return this.singleton.QueryInterface(aIID);
         }
     },
