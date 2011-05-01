@@ -1,13 +1,25 @@
 cp1250.o: cp1250.cpp cp1250.h
+win_strptime.o: win_strptime.cpp win_strptime.h win_stdint.h
 aircotec.o: gpslib/aircotec.cpp gpslib/aircotec.h gpslib/gps.h \
-  gpslib/point.h gpslib/phys.h gpslib/data.h gpslib/igc.h
+ gpslib/point.h gpslib/phys.h gpslib/data.h gpslib/igc.h
+compeo.o: gpslib/compeo.cpp gpslib/compeo.h gpslib/gps.h gpslib/point.h \
+ gpslib/phys.h gpslib/data.h gpslib/flymaster.h gpslib/igc.h
 data.o: gpslib/data.cpp gpslib/data.h gpslib/gps.h gpslib/point.h
+flymaster.o: gpslib/flymaster.cpp gpslib/flymaster.h gpslib/gps.h \
+ gpslib/point.h gpslib/phys.h gpslib/data.h gpslib/igc.h gpslib/endian.h
+foreignigc.o: gpslib/foreignigc.cpp gpslib/foreignigc.h gpslib/igc.h \
+ gpslib/point.h
 garmin.o: gpslib/garmin.cpp gpslib/data.h gpslib/garmin.h gpslib/phys.h \
-  gpslib/gps.h gpslib/point.h gpslib/endian.h
+ gpslib/gps.h gpslib/point.h gpslib/endian.h
 gps.o: gpslib/gps.cpp gpslib/gps.h gpslib/point.h gpslib/garmin.h \
-  gpslib/phys.h gpslib/data.h gpslib/aircotec.h
-gpstest.o: gpslib/gpstest.cpp gpslib/gps.h gpslib/point.h
+ gpslib/phys.h gpslib/data.h gpslib/aircotec.h gpslib/mlr.h \
+ gpslib/flymaster.h gpslib/compeo.h
+gpstest.o: gpslib/gpstest.cpp gpslib/gps.h gpslib/point.h gpslib/garmin.h \
+ gpslib/phys.h gpslib/data.h gpslib/igc.h
 igc.o: gpslib/igc.cpp gpslib/igc.h gpslib/point.h gpslib/igcparser.inc
+igcparser.o: gpslib/igcparser.cpp
+mlr.o: gpslib/mlr.cpp gpslib/mlr.h gpslib/gps.h gpslib/point.h \
+ gpslib/phys.h gpslib/data.h gpslib/flymaster.h gpslib/igc.h
 phys.o: gpslib/phys.cpp gpslib/phys.h gpslib/data.h gpslib/gps.h \
-  gpslib/point.h gpslib/garmin.h gpslib/endian.h
+ gpslib/point.h gpslib/garmin.h gpslib/endian.h
 vali.o: gpslib/vali.cpp gpslib/igc.h gpslib/point.h

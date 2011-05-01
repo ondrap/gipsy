@@ -3,24 +3,17 @@
 
 #include "gps.h"
 #include "phys.h"
+#include "flymaster.h"
 
-class MLRGps : public Gps {
+class MLRGps : public NMEAGps {
   public:
-    MLRGps(SerialDev *pdev) { 
-        dev = pdev; 
-    };
-    ~MLRGps() { delete dev; };
-
+    MLRGps(SerialDev *pdev) : NMEAGps(pdev) {};
+    virtual ~MLRGps() {};
     /* Read GPS identification */
     void init_gps();
-
-    
     /* Download tracklog from GPS */
     virtual PointArr download_tracklog(dt_callback cb, void *arg);
-
   private:
-    SerialDev *dev;
-    std::vector<std::string> receive_data(const std::string &command);
     bool read_sentence(std::vector<Data> &result, unsigned char &snum);
 };
 

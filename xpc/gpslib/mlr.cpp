@@ -137,7 +137,7 @@ bool MLRGps::read_sentence(vector<Data> &result, unsigned char &snum)
         data += dev->read();
         
         if (data.substr(4,5) != "DEBUT")
-            throw Exception("Syntax error - DEBUG.");
+            throw Exception("Syntax error - DEBUT.");
         data += dev->read();
         data += dev->read();
         if (!data.mlr_checksum())
@@ -162,66 +162,4 @@ bool MLRGps::read_sentence(vector<Data> &result, unsigned char &snum)
     dev->read();dev->read();
     
     return true;
-}
-
-// TODO: Move to NMEA utility file
-
-#define XON   0x11
-#define XOFF 0x13
-/* Do not accept more characters then maxline */
-#define MAX_LINE   90
-#define MAX_TOTAL  (10 * MAX_LINE)
-
-vector<string> MLRGps::receive_data(const string &command)
-{
-    int received = 0;
-    
-    string recv_cmd;
-    string param;
-    vector<string> result;
-    bool incmd = false;
-    unsigned char cksum = 0;
-    unsigned char ch;
-    
-    while (1) {
-            ch = dev->read();
-            received++;
-            
-            if (received > MAX_TOTAL)
-                throw TimeoutException();
-            
-            if (ch == '$' ) {
-                incmd = true;
-                param = "";
-		cksum = 0;
-                recv_cmd = "";
-                result.clear();
-                continue;
-            }
-            if (!incmd)
-                continue;
-            
-            if (ch != '*')
-                cksum ^= ch;
-            
-            if (ch == ',' || ch == '*') {
-                if (param.size()) {
-                    if (!recv_cmd.size())
-                        recv_cmd = param;
-                    else
-                        result.push_back(param);
-                }
-                param = "";
-                if (ch == '*') {
-                    string cksum_s = string() + (char)dev->read();
-                    cksum_s += (char)dev->read();
-                    unsigned char cksum_r = (unsigned char) strtol(cksum_s.c_str(), NULL, 16);
-                    dev->read();dev->read(); // CR, LF
-                    if (cksum_r == cksum && recv_cmd == command)
-                        return result;
-                }
-                continue;
-            }
-            param += ch;
-    }
 }
