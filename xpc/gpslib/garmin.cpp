@@ -171,11 +171,17 @@ PointArr GarminGps::A30xdownload(int proto, dt_callback cb, void *arg)
 	case Pid_Trk_Data:
 	    if (!suspend) {
 		point = decode_trk_data(data, dataproto);
-		// If the point is older then the last point, discard the
-		// last point
-		if (gpsid < NEW_VERSION && result.size() && point.time < result[result.size() - 1].time)
+                
+                // Discard if latitude > 90 
+                // Foretrex signals lost fix with 0x7FFFFFFF values, but latitude
+                // should be in (-90,90) anyway
+                if (point.lat > 90 || point.lat < -90) 
+                    ;
+                // If the point is older then the last point, discard the
+                // last point
+		else if (gpsid < NEW_VERSION && result.size() && point.time < result[result.size() - 1].time)
 		    result[result.size() - 1] = point;
-		else
+                else
 		    result.push_back(point);
 	    }
 	    break;
