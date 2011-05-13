@@ -11,9 +11,7 @@
     defaultButton="accept" 
     ondialogextra1="reset()"
     ondialogaccept="save_changes()" 
-    buttonlabelextra1="Reset"
-    width="520" height="300"
-    persist="width height" >
+    buttonlabelextra1="Reset" >
 
   <script src="xutil.js" />
   <script src="gliders.js" />
