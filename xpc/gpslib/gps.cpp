@@ -45,6 +45,7 @@
 #include "mlr.h"
 #include "flymaster.h"
 #include "compeo.h"
+#include "iq.h"
 
 using namespace std;
 
@@ -415,6 +416,8 @@ Gps * make_gps(const string &device, int gpstype)
         gps = new FlymasterGps(new WinSerialDev(device));
     } else if (gpstype == GPS_COMPEO) {
         gps = new CompeoGps(new WinSerialDev(device));
+    } else if (gpstype == GPS_IQ) {
+        gps = new IqGps(new WinSerialDev(device));
     } else
 	return NULL;
     
@@ -447,6 +450,8 @@ Gps * make_gps(const string &device, int gpstype)
         gps = new FlymasterGps(new UnixSerialDev(device));
     } else if (gpstype == GPS_COMPEO) {
         gps = new CompeoGps(new UnixSerialDev(device));
+    } else if (gpstype == GPS_IQ) {
+        gps = new IqGps(new UnixSerialDev(device));
     } else
 	return NULL;
     
@@ -454,3 +459,9 @@ Gps * make_gps(const string &device, int gpstype)
 }
 
 #endif
+
+/* Default GPS does not have track selection */
+bool Gps::has_track_selection()
+{
+    return false;
+}

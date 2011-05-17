@@ -93,3 +93,8 @@ string CompeoGps::download_igc(int track, dt_callback cb, void *arg)
     }
     return igc.str();
 }
+
+bool CompeoGps::has_track_selection()
+{
+    return true;
+}

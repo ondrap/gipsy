@@ -76,11 +76,12 @@ class FlymasterGps : public NMEAGps {
         virtual ~FlymasterGps() {};
         /* Download tracklog from GPS */
         virtual PointArr download_tracklog(dt_callback cb, void *arg);
-
+        /* Redefine - we have one */
+        virtual bool has_track_selection();
     private:
-    void init_gps();
-    void download_strack(size_t selected_track, PointArr &result, dt_callback cb, void *arg);
-    bool read_packet(int &packetid, Data &data);
+        void init_gps();
+        void download_strack(size_t selected_track, PointArr &result, dt_callback cb, void *arg);
+        bool read_packet(int &packetid, Data &data);
 };
 
 #endif

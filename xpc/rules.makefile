@@ -1,7 +1,7 @@
 OBJECTS = gipsy.o gipsymodule.o tracklog.o gpslib/data.o gpslib/garmin.o \
 	gpslib/gps.o gpslib/phys.o gpslib/igc.o gpslib/aircotec.o cp1250.o \
 	prefparser.o gpslib/foreignigc.o gpslib/mlr.o gpslib/flymaster.o \
-	gpslib/compeo.o
+	gpslib/compeo.o gpslib/iq.o
 
 CPPFLAGS += -DHAVE_CRYPTO -DMOZ_NO_MOZALLOC
 

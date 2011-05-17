@@ -47,6 +47,7 @@
     <menuitem label="5020/5030/Compeo/Competino" oncommand="gpsView.set_gps_type('compeo')" />
     <menuitem label="MLR/Digifly/CoMo" oncommand="gpsView.set_gps_type('mlr')"  id="mlr_gps" />
     <menuitem label="Flymaster" oncommand="gpsView.set_gps_type('flymaster')" id="flymaster_gps" />
+    <menuitem label="Brauniger IQ Basic/Flytec 6015" oncommand="gpsView.set_gps_type('iq')" id="iq_gps" />
   </menupopup>
 
   <menubar>

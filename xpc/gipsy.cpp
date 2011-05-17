@@ -821,7 +821,7 @@ void GpsItem::watcher_thread()
 	    Gipsy::notify(this, "gps_changed");
 	}
 
-        if ((gpstype == G_FLYMASTER || gpstype == G_COMPEO) && wstatus == W_DISCONNECT) {
+        if (gps->has_track_selection() && wstatus == W_DISCONNECT) {
             saved_tracks = gps->saved_tracks;
             if (auto_download) {
                 Gipsy::notify(this, "gps_trackdownsel");
@@ -833,7 +833,7 @@ void GpsItem::watcher_thread()
 	    Gipsy::notify(this, "gps_changed");
 	}
         if ((auto_download || download_now) && wstatus == W_CONNECTED) {
-            if (gpstype == G_FLYMASTER || gpstype == G_COMPEO) {
+            if (gps->has_track_selection()) {
                 if (!selected_tracks.size()) {
                     if (download_now) {
                         download_now = false;

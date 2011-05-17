@@ -190,6 +190,8 @@ var gpsView = {
 		var gtype = gps.G_MLR;
             else if (gpsname == 'flymaster')
                 var gtype = gps.G_FLYMASTER;
+            else if (gpsname == 'iq')
+                var gtype = gps.G_IQ;
 	    scanner.gpsChangeType(gps.pos, gtype);
 	}
     }

@@ -15,6 +15,9 @@ class CompeoGps : public NMEAGps {
         /* Download tracklog from GPS */
         virtual std::string download_igc(int track, dt_callback cb, void *);
 
+        /* Redefine - we have one */
+        virtual bool has_track_selection();
+
     private:
         void init_gps();
 };

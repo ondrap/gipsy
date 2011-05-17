@@ -314,3 +314,8 @@ vector<string> NMEAGps::receive_data(const string &command)
             param += ch;
     }
 }
+
+bool FlymasterGps::has_track_selection()
+{
+    return true;
+}

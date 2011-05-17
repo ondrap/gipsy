@@ -169,6 +169,7 @@ interface IGPSDevInfo : nsISupports {
     const short G_COMPEO = 2;
     const short G_MLR = 3;
     const short G_FLYMASTER = 4;
+    const short G_IQ = 5;
     readonly attribute long gpstype;
     
     // Functions for selecting tracklogs to download
