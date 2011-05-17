@@ -779,4 +779,61 @@ void UnixSerialDev::settimeout(int secs) {
     timeout = secs;
 }    
 
+
+
+/* Testing device */
+TestDev::TestDev(const string &fname)
+{
+    fd = open(fname.c_str(), O_RDWR | O_NONBLOCK);
+    if (fd == -1) {
+        int serr = errno;
+        throw OpenException(string("open: ") + strerror(serr));
+    }
+}
+
+TestDev::~TestDev() 
+{
+    if (fd != -1)
+        close(fd);
+}
+
+/* Read byte form Serial link, timeoute-aware */
+uint8_t TestDev::read() {
+    uint8_t res;
+    int cnt;
+
+    cnt = ::read(fd, &res, 1);
+//    cerr << res;
+    if (cnt != 1) {
+        throw Exception("Read error.");
+    }
+    return res;
+}
+
+void TestDev::set_speed(int baudrate)
+{
+}
+
+/* Write data to serial link, timeout-aware */
+void TestDev::write(const Data &data) {
+    int res;
+    unsigned int sent = 0;
+
+#ifdef DEBUG
+    data.print();
+#endif
+    while (sent < data.size) {
+        res = ::write(fd, data.buffer+sent, data.size-sent);
+        if (res == -1 || res == 0)
+            throw Exception("Write error.");
+
+        sent += res;
+    }
+}
+
+/* Set timeout for I/O operation */
+void TestDev::settimeout(int secs) {
+}    
+
+
 #endif // WIN32

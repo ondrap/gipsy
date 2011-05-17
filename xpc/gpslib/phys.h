@@ -225,6 +225,19 @@ public:
     /* Set timeout for I/O operation */
     virtual void settimeout(int secs);
 };
+
+class TestDev : public SerialDev {
+private:
+    int fd;
+public:
+    TestDev(const std::string &fname);
+    virtual ~TestDev();
+    
+    virtual void set_speed(int baudrate);
+    virtual uint8_t read();
+    virtual void write(const Data &data);
+    virtual void settimeout(int secs);
+};
 #endif // WIN32
 
 #endif

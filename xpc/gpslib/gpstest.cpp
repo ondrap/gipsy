@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "gps.h"
+#include "aircotec.h"
 #include "garmin.h"
 #include "igc.h"
 
@@ -14,11 +15,14 @@ bool cb(void *arg, int c1, int c2)
 
 int main(int argc, char **argv)
 {
-    cout << "GTEST FIX" << endl;
-    
-    cout << "Getting ports" << endl;
-    PortList ports = get_ports(true);
+    //cout << "Getting ports" << endl;
+    //PortList ports = get_ports(true);
 
+    Gps *gps = new AircotecGps(new TestDev("/tmp/log.txt"));
+    cerr << "Downloading" << endl;
+    gps->download_tracklog(NULL, NULL);
+    
+/*
     for (unsigned int i=0; i < ports.size(); i++) {
 	cout << "Device: " << ports[i].device << ", devname: " << ports[i].devname << endl;
         try {
@@ -39,4 +43,5 @@ int main(int argc, char **argv)
             cout << "Got exception, GPS open failed: " << e.error << endl;
         }
     }
+*/
 }
