@@ -237,6 +237,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\gpslib\iq.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\gpslib\mlr.cpp"
 				>
 			</File>

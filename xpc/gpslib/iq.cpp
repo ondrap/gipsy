@@ -18,11 +18,15 @@ using namespace std;
 Data IqGps::send_command(string cmd)
 {
     dev->write(cmd + "\r\n");
+	return Data();
 }
 
 vector<string> IqGps::send_command_tbl(string cmd)
 {
+	vector<string> result;
+
     dev->write(cmd + "\r\n");
+	return result;
 }
 
 void IqGps::init_gps()
