@@ -80,7 +80,7 @@ void AircotecGps::get_header(dt_callback cb, void *arg, int &pointcount, time_t 
     while(1) {
 	string line = ac_readline(cb, arg, 0, 0, 0);
 	/* parse */
-	int np = sscanf(line.c_str(), "@%2s%1d%1d%2d%4X%2d%2d%2d%2d%2d%2d%2d%2d%4X%2X%c**%2X", 
+	int np = sscanf(line.c_str(), "@%2s%1d%1d%2d%4X%2X%2d%2d%2d%2d%2d%2d%2d%4X%2X%c**%2X", 
 			devtype, &vermaj, &vermin, &verpatch, &gpsunitid, &flnum, 
 			&tmv.tm_year, &tmv.tm_mon, &tmv.tm_mday, &tmv.tm_hour, &tmv.tm_min, &tmv.tm_sec, 
 			&tmp1, &pointcount, &interval, &cheight_type, &cksum);
