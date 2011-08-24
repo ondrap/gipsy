@@ -303,7 +303,16 @@
                         label="Weather" oncommand="if (!elem('map_weather').checked) gmap.set_overlay(null);" />
 	    </hbox>
             
-            <html:div flex="1" id="gmap" />
+            <grid flex="1">
+                <columns>
+                    <column flex="1" />
+                </columns>
+                <rows>
+                    <row flex="1">
+                        <html:div flex="1" id="gmap" />
+                    </row>
+                </rows>
+            </grid>
             <html:div id="map-status">
                 <span>»&map.altitude;</span>
                 <strong id="prof-alt"> </strong>
@@ -314,7 +323,7 @@
                 <span>»&map.time;</span>
                 <strong id="prof-time"></strong>
             </html:div>
-            <html:div id="gprofile" />
+            <html:div id="gprofile"/>
 	  </vbox>
 	</hbox>
       </tabpanel>
