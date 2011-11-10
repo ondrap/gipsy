@@ -116,7 +116,7 @@
 				AdditionalIncludeDirectories="..\..\gecko-sdk\include;..\..\gecko-sdk\include\xpcom;..\..\;$(SolutionDir);..\..\gecko-sdk\include\content;..\..\gecko-sdk\include\necko;C:\WinDDK\7600.16385.1\inc\atl71"
 				PreprocessorDefinitions="HAVE_CRYPTO;WIN32;_WINDOWS;_USRDLL;XP_WIN;XP_WIN32;_X86_;_CRT_SECURE_NO_DEPRECATE;XPCOM_GLUE_USE_NSPR;MOZ_NO_MOZALLOC"
 				RuntimeLibrary="2"
-				TreatWChar_tAsBuiltInType="false"
+				TreatWChar_tAsBuiltInType="true"
 				WarningLevel="3"
 			/>
 			<Tool
