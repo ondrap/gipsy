@@ -9,7 +9,7 @@ CRYPTO_LIB = ../libs/libcryptopp.a
 SHARED = -shared
 TARGET = gipsy.so
 
-CXX   = g++
+CXX   = g++ -std=gnu++0x
  
 # Change this to point at your Gecko SDK directory. 
  

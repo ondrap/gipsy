@@ -3,7 +3,7 @@ OBJECTS = gipsy.o gipsymodule.o tracklog.o gpslib/data.o gpslib/garmin.o \
 	prefparser.o gpslib/foreignigc.o gpslib/mlr.o gpslib/flymaster.o \
 	gpslib/compeo.o gpslib/iq.o
 
-CPPFLAGS += -DHAVE_CRYPTO -DMOZ_NO_MOZALLOC
+CPPFLAGS += -DHAVE_CRYPTO -DMOZ_NO_MOZALLOC -fpermissive
 
 all: $(TARGET) IGPSScanner.xpt
 
@@ -39,10 +39,9 @@ IGPSScanner.xpt: IGPSScanner.idl
 	$(XPIDL) -I$(XULIDLPATH) -m typelib $<
 
 $(TARGET): $(OBJECTS)
-	$(CXX) -Wall -Os -o $(TARGET) $(SHARED) $(OBJECTS) $(CRYPTO_LIB) $(USB_LIB) $(GECKO_LDFLAGS)
+	$(CXX) -Wl,-z,defs -Wall -Os -o $(TARGET) $(SHARED) $(OBJECTS) $(CRYPTO_LIB) $(USB_LIB) $(GECKO_LDFLAGS)
 	chmod +x $(TARGET)
 ifeq "$(SHARED)" "-shared"
-	./purify.py $(TARGET)
 	strip $(TARGET)
 endif
 

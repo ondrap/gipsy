@@ -4,9 +4,11 @@
 #include <math.h>
 #include <vector>
 
+using namespace std;
+
 #ifdef WIN32
 #include <float.h>
-#define isfinite(x) _finite(x)
+# define isfinite(x) _finite(x)
 #endif
 
 #define RADIUS 6372795.477598

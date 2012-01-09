@@ -1377,6 +1377,7 @@ NS_IMETHODIMP Tracklog::DrawCanvasTrack(nsIDOMCanvasRenderingContext2D *ctx,
     if (!ctx)
         return NS_ERROR_NULL_POINTER;
 
+    ctx->SetLineWidth(2);
     ctx->BeginPath();
     Trackpoint *point = &igc->tracklog[0];
     ctx->MoveTo(canvasProjectLon(point->lon, limit) - startx, 

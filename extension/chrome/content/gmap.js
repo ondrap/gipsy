@@ -646,7 +646,7 @@ TerrainMap.prototype.make_canvas = function(tlog, i) {
 TerrainMap.prototype.drawCanvasTrack = function(tlog, ctx, startx, starty) {
     var xdiff = this.centerx - startx;
     var ydiff = this.centery - starty;
-    
+
     ctx.beginPath();
     var point = tlog.igcPoint(0);
     ctx.moveTo(this.projectlon(point.lon) + xdiff, this.projectlat(point.lat) + ydiff);
