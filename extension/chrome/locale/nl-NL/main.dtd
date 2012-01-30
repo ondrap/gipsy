@@ -1,0 +1,155 @@
+<!ENTITY gipsy.title "GiPSy Flight Manager">
+
+<!ENTITY menu.sendxc "Verzend vluchten naar XContest" >
+<!ENTITY menu.importgpx "Importeer GPX-bestand" >
+<!ENTITY menu.googlemapdownload "Actualiseren GoogleMap definities" >
+
+<!ENTITY tab.flights "Vluchten" >
+<!ENTITY tab.devices "Verbinding met GPS" >
+<!ENTITY problem "Probleem melden" >
+
+<!ENTITY delete "Verwijderen" >
+<!ENTITY open "Openen" >
+<!ENTITY close "Afsluiten" >
+<!ENTITY close.key "A" >
+<!ENTITY preferences "Instellingen" >
+<!ENTITY preferences.key "I" >
+<!ENTITY collapse.all "Samenvouwen/Uitvouwen" >
+<!ENTITY show.source "Weergeven IGC-bron" >
+<!ENTITY create.logbook "Aanmaken vluchtenlogboek (HTML)" >
+
+<!ENTITY file "Bestand" >
+<!ENTITY file.key "b" >
+
+<!ENTITY help "Help" >
+<!ENTITY help.key "h" >
+<!ENTITY about "Over GiPSy" >
+
+<!ENTITY date.utc "Datum (UTC)" >
+<!ENTITY launch "Start" >
+<!ENTITY launch.long "Startplaats" >
+<!ENTITY landing "Landing" >
+<!ENTITY pilot "Piloot" >
+<!ENTITY glider "Scherm" >
+<!ENTITY flight.info "Vlucht info" >
+<!ENTITY statistics "Statistieken" >
+<!ENTITY pilot.info "Piloot info" >
+<!ENTITY date "Datum" >
+<!ENTITY enabled "Ingeschakeld" >
+<!ENTITY device "Apparaat" >
+<!ENTITY altitude "Hoogte">
+<!ENTITY speed "Snelheid">
+<!ENTITY advanced "Geavanceerd" >
+<!ENTITY basic "Basis" >
+<!ENTITY faicat "FAI categorie">
+<!ENTITY biplace "Tandem">
+<!ENTITY comment "Commentaar" >
+<!ENTITY properties "Eigenschappen" >
+<!ENTITY upload "Upload" >
+<!ENTITY map.no "Zonder kaart" >
+<!ENTITY map.googlemap "GoogleMap" >
+<!ENTITY map.googlemaplayer "GoogleMap laag" >
+<!ENTITY map.airspace "Luchtruim" >
+<!ENTITY map.optimization "Route optimalisatie" >
+
+<!ENTITY map.speed "snelheid">
+<!ENTITY map.altitude "hoogte">
+<!ENTITY map.vario "vario">
+<!ENTITY map.time "tijd">
+
+<!ENTITY duration "Vluchtduur" >
+
+<!ENTITY stat.sdist "Afstand start-landing" >
+<!ENTITY stat.totdist "Totale gevlogen afstand" >
+<!ENTITY stat.maxheight "Maximum hoogte" >
+<!ENTITY stat.heightdiff "Hoogteverschil (max-min)" >
+<!ENTITY stat.maxspeed "Maximum snelheid">
+<!ENTITY stat.maxvario "Sterkste stijgen" >
+<!ENTITY stat.minvario "Sterkste dalen" >
+<!ENTITY stat.totheight "Totale hoogtewinst" >
+
+<!ENTITY xcontest.login "XContest gebruikersnaam">
+<!ENTITY xcontest.show "Weergeven XContest-pagina" >
+<!ENTITY xcontest.send "Verzenden naar XContest" >
+
+<!ENTITY synchronization "Synchronisatie">
+<!ENTITY filename "Bestandsnaam" >
+<!ENTITY gps "GPS" >
+
+<!ENTITY gps.help "Ik zie mijn GPS niet" >
+<!ENTITY gps.type "GPS type" >
+<!ENTITY gps.name "GPS naam" >
+<!ENTITY progress "Voortgang overdracht" >
+
+<!ENTITY pilot.filter "Filteren op piloot">
+<!ENTITY pilot.all "Alle piloten">
+<!ENTITY gpx.save "Exporteren naar GPX">
+<!ENTITY kml.save "Exporteren naar KML">
+<!ENTITY svg.save "Exporteren naar SVG">
+
+<!-- New track -->
+<!ENTITY newtrk.title "Tracklog verwerking" >
+<!ENTITY seltrk.title "Stap 1 - selecteren van segment :: selecteer segment behorend bij de vlucht" >
+<!ENTITY seltrk.help "TIP: Om van meerdere segmenten één vlucht te maken, gebruik de Shift toets tijdens het selecteren" >
+
+<!ENTITY selpoint.title "Stap 2 - correctie :: indien nodig kan handmatig het automatisch gedetecteerde begin/eind van de vlucht worden gecorrigeerd" >
+<!ENTITY selpoint.advanced "Weergeven hulpmiddel voor gedetailleerde selectie" >
+<!ENTITY selpoint.restore "Herstellen initiële selectie" >
+<!ENTITY selpoint.helprange "Het begin-/eindpunt kan worden aangepast door het verslepen van de rode cirkels">
+<!ENTITY selpoint.helpdrag "Verplaats het ingezoomde gebied door met de muis te slepen in het rood-gemarkeerde gebied">
+<!ENTITY selpoint.helpsel "Selecteer punten of deselecteer weg te laten delen door met de muis te klikken" >
+<!ENTITY tracklog.invalid "Ongeldige tracklog" >
+
+<!ENTITY finfo.title "Stap 3 :: vluchtinformatie toevoegen">
+<!ENTITY finfo.fileid "3-letter-ID voor IGC-bestandsnaam" >
+<!ENTITY finfo.longname "Lange IGC-bestandsnaam formaat" >
+<!ENTITY finfo.shortname "Korte IGC-bestandsnaam formaat" >
+<!ENTITY finfo.longsite "Bestandsnaam formaat: JJJJ-MM-DD-start.igc" >
+
+<!ENTITY filinfo.title "IGC-bestandsinformatie" >
+<!ENTITY filinfo.savepath "Het tracklog is opgeslagen als" >
+<!ENTITY filinfo.noxc "Het tracklog is NIET verzonden naar het XContest systeem">
+<!ENTITY filinfo.done "Vlucht verwerking gereed">
+<!ENTITY filinfo.otherproc "Verwerk andere vluchten van deze GPS" >
+<!ENTITY filinfo.xcnow "Verzend tracklog nu naar XContest">
+<!ENTITY filinfo.xclater "Verzend later">
+<!ENTITY xcclaim.title "Verzending vlucht naar XContest server" >
+
+<!-- Synchro -->
+<!ENTITY synchro.title "Uploaden naar XContest">
+<!ENTITY synchro.done "Uploaden voltooid">
+<!ENTITY synchro.select "Selecteer vlucht" >
+
+<!-- Preferences -->
+<!ENTITY prefs.title "GiPSy Instellingen" >
+<!ENTITY prefs.main "Algemene instellingen" >
+<!ENTITY prefs.gpsaccess "GPS toegangsopties" >
+<!ENTITY prefs.autodownload "Automatisch downloaden tracklog van GPS" >
+<!ENTITY prefs.needsrestart "wordt van kracht na herstart van Firefox" >
+<!ENTITY prefs.datadir "Gipsy gegevensmap" >
+<!ENTITY prefs.changedir "Wijzigen gegevensmap" >
+<!ENTITY prefs.changetohome "Instellen map op Home/gipsy" >
+<!ENTITY prefs.savesubdirs "Bewaar nieuwe vluchten in 'pilootnaam/jaar' submap" >
+<!ENTITY prefs.units "Eenheden">
+<!ENTITY prefs.metricsystem "Metrische systeem">
+<!ENTITY prefs.autoselect "Automatisch selecteren tracks van vandaag">
+<!ENTITY prefs.usercommands "User commands">
+<!ENTITY prefs.usertitle "Titel">
+<!ENTITY prefs.usercmd "Programma pad">
+<!ENTITY prefs.userparams "Additionele parameters">
+
+
+<!-- Properties -->
+<!ENTITY prop.dontsend "Niet naar XContest verzenden" >
+<!ENTITY prop.prepare "Wordt naar XContest verzonden" >
+<!ENTITY prop.uploaded "De vlucht is naar XContest verzonden" >
+
+<!-- Password dialog -->
+<!ENTITY passwd.title "Voer wachtwoord in">
+<!ENTITY passwd.xcontestid "Gebruikersnaam">
+<!ENTITY passwd.password "Wachtwoord">
+
+<!ENTITY contest "Contest" >
+<!ENTITY route "Route" >
+<!ENTITY distance "Afstand" >
+<!ENTITY points "Punten" >
