@@ -42,7 +42,7 @@ public:
     volatile bool scan_enabled;
     short wstatus;          // Watcher status
     PRInt32 gpstype;
-    PRBool auto_download; // Start download automatically
+    bool auto_download; // Start download automatically
     volatile PRBool download_now;  // Request to start download
     volatile PRBool exit_thread;   // If true, exit this thread
 
@@ -109,7 +109,7 @@ private:
 
     PRThread *scanner_tid;
     bool exit_thread;
-    PRBool auto_download;
+    bool auto_download;
 
     PRLock *lock;
     GpsList gpslist;
