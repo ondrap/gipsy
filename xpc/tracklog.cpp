@@ -384,7 +384,7 @@ NS_IMETHODIMP Tracklog::IgcLoad(nsILocalFile *file)
     int read;
     do {
         read = PR_Read(f, buffer, bufsize);
-        if (read)
+        if (read > 0)
             text.write(buffer, read);
         
     } while (read > 0);

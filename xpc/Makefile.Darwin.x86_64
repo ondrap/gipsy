@@ -1,26 +1,19 @@
-XPIDL = /Users/martin/devel/xulrunner-sdk/bin/xpidl
-XULIDLPATH = /Users/martin/devel/64-bit/xulrunner-sdk/idl/
-GECKO_SDK_PATH = /Users/martin/devel/64-bit/xulrunner-sdk/
-GECKO_DEFINES = -DXP_UNIX -DXP_MACOSX
-GECKO_INCLUDES := -I/Users/martin/devel/64-bit/xulrunner-sdk/sdk/include -I/Users/martin/devel/64-bit/xulrunner-sdk/include -I/Users/martin/devel/64-bit/xulrunner-sdk/include/xpcom
-GECKO_LDFLAGS := -L/Applications/Firefox.app/Contents/MacOS/ -L/Users/martin/devel/64-bit/xulrunner-sdk/lib -lxpcomglue_s_nomozalloc -lxpcom -lnspr4 -lplc4 -Wl,-executable_path,/Applications/Firefox.app/Contents/MacOS/ 
+GECKO_SDK_PATH = ../../64-bit/xulrunner-sdk
 
-CPPFLAGS += -m64 -DCRYPTPP -I/Users/martin/devel/64-bit -I/Developer/SDKs/MacOSX10.4u.sdk/usr/include/ -I/Developer/SDKs/MacOSX10.4u.sdk/usr/include/c++/4.0.0/ -mmacosx-version-min=10.4
-CRYPTO_LIB = /Users/martin/devel/64-bit/cryptopp/libcryptopp.a
+XPIDL = $(GECKO_SDK_PATH)/bin/xpidl
+XULIDLPATH = $(GECKO_SDK_PATH)/idl
+GECKO_DEFINES = -DXP_UNIX -DXP_MACOSX
+GECKO_INCLUDES := -I$(GECKO_SDK_PATH)/include -I../../64-bit 
+GECKO_LDFLAGS := -L/Applications/Firefox.app/Contents/MacOS/ -L$(GECKO_SDK_PATH)/lib -lxpcomglue_s -lmozalloc -lxpcom -lplds4 -lplc4 -lnspr4 -lpthread -ldl -Wl,-executable_path,/Applications/Firefox.app/Contents/MacOS/
+
+CPPFLAGS += -std=gnu++0x -m64 -DCRYPTPP -fshort-wchar -fexceptions -Wno-non-virtual-dtor -I/Developer/SDKs/MacOSX10.5.sdk/usr/include/ -mmacosx-version-min=10.5 -I../../64-bit
+CRYPTO_LIB = ../../64-bit/cryptopp/libcryptopp.a
 SHARED = -dynamiclib -m64
 TARGET = gipsy.dylib
 
 CXX   = g++
  
-# Change this to point at your Gecko SDK directory. 
- 
-# GCC only define which allows us to not have to #include mozilla-config 
-# in every .cpp file.  If your not using GCC remove this line and add 
-# #include "mozilla-config.h" to each of your .cpp files. 
-GECKO_CONFIG_INCLUDE = -include mozilla-config.h 
-
-CPPFLAGS += -DUSE_LIBUSB -I/opt/local/include -I/Users/martin/devel/64-bit/include
-USB_LIB = /Users/martin/devel/64-bit/lib/libusb.a -framework IOKit -framework CoreFoundation -mmacosx-version-min=10.4
-CPPFLAGS += -fshort-wchar -fexceptions -Wno-non-virtual-dtor -mmacosx-version-min=10.4
+#CPPFLAGS += -DUSE_LIBUSB 
+#USB_LIB = ../../lib/libusb.a -framework IOKit -framework CoreFoundation
 
 include rules.makefile
