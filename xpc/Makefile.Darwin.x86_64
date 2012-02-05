@@ -6,14 +6,15 @@ GECKO_DEFINES = -DXP_UNIX -DXP_MACOSX
 GECKO_INCLUDES := -I$(GECKO_SDK_PATH)/include -I../../64-bit 
 GECKO_LDFLAGS := -L/Applications/Firefox.app/Contents/MacOS/ -L$(GECKO_SDK_PATH)/lib -lxpcomglue_s -lmozalloc -lxpcom -lplds4 -lplc4 -lnspr4 -lpthread -ldl -Wl,-executable_path,/Applications/Firefox.app/Contents/MacOS/
 
-CPPFLAGS += -std=gnu++0x -m64 -DCRYPTPP -fshort-wchar -fexceptions -Wno-non-virtual-dtor -I/Developer/SDKs/MacOSX10.5.sdk/usr/include/ -mmacosx-version-min=10.5 -I../../64-bit
+#CPPFLAGS += -std=gnu++0x -m64 -DCRYPTPP -fshort-wchar -fexceptions -Wno-non-virtual-dtor -I/Developer/SDKs/MacOSX10.5.sdk/usr/include/ -I../../64-bit
+CPPFLAGS += -m64 -DCRYPTPP -fshort-wchar -fexceptions -Wno-non-virtual-dtor -I../../64-bit  -isysroot /Developer/SDKs/MacOSX10.6.sdk -fno-common
 CRYPTO_LIB = ../../64-bit/cryptopp/libcryptopp.a
 SHARED = -dynamiclib -m64
 TARGET = gipsy.dylib
 
 CXX   = g++
  
-#CPPFLAGS += -DUSE_LIBUSB 
-#USB_LIB = ../../lib/libusb.a -framework IOKit -framework CoreFoundation
+CPPFLAGS += -DUSE_LIBUSB -I../../include
+USB_LIB = ../../lib/libusb.a -framework IOKit -framework CoreFoundation
 
 include rules.makefile

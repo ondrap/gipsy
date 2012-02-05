@@ -3,7 +3,7 @@ OBJECTS = gipsy.o gipsymodule.o tracklog.o gpslib/data.o gpslib/garmin.o \
 	prefparser.o gpslib/foreignigc.o gpslib/mlr.o gpslib/flymaster.o \
 	gpslib/compeo.o gpslib/iq.o
 
-CPPFLAGS += -DHAVE_CRYPTO -DMOZ_NO_MOZALLOC -fpermissive
+CPPFLAGS += -DHAVE_CRYPTO -fpermissive
 
 all: $(TARGET) IGPSScanner.xpt
 
