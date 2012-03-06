@@ -18,12 +18,14 @@ class IqGps : public Gps {
     
     /* Download tracklog from GPS */
     virtual std::string download_igc(int track, dt_callback cb, void *);
-
+    virtual bool has_track_selection();
+    
     SerialDev *dev;
   private:
     void init_gps();
-    Data send_command(std::string cmd);
+    string send_command(std::string cmd);
     std::vector<std::string> send_command_tbl(std::string cmd);
+    string ac_readline(int timeout);
 };
 
 #endif

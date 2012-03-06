@@ -18,9 +18,11 @@ int main(int argc, char **argv)
     //cout << "Getting ports" << endl;
     //PortList ports = get_ports(true);
 
-    Gps *gps = new AircotecGps(new TestDev("/tmp/log.txt"));
+    Gps *gps = make_gps("/dev/ttyUSB0", GPS_IQ);
+    cout << "GPS type: " << gps->gpsname << ", unitid: " << gps->gpsunitid << endl;
     cerr << "Downloading" << endl;
-    gps->download_tracklog(NULL, NULL);
+    string igc = gps->download_igc(0, NULL, NULL);
+    cerr << igc;
     
 /*
     for (unsigned int i=0; i < ports.size(); i++) {

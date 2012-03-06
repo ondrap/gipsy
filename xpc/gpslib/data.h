@@ -23,6 +23,7 @@ public:
     uint8_t operator[](int index);
     ~Data();
     Data &operator+=(unsigned char c);
+    bool operator==(const Data &other);
 
     /* Compute checksum according to the Garmin specification */
     uint8_t checksum();

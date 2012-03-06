@@ -31,7 +31,7 @@ function unload_gpstree() {
     observerService.removeObserver(gps_observer, "gps_removed");
 }
 
-const GPS_TYPES = [ "Garmin", "Aircotec", "50x0/Compe*", "MLR/Digifly", "Flymaster" ];
+const GPS_TYPES = [ "Garmin", "Aircotec", "50x0/Compe*", "MLR/Digifly", "Flymaster", "IQ Basic/6015" ];
 
 // Show context menu for selecting gps type
 function gps_tree_clicked(event) {

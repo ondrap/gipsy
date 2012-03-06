@@ -750,7 +750,7 @@ void GpsItem::download_tracklog()
     progress = 0;
     Gipsy::notify(this, "gps_changed");
     
-    if (gpstype == G_COMPEO) {
+    if (gpstype == G_COMPEO || gpstype == G_IQ) {
         for (size_t i=0; i < selected_tracks.size(); i++) {
             string igccontent = gps->download_igc(selected_tracks[i], _progress_updater, (void *)this);
             if (igccontent.size()) {

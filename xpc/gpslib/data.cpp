@@ -86,6 +86,15 @@ Data &Data::operator+=(unsigned char c)
     return *this;
 }
 
+bool Data::operator==(const Data &other)
+{
+    if (other.size != size)
+        return false;
+    if (memcmp(buffer, other.buffer, size) == 0)
+        return true;
+    return false;
+}
+
 Data & Data::operator=(const Data &other) 
 {
     if (buffer)
