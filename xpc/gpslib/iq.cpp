@@ -1,7 +1,12 @@
 #include <stdio.h>
+#include <time.h>
 
 #include <string>
 #include <sstream>
+
+#ifdef WIN32
+#   include "win_strptime.h"
+#endif
 
 #include "iq.h"
 #include "igc.h"
@@ -16,11 +21,11 @@ using namespace std;
 /* Maximum IGC file - 10MB */
 #define MAX_IGC_FILE (10 * 1024 * 1024)
 
-#define INIT_TIMEOUT 2
+#define INIT_TIMEOUT 1
 
 /* Read line from input & check the checksum */
 /* Timeout specified in seconds, 0 means no timeout */
-string IqGps::ac_readline(int timeout)
+string IqGps::ac_readline(int timeout, string prefix)
 {
     time_t starttime = time(NULL);
   restart:
@@ -46,6 +51,10 @@ string IqGps::ac_readline(int timeout)
     }
     if (result.size() < 2)
         goto restart;
+	if (result.size() < prefix.size())
+		goto restart;
+	if (result.substr(0, prefix.size()) != prefix)
+		goto restart;
     return result;
 }
 
@@ -53,7 +62,7 @@ string IqGps::ac_readline(int timeout)
 string IqGps::send_command(string cmd)
 {
     dev->write(cmd + "\r\n");
-    return ac_readline(2).substr(7);
+    return ac_readline(2, cmd).substr(7);
 }
 
 // Strip whitespace from a string
@@ -74,7 +83,7 @@ vector<string> IqGps::send_command_tbl(string cmd)
 
     dev->write(cmd + "\r\n");
     while (1) {
-        string line = string_strip(ac_readline(2));
+        string line = string_strip(ac_readline(2, ""));
         if (line == "Done")
             break;
         result.push_back(line);

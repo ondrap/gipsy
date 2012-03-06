@@ -111,8 +111,8 @@ var gpsView = {
     },
 
     setCellValue : function(row, col, value) {
-	if (col.id == 'gps_enabled') {
-	    scanner.gpsToggle(this.rows[row].pos, value == 'true');
+        if (col.id == 'gps_enabled') {
+            scanner.gpsToggle(this.rows[row].pos);
 	}
     },
 

@@ -11,8 +11,13 @@
 class IqGps : public Gps {
   public:
     IqGps(SerialDev *pdev) { 
-        dev = pdev; 
-        init_gps();
+        try {
+            dev = pdev; 
+            init_gps();
+        } catch (Exception e) {
+            delete dev;
+            throw e;
+        }
     };
     ~IqGps() { delete dev; };
     
@@ -25,7 +30,7 @@ class IqGps : public Gps {
     void init_gps();
     string send_command(std::string cmd);
     std::vector<std::string> send_command_tbl(std::string cmd);
-    string ac_readline(int timeout);
+    std::string ac_readline(int timeout, std::string prefix);
 };
 
 #endif

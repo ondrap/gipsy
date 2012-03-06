@@ -408,8 +408,8 @@ NS_IMETHODIMP Gipsy::GetGpsInfo(PRUint32 pos, IGPSDevInfo **_retval)
     return NS_OK;
 }
 
-/* void gpsToggle (in unsigned long pos, in boolean newstate); */
-NS_IMETHODIMP Gipsy::GpsToggle(PRUint32 pos, PRBool newstate)
+/* void gpsToggle (in unsigned long pos); */
+NS_IMETHODIMP Gipsy::GpsToggle(PRUint32 pos)
 {
     PR_Lock(lock);
 
@@ -419,16 +419,11 @@ NS_IMETHODIMP Gipsy::GpsToggle(PRUint32 pos, PRBool newstate)
     }
 
     GpsItem *gps = gpslist[pos];
-    if ((gps->scan_enabled && newstate) || (!gps->scan_enabled && !newstate)) {
-	PR_Unlock(lock);
-	return NS_OK;
-    }
-
-	gps->scan_enabled = newstate ? true : false;
+    gps->scan_enabled = !gps->scan_enabled;
     
     /* Update preferences table */
     
-    if (newstate) {
+    if (gps->scan_enabled) {
         if (gps->portinfo.usb_vendor)
             EnabledUSB.push_back(gps->portinfo.usb_vendor);
         else

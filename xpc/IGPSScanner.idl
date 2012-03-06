@@ -198,7 +198,7 @@ interface IGPSScanner : nsISupports {
     IGPSDevInfo getGpsInfo(in unsigned long pos);
     
     /* Toggle GPS enabled status */
-    void gpsToggle(in unsigned long pos, in boolean newstate);
+    void gpsToggle(in unsigned long pos);
 
     /* Start Download */
     void gpsDownload(in unsigned long pos);
