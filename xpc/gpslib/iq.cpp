@@ -51,7 +51,7 @@ string IqGps::ac_readline(int timeout, string prefix)
     }
     if (result.size() < 2)
         goto restart;
-	if (result.size() < prefix.size())
+	if (result.size() < (prefix.size() + 1))
 		goto restart;
 	if (result.substr(0, prefix.size()) != prefix)
 		goto restart;
@@ -62,7 +62,7 @@ string IqGps::ac_readline(int timeout, string prefix)
 string IqGps::send_command(string cmd)
 {
     dev->write(cmd + "\r\n");
-    return ac_readline(2, cmd).substr(7);
+    return ac_readline(2, cmd).substr(cmd.size());
 }
 
 // Strip whitespace from a string
@@ -130,6 +130,8 @@ void IqGps::init_gps()
     vector<string> lines = send_command_tbl("ACT_20_00"); // Get flight book
     for (unsigned int i=0; i < lines.size(); i++) {
         vector<string> fields = string_split(lines[i], ';');
+        if (fields.size() < 5)
+            continue;
         string stime = fields[1] + " " + fields[2];
         struct tm tm;
         strptime(stime.c_str(), "%y.%m.%d %H:%M:%S", &tm);
