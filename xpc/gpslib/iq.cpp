@@ -1,4 +1,4 @@
-#include <stdio.h>
+    #include <stdio.h>
 #include <time.h>
 
 #include <string>
@@ -51,10 +51,11 @@ string IqGps::ac_readline(int timeout, string prefix)
     }
     if (result.size() < 2)
         goto restart;
-	if (result.size() < (prefix.size() + 1))
-		goto restart;
-	if (result.substr(0, prefix.size()) != prefix)
-		goto restart;
+    
+    if (result.size() < (prefix.size() + 1))
+        goto restart;
+    if (result.substr(0, prefix.size()) != prefix)
+        goto restart;
     return result;
 }
 
@@ -62,12 +63,15 @@ string IqGps::ac_readline(int timeout, string prefix)
 string IqGps::send_command(string cmd)
 {
     dev->write(cmd + "\r\n");
-    return ac_readline(2, cmd).substr(cmd.size());
+    return ac_readline(2, cmd).substr(cmd.size() + 1);
 }
 
 // Strip whitespace from a string
 static string string_strip(string s)
 {
+    if (s.size() == 0)
+        return s;
+
     unsigned int i;
     for (i=0; i < s.size() && (s[i] == ' ' || s[i] == '\n' || s[i] == '\r'); i++)
         ;
@@ -88,7 +92,6 @@ vector<string> IqGps::send_command_tbl(string cmd)
             break;
         result.push_back(line);
     }
-    
     return result;
 }
 
