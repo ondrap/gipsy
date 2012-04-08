@@ -337,6 +337,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\win_stdint.h"
+				>
+			</File>
+			<File
 				RelativePath=".\win_strptime.h"
 				>
 			</File>

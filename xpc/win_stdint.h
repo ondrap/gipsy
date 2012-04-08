@@ -47,6 +47,7 @@ typedef unsigned long long   uint_least64_t;
  *  Not actually guaranteed to be fastest for all purposes
  *  Here we use the exact-width types for 8 and 16-bit ints. 
  */
+/*
 typedef char int_fast8_t;
 typedef unsigned char uint_fast8_t;
 typedef short  int_fast16_t;
@@ -55,7 +56,7 @@ typedef int  int_fast32_t;
 typedef unsigned  int  uint_fast32_t;
 typedef long long  int_fast64_t;
 typedef unsigned long long   uint_fast64_t;
-
+*/
 /* 7.18.1.4  Integer types capable of holding object pointers */
 typedef int intptr_t;
 typedef unsigned uintptr_t;
