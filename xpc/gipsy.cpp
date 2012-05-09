@@ -12,9 +12,10 @@
 #include "nsISimpleEnumerator.h"
 #include "nsEnumeratorUtils.h"
 #include "nsProxyRelease.h"
-#include "nsIProxyObjectManager.h"
 #include "nsServiceManagerUtils.h"
 #include "nsXPCOMCIDInternal.h"
+#include "nsThreadUtils.h"
+#include "nsIRunnable.h"
 
 #include "prthread.h"
 
@@ -71,22 +72,50 @@ struct DownInfo {
     IGPSScanner *main;
 };
 
-/* Send notification to observer waiting for tracklog */
+class NotifyTask : public nsRunnable
+{
+public:
+  NotifyTask(nsISupports *subject, const char *topic, bool remref)
+    : mSubject(subject)
+    , mTopic(topic)
+    , mRemref(remref)
+    , mWorkerThread(do_GetCurrentThread())
+  {
+    MOZ_ASSERT(!NS_IsMainThread()); // This should be running on the worker thread
+  }
+
+  NS_IMETHOD Run() {
+    MOZ_ASSERT(NS_IsMainThread()); // This method is supposed to run on the main thread!
+    
+    nsCOMPtr<nsIObserverService> observersvc = do_GetService("@mozilla.org/observer-service;1");
+    observersvc->NotifyObservers(mSubject, mTopic, NULL);
+    if (mRemref)
+        NS_RELEASE(mSubject);
+    
+    // If we don't destroy the thread when we're done with it, it will hang around forever... bad!
+    // But thread->Shutdown must be called from the main thread, not from the thread itself.
+    mWorkerThread->Shutdown();
+    return NS_OK;
+  }
+
+private:
+  nsISupports *mSubject;
+  const char *mTopic;
+  bool mRemref;
+  nsCOMPtr<nsIThread> mWorkerThread;
+};
+
+
 void Gipsy::notify(nsISupports *subject, const char *topic)
 {
-    nsresult rv;
+    notify(subject, topic, false);
+}
 
-    nsCOMPtr<nsIProxyObjectManager> proxyman;
-    proxyman = do_GetService(NS_XPCOMPROXY_CONTRACTID, &rv);
-
-    nsCOMPtr<nsIObserverService> mainosvc = do_GetService("@mozilla.org/observer-service;1");
-    nsCOMPtr<nsIObserverService> observersvc;
- 
-    rv = proxyman->GetProxyForObject(NS_PROXY_TO_MAIN_THREAD, nsIObserverService::GetIID(),
-				     mainosvc, NS_PROXY_ASYNC | NS_PROXY_ALWAYS, getter_AddRefs(observersvc));
-    
-    if (! NS_FAILED(rv))
-	observersvc->NotifyObservers(subject, topic, NULL);
+/* Send notification to observer waiting for tracklog */
+void Gipsy::notify(nsISupports *subject, const char *topic, bool remref)
+{
+    nsCOMPtr<nsIRunnable> resultrunnable = new NotifyTask(subject, topic, remref);
+    NS_DispatchToMainThread(resultrunnable);
 }
 
 /* Set true/false if scan should be enabled/disabled */
@@ -210,7 +239,7 @@ void Gipsy::prefs_load(void)
 
 /* Function running on thread, to access main thread, use main pointer */
 /* Thread that scans for new GPSes, removals etc. */
-void Gipsy::scanner_thread(IGPSScanner *main)
+void Gipsy::scanner_thread()
 {
     while (!exit_thread) {
 	// Scan for new ports
@@ -283,8 +312,8 @@ void Gipsy::scanner_thread(IGPSScanner *main)
 	    GpsItem *tmp = new GpsItem();
 	    tmp->pos = removed[i];
 	    NS_ADDREF(tmp);
-	    notify(tmp, "gps_removed");
-	    NS_RELEASE(tmp);
+	    notify(tmp, "gps_removed", true);
+	    // - NS_RELEASE will be called in notify
 	}
 	
 	for (unsigned int i=0; i < changed.size(); i++) {
@@ -307,20 +336,8 @@ void Gipsy::scanner_thread(IGPSScanner *main)
 void Gipsy::_scanner_thread(void *arg)
 {
     Gipsy *cls = (Gipsy *) arg;
-    nsCOMPtr<IGPSScanner> main;
-    nsCOMPtr<nsIProxyObjectManager> proxyman;
-    nsresult rv;
 
-    proxyman = do_GetService(NS_XPCOMPROXY_CONTRACTID, &rv);
-    NS_ASSERTION(gRDFService, "unable to get Proxy Manager service");
-
-    rv = proxyman->GetProxyForObject(NS_PROXY_TO_MAIN_THREAD, IGPSScanner::GetIID(),
-				     (IGPSScanner *) cls, NS_PROXY_SYNC | NS_PROXY_ALWAYS, 
-				     getter_AddRefs(main));
-    if(NS_FAILED(rv)) 
-	return;
-
-    cls->scanner_thread(main);
+    cls->scanner_thread();
 }
 
 

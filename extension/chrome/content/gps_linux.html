@@ -42,8 +42,9 @@ crw-rw---- 1 root dialout 4, 64 2007-03-23 07:56 /dev/ttyS0
   users on Linux systems generally do not have rights to access USB devices. In order to add access, 
   create a file /etc/udev/rules.d/60-garmin.rules with the following content:
   <pre>
-  SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device",SYSFS{idVendor}=="091e", MODE="0666"
+  SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device",ATTR{idVendor}=="091e", MODE="0666"
   </pre>
+  
   Then plug in the GPS - now you should have enough rights to access it.
   
   </body>

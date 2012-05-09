@@ -90,10 +90,11 @@ public:
 
     // Send notification to observers  that the download is complete
     static void notify(nsISupports *subject, const char *topic);
+    static void notify(nsISupports *subject, const char *topic, bool remref);
 
 private:
     PR_STATIC_CALLBACK(void) _scanner_thread(void *arg);
-    void scanner_thread(IGPSScanner *main);
+    void scanner_thread();
 
     bool prefs_scan_enabled(const GpsItem &item);
     int prefs_gpstype(const GpsItem &item);
