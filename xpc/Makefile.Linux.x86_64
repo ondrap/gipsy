@@ -23,3 +23,6 @@ USB_LIB = -lusb
 CPPFLAGS += -fPIC
 
 include rules.makefile
+
+gipsy.o: gipsy.cpp
+	$(CXX) -fno-rtti -Wall -O2 -c $(GECKO_CONFIG_INCLUDE) $(CPPFLAGS) $(GECKO_DEFINES) $(GECKO_INCLUDES) -o $@ $<
