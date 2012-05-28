@@ -51,11 +51,9 @@ void FlymasterGps::init_gps()
     send_smpl_command("PFMDNL", args);
     
     int totaltracks;
-    int trackno;
     do {
         vector<string> trackres = receive_data("PFMLST");
         totaltracks = atoi(trackres[0].c_str());
-        trackno = atoi(trackres[1].c_str());
         string date = trackres[2];
         string start = trackres[3];
         string duration = trackres[4];
@@ -71,7 +69,7 @@ void FlymasterGps::init_gps()
         pair<time_t,time_t> item(startdate, enddate);
 
         saved_tracks.push_back(item);
-    } while (trackno + 1 < totaltracks);
+    } while (saved_tracks.size() < (size_t) totaltracks);
 }
 
 static Trackpoint make_point(const FM_Key_Position fpos, bool newtrk)
@@ -108,7 +106,7 @@ bool FlymasterGps::read_packet(int &packetid, Data &data)
     
     if (c_cksum != cksum) {
         dev->write(0xb3);
-        throw Exception("Checksum error");
+        throw Exception("Data checksum error");
     }
     return true;
 }

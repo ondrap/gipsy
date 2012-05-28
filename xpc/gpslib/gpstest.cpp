@@ -18,11 +18,20 @@ int main(int argc, char **argv)
     //cout << "Getting ports" << endl;
     //PortList ports = get_ports(true);
 
-    Gps *gps = make_gps("/dev/ttyUSB0", GPS_IQ);
+    Gps *gps = make_gps("/dev/ttyUSB0", GPS_FLYMASTER);
     cout << "GPS type: " << gps->gpsname << ", unitid: " << gps->gpsunitid << endl;
     cerr << "Downloading" << endl;
-    string igc = gps->download_igc(0, NULL, NULL);
-    cerr << igc;
+    gps->selected_tracks.push_back(0);
+    try {
+        PointArr result = gps->download_tracklog(NULL, NULL);
+        for (int i=0; i < result.size(); i++) {
+            Trackpoint *point = &result[i];
+            cout << point->lat << " " << point->lon << " " << point->new_trk << " " << point->time << endl;
+        }
+    } catch (Exception e) {
+        cerr << e.error << endl;
+        exit(1);
+    }
     
 /*
     for (unsigned int i=0; i < ports.size(); i++) {
