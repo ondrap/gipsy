@@ -38,6 +38,9 @@ IGPSScanner.h: IGPSScanner.idl
 IGPSScanner.xpt: IGPSScanner.idl
 	$(XPIDL) -I$(XULIDLPATH) -m typelib $<
 
+gipsy.o: gipsy.cpp
+	$(CXX) -fno-rtti -Wall -O2 -c $(GECKO_CONFIG_INCLUDE) $(CPPFLAGS) $(GECKO_DEFINES) $(GECKO_INCLUDES) -o $@ $<
+
 $(TARGET): $(OBJECTS)
 	$(CXX) -Wl,-z,defs -Wall -Os -o $(TARGET) $(SHARED) $(OBJECTS) $(CRYPTO_LIB) $(USB_LIB) $(GECKO_LDFLAGS)
 	chmod +x $(TARGET)
