@@ -135,7 +135,7 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\gecko-sdk\lib;..\..\crypto++\win32\output\release;C:\WinDDK\7600.16385.1\lib\ATL\i386"
 				SubSystem="2"
-				RandomizedBaseAddress="1"
+				RandomizedBaseAddress="2"
 				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
