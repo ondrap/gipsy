@@ -362,7 +362,7 @@ TerrainMap.prototype.projectlon = function(lon) {
 
 // Project latitude into Y-coordinates starting at Y=0 when LAT=-90
 TerrainMap.prototype.projectlat = function(lat) {
-    var lat = lat * 2 * Math.PI / 360;
+    lat = lat * 2 * Math.PI / 360;
     var merclat = 0.5 * Math.log((1 + Math.sin(lat))/ (1 - Math.sin(lat)));
     // We are rectangular, therefore the linear scale is:
     var scale = this.limit() / (2 * Math.PI);
@@ -476,8 +476,8 @@ TerrainMap.prototype.reload_optimizations = function() {
 }
 
 // Draw optimization data
-TerrainMap.prototype.draw_optimization = function(i) {
-    var opt = this.optimizations[i];
+TerrainMap.prototype.draw_optimization = function(optidx) {
+    var opt = this.optimizations[optidx];
     
     var startx = this.projectlon(opt.drawMin[1]) - 20;
     var starty = this.projectlat(opt.drawMax[0]) - 20;

@@ -213,6 +213,7 @@ GPSStore.prototype = {
 	try {
 	    tlog.igcLoad(file);
 	} catch (e) {
+            Components.utils.reportError(e);
 	    return null;
 	}
 	return tlog;

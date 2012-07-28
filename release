@@ -31,4 +31,5 @@ make clean
 find extension -name "*~" | xargs rm
 make
 echo "Upload gipsy.xpi"
-
+git push
+git push --tags
