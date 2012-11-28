@@ -1,6 +1,7 @@
 GECKO_SDK_PATH = ../../64-bit/xulrunner-sdk
 
-XPIDL = $(GECKO_SDK_PATH)/bin/xpidl
+XPIDL_HEAD = $(GECKO_SDK_PATH)/sdk/bin/header.py
+XPIDL_XPT = $(GECKO_SDK_PATH)/sdk/bin/typelib.py
 XULIDLPATH = $(GECKO_SDK_PATH)/idl
 GECKO_DEFINES = -DXP_UNIX -DXP_MACOSX
 GECKO_INCLUDES := -I$(GECKO_SDK_PATH)/include -I../../64-bit 

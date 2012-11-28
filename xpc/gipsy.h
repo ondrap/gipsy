@@ -41,12 +41,12 @@ public:
 
     volatile bool scan_enabled;
     short wstatus;          // Watcher status
-    PRInt32 gpstype;
+    int32_t gpstype;
     bool auto_download; // Start download automatically
-    volatile PRBool download_now;  // Request to start download
-    volatile PRBool exit_thread;   // If true, exit this thread
+    volatile bool download_now;  // Request to start download
+    volatile bool exit_thread;   // If true, exit this thread
 
-    volatile PRInt32 progress;  // Download progress
+    volatile int32_t progress;  // Download progress
 
     uint32_t pos;      // Position in gpslist
     
@@ -54,7 +54,7 @@ public:
 
     void reset();
 
-    volatile PRBool watcher_running; // True if the watcher is running
+    volatile bool watcher_running; // True if the watcher is running
     void start_watcher();
 
     void lock() {PR_Lock(_lock);};
@@ -106,7 +106,7 @@ private:
     void prefs_parse_usbgpstype(char *p);
     void prefs_parse_portgpstype(char *p);
 
-    bool find_gps(const std::string &gpsdev, PRInt32 &pos);
+    bool find_gps(const std::string &gpsdev, int32_t &pos);
 
     PRThread *scanner_tid;
     bool exit_thread;

@@ -53,14 +53,14 @@ interface IGPSIGC : nsISupports {
     readonly attribute boolean canModify;
 
     // Create sub-tracklog consisting of 'Break' areas'
-    IGPSIGC igcBreakSelect(in PRUint32 count, [array, size_is(count)] in PRInt32 bpoints);
+    IGPSIGC igcBreakSelect(in uint32_t count, [array, size_is(count)] in int32_t bpoints);
     // Create sub-tracklog consisting of selected points
-    IGPSIGC igcSelectPoints(in PRUint32 count, [array, size_is(count)] in PRInt32 points);
+    IGPSIGC igcSelectPoints(in uint32_t count, [array, size_is(count)] in int32_t points);
     
 
     // Validate section for time correctness (at most 2 breaks > 1 min,
     // no break > 15 min)
-    boolean igcSectionValid(in PRUint32 count, [array, size_is(count)] in PRInt32 points);
+    boolean igcSectionValid(in uint32_t count, [array, size_is(count)] in int32_t points);
 
     // Remove points that are obviously incorrect (the GPS sometimes err), 
     // however let the log be valid

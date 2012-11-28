@@ -235,7 +235,7 @@ static string get_subelement(const nsAString &elem, nsIDOMElement *trkpt)
     
     nsCOMPtr<nsIDOMNodeList> ele_list;
     trkpt->GetElementsByTagName(elem, getter_AddRefs(ele_list));
-    PRUint32 elelen;
+    uint32_t elelen;
     ele_list->GetLength(&elelen);
     if (elelen) {
 	nsCOMPtr<nsIDOMNode> ele_n;
@@ -294,7 +294,7 @@ static time_t decode_time(string input)
 NS_IMETHODIMP Tracklog::IgcLoadGPX(nsILocalFile *file)
 {
     nsresult rv;
-    PRInt64 fsize;
+    int64_t fsize;
     
     nsCOMPtr<nsIDOMParser> domparser = do_CreateInstance("@mozilla.org/xmlextras/domparser;1", &rv);
     if (NS_FAILED(rv)) 
@@ -321,11 +321,11 @@ NS_IMETHODIMP Tracklog::IgcLoadGPX(nsILocalFile *file)
     rv = document->GetElementsByTagName(NS_LITERAL_STRING("trkseg"), getter_AddRefs(seglist));
     if (NS_FAILED(rv))
 	return rv;
-    PRUint32 listlength;
+    uint32_t listlength;
     seglist->GetLength(&listlength);
     
     PointArr parr;
-    for (PRUint32 i=0; i < listlength; i++) {
+    for (uint32_t i=0; i < listlength; i++) {
 	nsCOMPtr<nsIDOMNodeList> pointlist;
 	nsCOMPtr<nsIDOMNode> trkseg;
 	seglist->Item(i, getter_AddRefs(trkseg));
@@ -334,9 +334,9 @@ NS_IMETHODIMP Tracklog::IgcLoadGPX(nsILocalFile *file)
 	if (NS_FAILED(rv))
 	    return rv;
 	
-	PRUint32 pointnum;
+	uint32_t pointnum;
 	pointlist->GetLength(&pointnum);
-	for (PRUint32 j=0; j < pointnum; j++) {
+	for (uint32_t j=0; j < pointnum; j++) {
 	    nsCOMPtr<nsIDOMNode> trkpt_n;
 	    pointlist->Item(j, getter_AddRefs(trkpt_n));
 	    nsCOMPtr<nsIDOMElement> trkpt(do_QueryInterface(trkpt_n));
@@ -415,7 +415,7 @@ NS_IMETHODIMP Tracklog::IgcGet(char **_retval)
 }
 
 /* long igcPointCount (); */
-NS_IMETHODIMP Tracklog::IgcPointCount(PRInt32 *_retval)
+NS_IMETHODIMP Tracklog::IgcPointCount(int32_t *_retval)
 {
     *_retval = igc->tracklog.size();
 
@@ -423,7 +423,7 @@ NS_IMETHODIMP Tracklog::IgcPointCount(PRInt32 *_retval)
 }
 
 /* IGPSPoint igcPoint (in long idx); */
-NS_IMETHODIMP Tracklog::IgcPoint(PRInt32 idx, IGPSPoint **_retval)
+NS_IMETHODIMP Tracklog::IgcPoint(int32_t idx, IGPSPoint **_retval)
 {
     if (idx < 0 || idx >= (int)igc->tracklog.size())
 	return NS_ERROR_UNEXPECTED;
@@ -438,7 +438,7 @@ NS_IMETHODIMP Tracklog::IgcPoint(PRInt32 idx, IGPSPoint **_retval)
 
 /* long igcBreakCount (); */
 /* Return number of distinct sectors */
-NS_IMETHODIMP Tracklog::IgcBreakCount(PRInt32 *_retval)
+NS_IMETHODIMP Tracklog::IgcBreakCount(int32_t *_retval)
 {
     *_retval = breakpoints.size();
 
@@ -447,7 +447,7 @@ NS_IMETHODIMP Tracklog::IgcBreakCount(PRInt32 *_retval)
 
 /* long igcBreak (in long idx); */
 /* Return index of first point in sector */
-NS_IMETHODIMP Tracklog::IgcBreak(PRInt32 idx, PRInt32 *_retval)
+NS_IMETHODIMP Tracklog::IgcBreak(int32_t idx, int32_t *_retval)
 {
     if (idx < 0 || idx >= (int)breakpoints.size())
 	return NS_ERROR_UNEXPECTED;
@@ -459,7 +459,7 @@ NS_IMETHODIMP Tracklog::IgcBreak(PRInt32 idx, PRInt32 *_retval)
 
 /* long igcBreakLen (in long idx); */
 /* Return length (in points) of given sector */
-NS_IMETHODIMP Tracklog::IgcBreakLen(PRInt32 idx, PRInt32 *_retval)
+NS_IMETHODIMP Tracklog::IgcBreakLen(int32_t idx, int32_t *_retval)
 {
     if (idx < 0 || idx >= (int)breakpoints.size())
 	return NS_ERROR_UNEXPECTED;
@@ -470,7 +470,7 @@ NS_IMETHODIMP Tracklog::IgcBreakLen(PRInt32 idx, PRInt32 *_retval)
 }
 
 /* Create new tracklog from select break-sections */
-NS_IMETHODIMP Tracklog::IgcBreakSelect(PRUint32 count, PRInt32 *bpoints, 
+NS_IMETHODIMP Tracklog::IgcBreakSelect(uint32_t count, int32_t *bpoints, 
 				       IGPSIGC **_retval)
 {
     PointArr selection;
@@ -519,9 +519,9 @@ NS_IMETHODIMP Tracklog::IgcBreakSelect(PRUint32 count, PRInt32 *bpoints,
 }
 
 
-/* IGPSIGC igcSelectPoints (in PRUint32 count, [array, size_is (count)] in PRInt32 valueArray); */
+/* IGPSIGC igcSelectPoints (in uint32_t count, [array, size_is (count)] in int32_t valueArray); */
 /* Expect that the array is sorted */
-NS_IMETHODIMP Tracklog::IgcSelectPoints(PRUint32 count, PRInt32 *points, 
+NS_IMETHODIMP Tracklog::IgcSelectPoints(uint32_t count, int32_t *points, 
 					IGPSIGC **_retval)
 {
     PointArr selection;
@@ -688,7 +688,7 @@ NS_IMETHODIMP Tracklog::IgcSetParam(const char *param, const PRUnichar *value)
 }
 
 /* readonly attribute long gpsid; */
-NS_IMETHODIMP Tracklog::GetGpsunitid(PRInt32 *aGpsid)
+NS_IMETHODIMP Tracklog::GetGpsunitid(int32_t *aGpsid)
 {
     *aGpsid = igc->gpsunitid;
 
@@ -751,9 +751,9 @@ bool Tracklog::is_flight_begin(int idx)
  * - speed > 10km/h or vario > 2m/s for at least 3 points
  * - first few points of tracklog are skipped if there is speed > 100km/h
  */
-NS_IMETHODIMP Tracklog::IgcStripBegin(PRInt32 *_retval)
+NS_IMETHODIMP Tracklog::IgcStripBegin(int32_t *_retval)
 {
-    PRInt32 end;
+    int32_t end;
     IgcStripEnd(&end);
     if (!end) {
 	*_retval = 0;
@@ -779,7 +779,7 @@ NS_IMETHODIMP Tracklog::IgcStripBegin(PRInt32 *_retval)
 
 /* long igcStripEnd (); */
 /* Strip everything, until speed < 5km/h && |vario| < 0.4 */
-NS_IMETHODIMP Tracklog::IgcStripEnd(PRInt32 *_retval)
+NS_IMETHODIMP Tracklog::IgcStripEnd(int32_t *_retval)
 {
     unsigned int i;
     
@@ -800,7 +800,7 @@ NS_IMETHODIMP Tracklog::IgcStripEnd(PRInt32 *_retval)
     return NS_OK;
 }
 
-NS_IMETHODIMP Tracklog::GetCanModify(PRBool *aCanModify)
+NS_IMETHODIMP Tracklog::GetCanModify(bool *aCanModify)
 {
     *aCanModify = igc->can_modify();
     
@@ -808,7 +808,7 @@ NS_IMETHODIMP Tracklog::GetCanModify(PRBool *aCanModify)
 }
 
 /* Find nearest point of tracklog to the specified time */
-NS_IMETHODIMP Tracklog::IgcFindNearest(PRTime time, PRInt32 *_retval)
+NS_IMETHODIMP Tracklog::IgcFindNearest(PRTime time, int32_t *_retval)
 {
     if (!igc->tracklog.size())
 	return NS_ERROR_UNEXPECTED;
@@ -844,8 +844,8 @@ NS_IMETHODIMP Tracklog::IgcFindNearest(PRTime time, PRInt32 *_retval)
 /* Find probable start/end of tracklog 
  * Search +/- 1% of trackpoints 
  */
-NS_IMETHODIMP Tracklog::IgcAdjustPoint(PRInt32 idx, PRBool start, 
-				       PRInt32 *_retval)
+NS_IMETHODIMP Tracklog::IgcAdjustPoint(int32_t idx, bool start, 
+				       int32_t *_retval)
 {
     if (!igc->tracklog.size())
 	return NS_ERROR_UNEXPECTED;
@@ -905,8 +905,8 @@ NS_IMETHODIMP Tracklog::IgcAdjustPoint(PRInt32 idx, PRBool start,
 
 
 /* Validate tracklog section marked by interval points */
-NS_IMETHODIMP Tracklog::IgcSectionValid(PRUint32 count, PRInt32 *points, 
-					PRBool *_retval)
+NS_IMETHODIMP Tracklog::IgcSectionValid(uint32_t count, int32_t *points, 
+					bool *_retval)
 {
     if (count < 2) {
 	*_retval = true;
@@ -1089,8 +1089,8 @@ static double nop(double inp)
 
 /* string svgPathData (in short property); */
 NS_IMETHODIMP Tracklog::SvgPathData(PRInt16 property, PRInt16 objtype,
-				    PRInt32 width, PRInt32 height,
-				    double maxval, PRBool doint,
+				    int32_t width, int32_t height,
+				    double maxval, bool doint,
 				    char **_retval )
 {
     stringstream result;
@@ -1183,8 +1183,8 @@ NS_IMETHODIMP Tracklog::SvgPathData(PRInt16 property, PRInt16 objtype,
 }
 
 /* Altitude/speed profile with X-axis = points, 1 point = 2 pixels */
-NS_IMETHODIMP Tracklog::SvgPointData(PRInt16 property, PRInt16 objtype, PRInt32 startpoint,
-				      PRInt32 width, PRInt32 height, 
+NS_IMETHODIMP Tracklog::SvgPointData(PRInt16 property, PRInt16 objtype, int32_t startpoint,
+				      int32_t width, int32_t height, 
 				      double maxval, char **_retval)
 {
     stringstream result;
@@ -1237,8 +1237,8 @@ NS_IMETHODIMP Tracklog::SvgPointData(PRInt16 property, PRInt16 objtype, PRInt32 
     return *_retval ? NS_OK : NS_ERROR_OUT_OF_MEMORY;
 }
 
-NS_IMETHODIMP Tracklog::SvgPathTrack(PRInt32 width, PRInt32 height, double minlat, 
-                                     double minlon, double maxlon, PRBool doint,
+NS_IMETHODIMP Tracklog::SvgPathTrack(int32_t width, int32_t height, double minlat, 
+                                     double minlon, double maxlon, bool doint,
                                      char **_retval)
 {
     double scale = width / (maxlon - minlon);
@@ -1296,8 +1296,8 @@ NS_IMETHODIMP Tracklog::KmlTrack(char **_retval)
  * Use callback to return points that were added to the canvas
  */
 NS_IMETHODIMP Tracklog::DrawCanvasProfile(nsIDOMCanvasRenderingContext2D *ctx, 
-                                           PRInt32 width, PRInt32 height, 
-                                           PRInt32 minheight, PRInt32 maxheight, 
+                                           int32_t width, int32_t height, 
+                                           int32_t minheight, int32_t maxheight, 
                                            PRTime starttime, double timescale, 
                                            IGPSCallback *callback)
 {
@@ -1309,7 +1309,7 @@ NS_IMETHODIMP Tracklog::DrawCanvasProfile(nsIDOMCanvasRenderingContext2D *ctx,
     if (!ctx)
         return NS_ERROR_NULL_POINTER;
 
-    ctx->BeginPath();
+    ctx->MozBeginPath();
 
     PRTime lasttime = 0;
     int startx = 0;
@@ -1322,13 +1322,13 @@ NS_IMETHODIMP Tracklog::DrawCanvasProfile(nsIDOMCanvasRenderingContext2D *ctx,
         // Detect hole in tracklog
         if (igc->tracklog[i].time - lasttime > 60) {
             if (lasttime) {
-                ctx->Stroke();
+                ctx->MozStroke();
                 ctx->LineTo(lastx, height);
                 ctx->LineTo(startx, height);
-                ctx->ClosePath();
-                ctx->Fill();
+                ctx->MozClosePath();
+                ctx->MozFill();
             }
-            ctx->BeginPath();
+            ctx->MozBeginPath();
             ctx->MoveTo(x, y);
             startx = x;
         }
@@ -1340,11 +1340,11 @@ NS_IMETHODIMP Tracklog::DrawCanvasProfile(nsIDOMCanvasRenderingContext2D *ctx,
         lasttime = igc->tracklog[i].time;
         lastx = x;
     }
-    ctx->Stroke();
+    ctx->MozStroke();
     ctx->LineTo(width, height);
     ctx->LineTo(startx, height);
-    ctx->ClosePath();
-    ctx->Fill();
+    ctx->MozClosePath();
+    ctx->MozFill();
     
     return NS_OK;
 }
@@ -1372,13 +1372,13 @@ int Tracklog::canvasProjectLat(double lat, int limit)
 /* Draw track on canvas */
 /* void drawCanvasTrack (in nsIDOMCanvasRenderingContext2D ctx, in long limit, in long startx, in long starty); */
 NS_IMETHODIMP Tracklog::DrawCanvasTrack(nsIDOMCanvasRenderingContext2D *ctx, 
-                                        PRInt32 limit, PRInt32 startx, PRInt32 starty)
+                                        int32_t limit, int32_t startx, int32_t starty)
 {
     if (!ctx)
         return NS_ERROR_NULL_POINTER;
 
     ctx->SetLineWidth(2);
-    ctx->BeginPath();
+    ctx->MozBeginPath();
     Trackpoint *point = &igc->tracklog[0];
     ctx->MoveTo(canvasProjectLon(point->lon, limit) - startx, 
                 canvasProjectLat(point->lat, limit) - starty);
@@ -1394,7 +1394,7 @@ NS_IMETHODIMP Tracklog::DrawCanvasTrack(nsIDOMCanvasRenderingContext2D *ctx,
         ctx->LineTo(canvasProjectLon(point->lon, limit) - startx, 
                     canvasProjectLat(point->lat, limit) - starty);
     }
-    ctx->Stroke();
+    ctx->MozStroke();
 
     return NS_OK;
 }

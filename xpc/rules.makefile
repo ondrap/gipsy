@@ -33,10 +33,10 @@ gpslib/igc.o: gpslib/igcparser.inc
 
 
 IGPSScanner.h: IGPSScanner.idl
-	$(XPIDL) -I$(XULIDLPATH) -m header $<
+	$(XPIDL_HEAD) -I$(XULIDLPATH) -o $@ $<
 
 IGPSScanner.xpt: IGPSScanner.idl
-	$(XPIDL) -I$(XULIDLPATH) -m typelib $<
+	$(XPIDL_XPT) -I$(XULIDLPATH) -o $@ $<
 
 gipsy.o: gipsy.cpp
 	$(CXX) -fno-rtti -Wall -O2 -c $(GECKO_CONFIG_INCLUDE) $(CPPFLAGS) $(GECKO_DEFINES) $(GECKO_INCLUDES) -o $@ $<

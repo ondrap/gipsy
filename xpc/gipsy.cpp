@@ -64,11 +64,11 @@ Gipsy::~Gipsy()
 }
 
 struct DownInfo {
-    DownInfo(Gipsy *c, PRInt32 p) : cls(c), gpspos(p) {};
-    DownInfo(Gipsy *c, IGPSScanner *m, PRInt32 p) : cls(c), gpspos(p), main(m) {};
+    DownInfo(Gipsy *c, int32_t p) : cls(c), gpspos(p) {};
+    DownInfo(Gipsy *c, IGPSScanner *m, int32_t p) : cls(c), gpspos(p), main(m) {};
 
     Gipsy *cls;
-    PRInt32 gpspos;
+    int32_t gpspos;
     IGPSScanner *main;
 };
 
@@ -317,7 +317,7 @@ void Gipsy::scanner_thread()
 	}
 	
 	for (unsigned int i=0; i < changed.size(); i++) {
-	    PRInt32 idx = changed[i];
+	    int32_t idx = changed[i];
 	    notify(gpslist[idx], "gps_changed");
 	}
 	sleep(1);
@@ -342,7 +342,7 @@ void Gipsy::_scanner_thread(void *arg)
 
 
 /* Get position in gps table & return true if resource is correct */
-bool Gipsy::find_gps(const string &gpsdev, PRInt32 &pos)
+bool Gipsy::find_gps(const string &gpsdev, int32_t &pos)
 {
     for (unsigned int i=0; i < gpslist.size(); i++)
 	if (gpslist[i] && gpslist[i]->portinfo.device == gpsdev) {
@@ -385,7 +385,7 @@ NS_IMETHODIMP Gipsy::StopScanner()
 }
 
 /* void getGpsArray (out unsigned long count, [array, size_is (count), retval] out long retv); */
-NS_IMETHODIMP Gipsy::GetGpsArray(PRUint32 *count, PRInt32 **retv)
+NS_IMETHODIMP Gipsy::GetGpsArray(uint32_t *count, int32_t **retv)
 {
     PR_Lock(lock);
 
@@ -395,7 +395,7 @@ NS_IMETHODIMP Gipsy::GetGpsArray(PRUint32 *count, PRInt32 **retv)
 	    (*count)++;
     }
     
-    *retv = (PRInt32*)nsMemory::Alloc(*count * sizeof(PRInt32));
+    *retv = (int32_t*)nsMemory::Alloc(*count * sizeof(int32_t));
 
     int pos = 0;
     for (unsigned int i=0; i < gpslist.size(); i++) {
@@ -409,7 +409,7 @@ NS_IMETHODIMP Gipsy::GetGpsArray(PRUint32 *count, PRInt32 **retv)
 }
 
 /* IGPSDevInfo getGpsInfo (in unsigned long pos); */
-NS_IMETHODIMP Gipsy::GetGpsInfo(PRUint32 pos, IGPSDevInfo **_retval)
+NS_IMETHODIMP Gipsy::GetGpsInfo(uint32_t pos, IGPSDevInfo **_retval)
 {
     PR_Lock(lock);
     
@@ -426,7 +426,7 @@ NS_IMETHODIMP Gipsy::GetGpsInfo(PRUint32 pos, IGPSDevInfo **_retval)
 }
 
 /* void gpsToggle (in unsigned long pos); */
-NS_IMETHODIMP Gipsy::GpsToggle(PRUint32 pos)
+NS_IMETHODIMP Gipsy::GpsToggle(uint32_t pos)
 {
     PR_Lock(lock);
 
@@ -476,7 +476,7 @@ NS_IMETHODIMP Gipsy::GpsToggle(PRUint32 pos)
 }
 
 /* void gpsDownload (in unsigned long pos); */
-NS_IMETHODIMP Gipsy::GpsDownload(PRUint32 pos)
+NS_IMETHODIMP Gipsy::GpsDownload(uint32_t pos)
 {
     PR_Lock(lock);
     if (pos >= gpslist.size() || !gpslist[pos] \
@@ -492,7 +492,7 @@ NS_IMETHODIMP Gipsy::GpsDownload(PRUint32 pos)
 }
 
 /* Resend again a new tracklog notification */
-NS_IMETHODIMP Gipsy::GpsReprocess(PRUint32 pos)
+NS_IMETHODIMP Gipsy::GpsReprocess(uint32_t pos)
 {
     PR_Lock(lock);
     if (pos >= gpslist.size() || !gpslist[pos]) {
@@ -519,7 +519,7 @@ NS_IMETHODIMP Gipsy::GpsReprocess(PRUint32 pos)
 }
 
 /* boolean gpsCryptoEnabled (); */
-NS_IMETHODIMP Gipsy::GpsCryptoEnabled(PRBool *_retval)
+NS_IMETHODIMP Gipsy::GpsCryptoEnabled(bool *_retval)
 {
 #ifdef HAVE_CRYPTO
     *_retval = 1;
@@ -530,7 +530,7 @@ NS_IMETHODIMP Gipsy::GpsCryptoEnabled(PRBool *_retval)
 }
 
 /* void gpsChangeType (in long gtype); */
-NS_IMETHODIMP Gipsy::GpsChangeType(PRUint32 pos, PRInt32 gtype)
+NS_IMETHODIMP Gipsy::GpsChangeType(uint32_t pos, int32_t gtype)
 {
     PR_Lock(lock);
 
@@ -615,7 +615,7 @@ NS_IMETHODIMP GpsItem::GetGpsname(char **aGpsname)
 }
 
 /* readonly attribute boolean scan_enabled; */
-NS_IMETHODIMP GpsItem::GetScan_enabled(PRBool *aScan_enabled)
+NS_IMETHODIMP GpsItem::GetScan_enabled(bool *aScan_enabled)
 {
     *aScan_enabled = scan_enabled;
 
@@ -623,7 +623,7 @@ NS_IMETHODIMP GpsItem::GetScan_enabled(PRBool *aScan_enabled)
 }
 
 /* readonly attribute long progress; */
-NS_IMETHODIMP GpsItem::GetProgress(PRInt32 *aProgress)
+NS_IMETHODIMP GpsItem::GetProgress(int32_t *aProgress)
 {
     *aProgress = progress;
 
@@ -631,7 +631,7 @@ NS_IMETHODIMP GpsItem::GetProgress(PRInt32 *aProgress)
 }
 
 /* readonly attribute long pos; */
-NS_IMETHODIMP GpsItem::GetPos(PRInt32 *aPos)
+NS_IMETHODIMP GpsItem::GetPos(int32_t *aPos)
 {
     *aPos = pos;
 
@@ -646,7 +646,7 @@ NS_IMETHODIMP GpsItem::GetWstatus(PRInt16 *aWstatus)
     return NS_OK;
 }
 
-NS_IMETHODIMP GpsItem::GetTrackcount(PRInt32 *aTrackcount)
+NS_IMETHODIMP GpsItem::GetTrackcount(int32_t *aTrackcount)
 {
     *aTrackcount = saved_tracks.size();
     
@@ -654,7 +654,7 @@ NS_IMETHODIMP GpsItem::GetTrackcount(PRInt32 *aTrackcount)
 }
 
 /* long trackStartTime (in long pos); */
-NS_IMETHODIMP GpsItem::TrackStartTime(PRUint32 pos, PRTime *_retval)
+NS_IMETHODIMP GpsItem::TrackStartTime(uint32_t pos, PRTime *_retval)
 {
     if (pos >= saved_tracks.size())
         return NS_ERROR_UNEXPECTED;
@@ -664,7 +664,7 @@ NS_IMETHODIMP GpsItem::TrackStartTime(PRUint32 pos, PRTime *_retval)
 }
 
 /* long trackStopTime (in long pos); */
-NS_IMETHODIMP GpsItem::TrackStopTime(PRUint32 pos, PRTime *_retval)
+NS_IMETHODIMP GpsItem::TrackStopTime(uint32_t pos, PRTime *_retval)
 {
     if (pos >= saved_tracks.size())
         return NS_ERROR_UNEXPECTED;
@@ -675,7 +675,7 @@ NS_IMETHODIMP GpsItem::TrackStopTime(PRUint32 pos, PRTime *_retval)
 
 #include <stdio.h>
 /* void trackAdd (in long pos); */
-NS_IMETHODIMP GpsItem::TrackAdd(PRUint32 pos)
+NS_IMETHODIMP GpsItem::TrackAdd(uint32_t pos)
 {
     if (pos >= saved_tracks.size())
         return NS_ERROR_UNEXPECTED;
@@ -686,7 +686,7 @@ NS_IMETHODIMP GpsItem::TrackAdd(PRUint32 pos)
 }
 
 /* readonly attribute long gpstype; */
-NS_IMETHODIMP GpsItem::GetGpstype(PRInt32 *aGpstype)
+NS_IMETHODIMP GpsItem::GetGpstype(int32_t *aGpstype)
 {
     *aGpstype = gpstype;
 
