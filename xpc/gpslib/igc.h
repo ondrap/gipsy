@@ -5,11 +5,7 @@
 #include <vector>
 #include <sstream>
 
-#ifdef WIN32
-# include "win_stdint.h"
-#else
-# include <stdint.h>
-#endif
+#include <stdint.h>
 
 #include "point.h"
 

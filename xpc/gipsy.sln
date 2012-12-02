@@ -1,7 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual C++ Express 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Gipsy", "gipsy.vcproj", "{5D0A4D87-D57A-4265-BF06-6282E2C4AE4D}"
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C++ Express 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gipsy", "gipsy.vcxproj", "{5D0A4D87-D57A-4265-BF06-6282E2C4AE4D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,8 +9,8 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5D0A4D87-D57A-4265-BF06-6282E2C4AE4D}.Debug|Win32.ActiveCfg = Debug|Win32
-		{5D0A4D87-D57A-4265-BF06-6282E2C4AE4D}.Debug|Win32.Build.0 = Debug|Win32
+		{5D0A4D87-D57A-4265-BF06-6282E2C4AE4D}.Debug|Win32.ActiveCfg = Release|Win32
+		{5D0A4D87-D57A-4265-BF06-6282E2C4AE4D}.Debug|Win32.Build.0 = Release|Win32
 		{5D0A4D87-D57A-4265-BF06-6282E2C4AE4D}.Release|Win32.ActiveCfg = Release|Win32
 		{5D0A4D87-D57A-4265-BF06-6282E2C4AE4D}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection

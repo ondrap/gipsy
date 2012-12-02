@@ -1,2 +1,2 @@
-..\..\gecko-sdk\bin\xpidl.exe -m header -I..\..\gecko-sdk\idl %1
-..\..\gecko-sdk\bin\xpidl.exe -m typelib -I..\..\gecko-sdk\idl %1
+c:\python27\python ..\..\gecko-sdk\sdk\bin\header.py -I..\..\gecko-sdk\idl -o IGPSScanner.h %1
+c:\python27\python ..\..\gecko-sdk\sdk\bin\typelib.py -I..\..\gecko-sdk\idl -o IGPSScanner.xpt %1
