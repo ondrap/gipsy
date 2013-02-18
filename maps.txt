@@ -1,4 +1,4 @@
-map_googlemap:vt/lyrs=m@199000000&hl=en
-map_googleoverlay:vt/lyrs=h@199000000&hl=en
-map_terrain:vt/lyrs=t@129,r@199000000&hl=en
-map_googlesat:kh/v=121
+map_googlemap:vt/lyrs=m@203000000&hl=en
+map_googleoverlay:vt/lyrs=h@203000000&hl=en
+map_terrain:vt/lyrs=t@130,r@203000000&hl=en
+map_googlesat:kh/v=123
