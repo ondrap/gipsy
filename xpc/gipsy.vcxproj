@@ -65,7 +65,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>..\..\gecko-sdk\include;..\..\gecko-sdk\include\xpcom;..\..\;$(SolutionDir);..\..\gecko-sdk\include\content;..\..\gecko-sdk\include\necko;C:\WinDDK\7600.16385.1\inc\atl71;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\gecko-sdk\include\nspr;..\..\gecko-sdk\include;..\..\gecko-sdk\include\xpcom;..\..\;$(SolutionDir);..\..\gecko-sdk\include\content;..\..\gecko-sdk\include\necko;C:\WinDDK\7600.16385.1\inc\atl71;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>HAVE_CRYPTO;WIN32;_WINDOWS;_USRDLL;XP_WIN;XP_WIN32;_X86_;_CRT_SECURE_NO_DEPRECATE;XPCOM_GLUE_USE_NSPR;MOZ_NO_MOZALLOC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
