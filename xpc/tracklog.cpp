@@ -18,8 +18,8 @@ using namespace std;
 #include "nsCRT.h"
 #include "nsServiceManagerUtils.h"
 #include "nsComponentManagerUtils.h"
-#include "nsIDOMCanvasRenderingContext2D.h"
 #include "nsIDOMParser.h"
+#include "nsIDOMHTMLCollection.h"
 #include "nsIFileStreams.h"
 #include "nsNetCID.h"
 #include "nsIDOMNodeList.h"
@@ -233,7 +233,7 @@ static string get_subelement(const nsAString &elem, nsIDOMElement *trkpt)
     nsresult rv;
     nsAutoString lstr;
     
-    nsCOMPtr<nsIDOMNodeList> ele_list;
+    nsCOMPtr<nsIDOMHTMLCollection> ele_list;
     trkpt->GetElementsByTagName(elem, getter_AddRefs(ele_list));
     uint32_t elelen;
     ele_list->GetLength(&elelen);
