@@ -1295,59 +1295,59 @@ NS_IMETHODIMP Tracklog::KmlTrack(char **_retval)
 /* Draw profile using given canvas context
  * Use callback to return points that were added to the canvas
  */
-NS_IMETHODIMP Tracklog::DrawCanvasProfile(nsIDOMCanvasRenderingContext2D *ctx, 
-                                           int32_t width, int32_t height, 
-                                           int32_t minheight, int32_t maxheight, 
-                                           PRTime starttime, double timescale, 
-                                           IGPSCallback *callback)
-{
-    double scale = ((double) height) / (maxheight - minheight);
-    // Javascript uses time in milliseconds
-    starttime /= 1000; 
-    timescale *= 1000;
-    
-    if (!ctx)
-        return NS_ERROR_NULL_POINTER;
-
-    ctx->MozBeginPath();
-
-    PRTime lasttime = 0;
-    int startx = 0;
-    int lastx = 0;
-    for (size_t i=0; i < igc->tracklog.size(); i++) {
-        int x = (igc->tracklog[i].time - starttime) * timescale;
-        int alt = igc->tracklog[i].alt();
-        int y = height - (alt - minheight) * scale;
-        
-        // Detect hole in tracklog
-        if (igc->tracklog[i].time - lasttime > 60) {
-            if (lasttime) {
-                ctx->MozStroke();
-                ctx->LineTo(lastx, height);
-                ctx->LineTo(startx, height);
-                ctx->MozClosePath();
-                ctx->MozFill();
-            }
-            ctx->MozBeginPath();
-            ctx->MoveTo(x, y);
-            startx = x;
-        }
-        if (lastx != x) {
-            ctx->LineTo(x, y);
-            if (callback)
-                callback->AddPoint(x, i);
-        }
-        lasttime = igc->tracklog[i].time;
-        lastx = x;
-    }
-    ctx->MozStroke();
-    ctx->LineTo(width, height);
-    ctx->LineTo(startx, height);
-    ctx->MozClosePath();
-    ctx->MozFill();
-    
-    return NS_OK;
-}
+// NS_IMETHODIMP Tracklog::DrawCanvasProfile(nsIDOMCanvasRenderingContext2D *ctx, 
+//                                            int32_t width, int32_t height, 
+//                                            int32_t minheight, int32_t maxheight, 
+//                                            PRTime starttime, double timescale, 
+//                                            IGPSCallback *callback)
+// {
+//     double scale = ((double) height) / (maxheight - minheight);
+//     // Javascript uses time in milliseconds
+//     starttime /= 1000; 
+//     timescale *= 1000;
+//     
+//     if (!ctx)
+//         return NS_ERROR_NULL_POINTER;
+// 
+//     ctx->MozBeginPath();
+// 
+//     PRTime lasttime = 0;
+//     int startx = 0;
+//     int lastx = 0;
+//     for (size_t i=0; i < igc->tracklog.size(); i++) {
+//         int x = (igc->tracklog[i].time - starttime) * timescale;
+//         int alt = igc->tracklog[i].alt();
+//         int y = height - (alt - minheight) * scale;
+//         
+//         // Detect hole in tracklog
+//         if (igc->tracklog[i].time - lasttime > 60) {
+//             if (lasttime) {
+//                 ctx->MozStroke();
+//                 ctx->LineTo(lastx, height);
+//                 ctx->LineTo(startx, height);
+//                 ctx->MozClosePath();
+//                 ctx->MozFill();
+//             }
+//             ctx->MozBeginPath();
+//             ctx->MoveTo(x, y);
+//             startx = x;
+//         }
+//         if (lastx != x) {
+//             ctx->LineTo(x, y);
+//             if (callback)
+//                 callback->AddPoint(x, i);
+//         }
+//         lasttime = igc->tracklog[i].time;
+//         lastx = x;
+//     }
+//     ctx->MozStroke();
+//     ctx->LineTo(width, height);
+//     ctx->LineTo(startx, height);
+//     ctx->MozClosePath();
+//     ctx->MozFill();
+//     
+//     return NS_OK;
+// }
 
 // Projection functions for working with canvas
 // Project longitude directly to X coordinate with 0 on -180
@@ -1371,33 +1371,33 @@ int Tracklog::canvasProjectLat(double lat, int limit)
 
 /* Draw track on canvas */
 /* void drawCanvasTrack (in nsIDOMCanvasRenderingContext2D ctx, in long limit, in long startx, in long starty); */
-NS_IMETHODIMP Tracklog::DrawCanvasTrack(nsIDOMCanvasRenderingContext2D *ctx, 
-                                        int32_t limit, int32_t startx, int32_t starty)
-{
-    if (!ctx)
-        return NS_ERROR_NULL_POINTER;
-
-    ctx->SetLineWidth(2);
-    ctx->MozBeginPath();
-    Trackpoint *point = &igc->tracklog[0];
-    ctx->MoveTo(canvasProjectLon(point->lon, limit) - startx, 
-                canvasProjectLat(point->lat, limit) - starty);
-    
-    PRTime lasttime = 0;
-    for (size_t i = 1; i < igc->tracklog.size(); i++) {
-        point = &igc->tracklog[i];
-        // Make it slightly faster
-        if (limit <= 1048576 && point->time - lasttime < 5)
-            continue;
-
-        lasttime = point->time;
-        ctx->LineTo(canvasProjectLon(point->lon, limit) - startx, 
-                    canvasProjectLat(point->lat, limit) - starty);
-    }
-    ctx->MozStroke();
-
-    return NS_OK;
-}
+// NS_IMETHODIMP Tracklog::DrawCanvasTrack(nsIDOMCanvasRenderingContext2D *ctx, 
+//                                         int32_t limit, int32_t startx, int32_t starty)
+// {
+//     if (!ctx)
+//         return NS_ERROR_NULL_POINTER;
+// 
+//     ctx->SetLineWidth(2);
+//     ctx->MozBeginPath();
+//     Trackpoint *point = &igc->tracklog[0];
+//     ctx->MoveTo(canvasProjectLon(point->lon, limit) - startx, 
+//                 canvasProjectLat(point->lat, limit) - starty);
+//     
+//     PRTime lasttime = 0;
+//     for (size_t i = 1; i < igc->tracklog.size(); i++) {
+//         point = &igc->tracklog[i];
+//         // Make it slightly faster
+//         if (limit <= 1048576 && point->time - lasttime < 5)
+//             continue;
+// 
+//         lasttime = point->time;
+//         ctx->LineTo(canvasProjectLon(point->lon, limit) - startx, 
+//                     canvasProjectLat(point->lat, limit) - starty);
+//     }
+//     ctx->MozStroke();
+// 
+//     return NS_OK;
+// }
 
 
 NS_IMPL_ISUPPORTS1(GpsPoint, IGPSPoint)

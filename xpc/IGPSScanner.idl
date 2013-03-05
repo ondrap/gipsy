@@ -135,15 +135,15 @@ interface IGPSIGC : nsISupports {
     string kmlTrack();
     
     /* Draw track/profile on canvas */
-    void drawCanvasProfile(in nsIDOMCanvasRenderingContext2D ctx, 
-                           in long width, in long height,
-                           in long minheight, in long maxheight,
-                           in PRTime starttime, in double timescale,
-                           in IGPSCallback callback);
-    void drawCanvasTrack(in nsIDOMCanvasRenderingContext2D ctx,
-                         in long limit,
-                         in long startx,
-                         in long starty);
+//     void drawCanvasProfile(in nsIDOMCanvasRenderingContext2D ctx, 
+//                            in long width, in long height,
+//                            in long minheight, in long maxheight,
+//                            in PRTime starttime, in double timescale,
+//                            in IGPSCallback callback);
+//     void drawCanvasTrack(in nsIDOMCanvasRenderingContext2D ctx,
+//                          in long limit,
+//                          in long startx,
+//                          in long starty);
 };
 
 [scriptable, uuid(32215b05-2658-42e7-b7fb-9b2b98e0653b)]
