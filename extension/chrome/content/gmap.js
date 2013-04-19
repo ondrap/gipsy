@@ -855,7 +855,7 @@ TerrainMap.prototype.get_map_link = function(maptype, zoom, xtile, ytile, mapsuf
         // Security?
         link += '&s=' + 'Galileo'.substr(0, (xtile*3+ytile) % 8);
     } else if (maptype == 'map_pgweb') {
-        var link = 'http://maps.pgweb.cz/elev/';
+        var link = 'http://maps1.pgweb.cz/elev2/';
         link += zoom + '/' + xtile + '/' + ytile;
     } else if (maptype == 'map_airspace') {
         var link = 'http://maps.pgweb.cz/airspace/';
