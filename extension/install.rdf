@@ -11,7 +11,7 @@
 		   em:unpack="true"
                    em:name="GiPSy Flight Manager"
 		   em:type="2"
-                   em:version="1.7.8"
+                   em:version="1.7.9"
                    em:homepageURL="http://www.xcontest.org/gipsy/"
                    em:creator="Ondrej Palkovsky &lt;ondrap@penguin.cz&gt;"
                    em:contributor="Jakub Havel &lt;scorpi@pgweb.cz&gt;"
@@ -20,7 +20,7 @@
     <em:targetApplication RDF:resource="rdf:#$7c5kD"/>
     <em:targetPlatform>Linux_x86-gcc3</em:targetPlatform>
     <em:targetPlatform>Linux_x86_64-gcc3</em:targetPlatform>
-    <em:targetPlatform>Darwin_x86_64-gcc3</em:targetPlatform>
+<!--    <em:targetPlatform>Darwin_x86_64-gcc3</em:targetPlatform> -->
     <em:targetPlatform>WINNT_x86-msvc</em:targetPlatform>
   </RDF:Description>
 </RDF:RDF>
