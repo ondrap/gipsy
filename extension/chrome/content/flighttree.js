@@ -185,20 +185,15 @@ var treeView = {
         return null;
     },
 
-    getRowProperties: function(row, props) {
-        var aserv;
+    getRowProperties: function(row) {
+        var props = [];
 	if (this.rows[row].synchro == gstore.SYNCHRO_ENABLED) {
-            aserv = Components.classes["@mozilla.org/atom-service;1"]
-                        .createInstance(Components.interfaces.nsIAtomService);
-	    props.AppendElement(aserv.getAtom('scheduled'));
+	    props.push('scheduled');
 	}
 	var rows = this.get_selected_rows();
 	var rindex = rows.indexOf(row);
 	if (rindex != -1) {
-            if (!aserv)
-                aserv = Components.classes["@mozilla.org/atom-service;1"]
-                                .createInstance(Components.interfaces.nsIAtomService);
-            props.AppendElement(aserv.getAtom('flight_' + rindex));
+            props.push('flight_');
         }
     },
     getCellProperties: function(row,col,props){},
@@ -399,6 +394,8 @@ var treeView = {
 
     get_selected_rows : function() {
         var rowlist = [];
+        if (this.treebox.view == undefined)
+            return [];
         var rangeCount = this.treebox.view.selection.getRangeCount();
         
         for (var i=0; i < rangeCount; i++) {
