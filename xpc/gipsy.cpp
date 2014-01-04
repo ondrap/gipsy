@@ -3,6 +3,7 @@
 #include "nscore.h"
 #include "nsCRT.h"
 #include "nsStringAPI.h"
+#include "nsMemory.h"
 #include "plstr.h"
 #include "prmem.h"
 
