@@ -34,8 +34,11 @@
 #include <map>
 #include <sstream>
 
+#ifndef WIN32
+# include <unistd.h>
+#endif
+
 #include <string.h>
-#include <unistd.h>
 #include <time.h>
 #include <iostream>
 
