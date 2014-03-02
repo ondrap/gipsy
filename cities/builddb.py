@@ -24,6 +24,7 @@ def main():
         country,t,city,t,lat,lon = line.split(',')
         country = country.upper()
         city = unicode(city, 'latin1').encode('utf8')
+        city = city.decode('utf8')
         lat = float(lat)
         lon = float(lon)
 
